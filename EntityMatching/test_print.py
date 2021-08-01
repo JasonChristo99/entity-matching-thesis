@@ -29,8 +29,8 @@ class MyTestCase(unittest.TestCase):
         # global_vars.log.debug('BLA')
         # logging.getLogger(global_vars.EXP_LOG).info('BLA BLA')
         # logging.getLogger(global_vars.EXP_LOG).debug('BLA')
-        printer.log('TEST',
-                    [global_vars.LOG, global_vars.EXP_LOG, global_vars.CONSOLE, global_vars.EXP_CONSOLE])
+        # printer.log('TEST',[global_vars.LOG, global_vars.EXP_LOG, global_vars.CONSOLE, global_vars.EXP_CONSOLE])
+        printer.log([global_vars.EXP_LOG], 'BLA', 'TEST')
         # self.assertEqual(global_vars.exp_log.getvalue(), 'TEST\n')
 
 

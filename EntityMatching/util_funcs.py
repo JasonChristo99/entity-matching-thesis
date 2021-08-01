@@ -1,4 +1,5 @@
 import global_vars
+from EntityMatching import printer
 
 
 def get_records_of_cluster(cluster, record_to_cluster):
@@ -21,33 +22,33 @@ def reverse_cluster_to_record(record_to_cluster):
 
 
 def print_cluster(cluster, record_to_cluster):
-    if global_vars.verbose_file: print(cluster, '[', file=global_vars.log)
+    printer.log([global_vars.LOG], cluster, '[')
     for record in record_to_cluster:
         if record_to_cluster[record] == cluster:
-            if global_vars.verbose_file: print('\t', record, get_record_by_id(record), file=global_vars.log)
-    if global_vars.verbose_file: print(']', file=global_vars.log)
+            printer.log([global_vars.LOG], '\t', record, get_record_by_id(record))
+    printer.log([global_vars.LOG], ']')
 
 
 def print_observed_data():
-    if global_vars.verbose_file: print('[', file=global_vars.log)
+    printer.log([global_vars.LOG], '[')
     for record in global_vars.observed_data:
-        if global_vars.verbose_file: print('\t', record['id'], record, file=global_vars.log)
-    if global_vars.verbose_file: print(']', file=global_vars.log)
+        printer.log([global_vars.LOG], '\t', record['id'], record)
+    printer.log([global_vars.LOG], ']')
 
 
 def pretty_print_R(relationship_R):
-    if global_vars.verbose_file: print('Relationship R...', file=global_vars.log)
+    printer.log([global_vars.LOG], 'Relationship R...')
     seen = set()
     for record_id in relationship_R:
         if record_id in seen:
             continue
         seen.add(record_id)
         seen.update(relationship_R[record_id])
-        if global_vars.verbose_file: print('[', file=global_vars.log)
-        if global_vars.verbose_file: print('\t', record_id, get_record_by_id(record_id), file=global_vars.log)
+        printer.log([global_vars.LOG], '[')
+        printer.log([global_vars.LOG], '\t', record_id, get_record_by_id(record_id))
         for recd in relationship_R[record_id]:
-            if global_vars.verbose_file: print('\t', recd, get_record_by_id(recd), file=global_vars.log)
-        if global_vars.verbose_file: print(']', file=global_vars.log)
+            printer.log([global_vars.LOG], '\t', recd, get_record_by_id(recd))
+        printer.log([global_vars.LOG], ']')
 
 
 def get_record_by_id(record_id):
@@ -59,15 +60,15 @@ def pretty_print_result_clusters(record_to_cluster):
     reverse = reverse_cluster_to_record(record_to_cluster)
     for cluster in reverse:
         # if verbose: print(cluster)
-        if global_vars.verbose_console: print(cluster, '[')
-        if global_vars.verbose_file: print(cluster, '[', file=global_vars.log)
+        printer.log([global_vars.LOG], cluster, '[')
+        printer.log([global_vars.LOG], cluster, '[')
         for fact in reverse[cluster]:
-            if global_vars.verbose_console: print('\t', get_record_by_id(fact))
-            if global_vars.verbose_file: print('\t', get_record_by_id(fact), file=global_vars.log)
-        if global_vars.verbose_console: print(']')
-        if global_vars.verbose_file: print(']', file=global_vars.log)
-        if global_vars.verbose_console: print()
-        if global_vars.verbose_file: print(file=global_vars.log)
+            printer.log([global_vars.LOG], '\t', get_record_by_id(fact))
+            printer.log([global_vars.LOG], '\t', get_record_by_id(fact))
+        printer.log([global_vars.LOG], ']')
+        printer.log([global_vars.LOG], ']')
+        printer.log([global_vars.LOG], )
+        printer.log([global_vars.LOG])
 
 
 def construct_result_clusters(record_to_cluster):

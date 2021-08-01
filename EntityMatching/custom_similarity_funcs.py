@@ -1,11 +1,12 @@
 import global_vars
 import util_funcs
 import config
+import printer
 
 
 def name_vertical_similarity(record1, record2):
     # 'Name' vertical always has cardinality of 1 tuple
-    if global_vars.verbose_file: print('Comparing Name vertical.', file=global_vars.log)
+    printer.log([global_vars.LOG], 'Comparing Name vertical.')
 
     name1 = record1['Name'][0]['name'].lower()
     name2 = record2['Name'][0]['name'].lower()
@@ -25,16 +26,16 @@ def name_vertical_similarity(record1, record2):
     # sd = SorensenDice()
     # result7 = sd.similarity(name1, name2)
 
-    if global_vars.verbose_file: print(name1, 'vs', name2, '=', result, file=global_vars.log)
+    printer.log([global_vars.LOG], name1, 'vs', name2, '=', result)
 
-    if global_vars.verbose_file: print('Name similarity=', result, file=global_vars.log)
+    printer.log([global_vars.LOG], 'Name similarity=', result)
 
     return result
 
 
 def location_vertical_similarity(record1, record2):
     # 'Location' vertical always has cardinality of 1 tuple
-    if global_vars.verbose_file: print('Comparing Location vertical.', file=global_vars.log)
+    printer.log([global_vars.LOG], 'Comparing Location vertical.')
 
     location1 = record1.get('Location')
     location2 = record2.get('Location')
@@ -46,9 +47,9 @@ def location_vertical_similarity(record1, record2):
     location2 = record2['Location'][0]['location'].lower()
     # result = jellyfish.jaro_winkler_similarity(location1, location2)
     result = config.default_program_parameters["location_sim_func"](location1, location2)
-    if global_vars.verbose_file: print(location1, 'vs', location2, '=', result, file=global_vars.log)
+    printer.log([global_vars.LOG], location1, 'vs', location2, '=', result)
 
-    if global_vars.verbose_file: print('Location similarity=', result, file=global_vars.log)
+    printer.log([global_vars.LOG], 'Location similarity=', result)
 
     return result
 
@@ -75,19 +76,16 @@ def education_tuple_similarity(tuple1, tuple2):
     university_sim = education_university_similarity(tuple1.get('university', ''), tuple2.get('university', ''))
     year_sim = education_year_similarity(tuple1.get('year', ''), tuple2.get('year', ''))
 
-    if global_vars.verbose_file: print(tuple1.get('degree', ''), 'vs', tuple2.get('degree', ''), '=', degree_sim,
-                                       file=global_vars.log)
-    if global_vars.verbose_file: print(tuple1.get('university', ''), 'vs', tuple2.get('university', ''), '=',
-                                       university_sim,
-                                       file=global_vars.log)
-    if global_vars.verbose_file: print(tuple1.get('year', ''), 'vs', tuple2.get('year', ''), '=', year_sim,
-                                       file=global_vars.log)
+    printer.log([global_vars.LOG], tuple1.get('degree', ''), 'vs', tuple2.get('degree', ''), '=', degree_sim)
+    printer.log([global_vars.LOG], tuple1.get('university', ''), 'vs', tuple2.get('university', ''), '=',
+                                       university_sim)
+    printer.log([global_vars.LOG], tuple1.get('year', ''), 'vs', tuple2.get('year', ''), '=', year_sim)
     result = 0.3 * degree_sim + 0.5 * university_sim + 0.2 * year_sim
 
-    if global_vars.verbose_file: print('Tuples similarity=', 0.3, '*', degree_sim, '+', 0.5, '*', university_sim, '+',
+    printer.log([global_vars.LOG], 'Tuples similarity=', 0.3, '*', degree_sim, '+', 0.5, '*', university_sim, '+',
                                        0.2, '*',
                                        year_sim, '=',
-                                       result, file=global_vars.log)
+                                       result)
 
     return result
 
@@ -96,7 +94,7 @@ def education_vertical_similarity(record1, record2):
     # 'Education' vertical may have cardinality of 1 or more tuple
     # we assume that the similarity between two multi-tuple education records
     # is the average similarity of all tuple pairs
-    if global_vars.verbose_file: print('Comparing Education vertical.', file=global_vars.log)
+    printer.log([global_vars.LOG], 'Comparing Education vertical.')
 
     education1 = record1.get('Education')
     education2 = record2.get('Education')
@@ -109,7 +107,7 @@ def education_vertical_similarity(record1, record2):
     count_pairs = 0
     for index1, tuple1 in enumerate(education1):
         for index2, tuple2 in enumerate(education2):
-            if global_vars.verbose_file: print('Comparing tuples', tuple1, 'vs', tuple2, file=global_vars.log)
+            printer.log([global_vars.LOG], 'Comparing tuples', tuple1, 'vs', tuple2)
             tuple_similarity = education_tuple_similarity(tuple1, tuple2)
             # if verbose: print(tuple1, 'vs', tuple2, '=', tuple_similarity, file=global_vars.global_log)
             # if verbose: print('Tuples similarity=', tuple_similarity, file=global_vars.global_log)
@@ -127,8 +125,7 @@ def education_vertical_similarity(record1, record2):
 
     # return avg_similarity
 
-    if global_vars.verbose_file: print('Education similarity (max tuples similarity)=', max_similarity,
-                                       file=global_vars.log)
+    printer.log([global_vars.LOG], 'Education similarity (max tuples similarity)=', max_similarity)
     return max_similarity
 
 
@@ -153,19 +150,16 @@ def working_experience_tuple_similarity(tuple1, tuple2):
     company_sim = working_experience_company_similarity(tuple1.get('company', ''), tuple2.get('company', ''))
     years_sim = working_experience_years_similarity(tuple1.get('years', ''), tuple2.get('years', ''))
 
-    if global_vars.verbose_file: print(tuple1.get('title', ''), 'vs', tuple2.get('title', ''), '=', title_sim,
-                                       file=global_vars.log)
-    if global_vars.verbose_file: print(tuple1.get('company', ''), 'vs', tuple2.get('company', ''), '=', company_sim,
-                                       file=global_vars.log)
-    if global_vars.verbose_file: print(tuple1.get('years', ''), 'vs', tuple2.get('years', ''), '=', years_sim,
-                                       file=global_vars.log)
+    printer.log([global_vars.LOG], tuple1.get('title', ''), 'vs', tuple2.get('title', ''), '=', title_sim)
+    printer.log([global_vars.LOG], tuple1.get('company', ''), 'vs', tuple2.get('company', ''), '=', company_sim)
+    printer.log([global_vars.LOG], tuple1.get('years', ''), 'vs', tuple2.get('years', ''), '=', years_sim)
     result = 0.3 * title_sim + 0.5 * company_sim + 0.2 * years_sim
 
-    if global_vars.verbose_file: print('Tuples similarity=', 0.3, '*', title_sim, '+', 0.5, '*', company_sim, '+', 0.2,
+    printer.log([global_vars.LOG], 'Tuples similarity=', 0.3, '*', title_sim, '+', 0.5, '*', company_sim, '+', 0.2,
                                        '*',
                                        years_sim,
                                        '=',
-                                       result, file=global_vars.log)
+                                       result)
 
     return result
 
@@ -174,7 +168,7 @@ def working_experience_vertical_similarity(record1, record2):
     # 'Working Experience' vertical may have cardinality of 1 or more tuple
     # we assume that the similarity between two multi-tuple education records
     # is the average similarity of all tuple pairs
-    if global_vars.verbose_file: print('Comparing Working Experience vertical.', file=global_vars.log)
+    printer.log([global_vars.LOG], 'Comparing Working Experience vertical.')
 
     working_exp_1 = record1.get('Working Experience')
     working_exp_2 = record2.get('Working Experience')
@@ -187,7 +181,7 @@ def working_experience_vertical_similarity(record1, record2):
     count_pairs = 0
     for index1, tuple1 in enumerate(working_exp_1):
         for index2, tuple2 in enumerate(working_exp_2):
-            if global_vars.verbose_file: print('Comparing tuples', tuple1, 'vs', tuple2, file=global_vars.log)
+            printer.log([global_vars.LOG], 'Comparing tuples', tuple1, 'vs', tuple2)
             tuple_similarity = working_experience_tuple_similarity(tuple1, tuple2)
             # if verbose: print(tuple1, 'vs', tuple2, '=', tuple_similarity, file=global_vars.global_log)
             # if verbose: print('Tuples similarity=', tuple_similarity, file=global_vars.global_log)
@@ -203,8 +197,7 @@ def working_experience_vertical_similarity(record1, record2):
     else:
         avg_similarity = 0
 
-    if global_vars.verbose_file: print('Working Experience similarity (max tuples similarity)=', max_similarity,
-                                       file=global_vars.log)
+    printer.log([global_vars.LOG], 'Working Experience similarity (max tuples similarity)=', max_similarity)
     # return avg_similarity
     return max_similarity
 
@@ -244,11 +237,10 @@ def record_similarity(record1_id, record2_id):
 
     result = 0.1 * loc_sim + 0.3 * name_sim + 0.3 * edu_sim + 0.3 * work_sim
 
-    if global_vars.verbose_file: print('Attribute sim. of records', record1_id, record2_id, '=', 0.3, '*', name_sim,
+    printer.log([global_vars.LOG], 'Attribute sim. of records', record1_id, record2_id, '=', 0.3, '*', name_sim,
                                        '+', 0.1, '*',
                                        loc_sim, '+',
-                                       0.3, '*', edu_sim, '+', 0.3, '*', work_sim, '=', result,
-                                       file=global_vars.log)
+                                       0.3, '*', edu_sim, '+', 0.3, '*', work_sim, '=', result)
 
     # else:
     #     if common_verticals_count == 0:
@@ -276,8 +268,7 @@ def cluster_attribute_similarity(cluster1, cluster2, record_to_cluster, verbose=
         for record2 in records_cluster2:
             if record1 == record2:
                 continue
-            if verbose: print('Comparing records', record1, record2, 'by Attribute similarity:',
-                              file=global_vars.log)
+            printer.log([global_vars.LOG], 'Comparing records', record1, record2, 'by Attribute similarity:')
             record_sim = record_similarity(record1, record2)
             # if verbose:
             # if verbose: print('Attribute similarity of', record1, record2, '=', record_sim, file=global_vars.global_log)
@@ -289,27 +280,26 @@ def cluster_attribute_similarity(cluster1, cluster2, record_to_cluster, verbose=
 
 def cluster_neighborhood_similarity(cluster1, cluster2, record_to_cluster, relationship_R, verbose=False):
     # sim(c1,c2) = ½ [simattributes(c1,c2) + simneighbours(c1,c2)] - with Complete Link
-    if verbose: print('Calculating clusters', cluster1, 'vs', cluster2, 'Neighborhood similarity',
-                      file=global_vars.log)
+    printer.log([global_vars.LOG], 'Calculating clusters', cluster1, 'vs', cluster2, 'Neighborhood similarity')
     N_A = set()
     records_of_cluster1 = util_funcs.get_records_of_cluster(cluster1, record_to_cluster)
-    if verbose: print('Records of cluster', cluster1, ':', records_of_cluster1, file=global_vars.log)
+    printer.log([global_vars.LOG], 'Records of cluster', cluster1, ':', records_of_cluster1)
     for record in records_of_cluster1:
         rel_records_str = [(r + ' (in ' + record_to_cluster[r] + ')') for r in relationship_R[record]]
-        if verbose: print('Records related to', record, ':', rel_records_str, file=global_vars.log)
+        printer.log([global_vars.LOG], 'Records related to', record, ':', rel_records_str)
         for related_record in relationship_R[record]:
             N_A.add(record_to_cluster[related_record])
-    if verbose: print('Neighborhood (clusters) of', cluster1, ':', N_A, file=global_vars.log)
+    printer.log([global_vars.LOG], 'Neighborhood (clusters) of', cluster1, ':', N_A)
 
     N_B = set()
     records_of_cluster2 = util_funcs.get_records_of_cluster(cluster2, record_to_cluster)
-    if verbose: print('Records of cluster', cluster2, ':', records_of_cluster2, file=global_vars.log)
+    printer.log([global_vars.LOG], 'Records of cluster', cluster2, ':', records_of_cluster2)
     for record in records_of_cluster2:
         rel_records_str = [(r + ' (in ' + record_to_cluster[r] + ')') for r in relationship_R[record]]
-        if verbose: print('Records related to', record, ':', rel_records_str, file=global_vars.log)
+        printer.log([global_vars.LOG], 'Records related to', record, ':', rel_records_str)
         for related_record in relationship_R[record]:
             N_B.add(record_to_cluster[related_record])
-    if verbose: print('Neighborhood (clusters) of', cluster2, ':', N_B, file=global_vars.log)
+    printer.log([global_vars.LOG], 'Neighborhood (clusters) of', cluster2, ':', N_B)
 
     intersection = N_A.intersection(N_B)
     union = N_A.union(N_B)
@@ -319,11 +309,10 @@ def cluster_neighborhood_similarity(cluster1, cluster2, record_to_cluster, relat
 
     result = len(intersection) / len(union)
     # if verbose:
-    if verbose: print('Neighborhood of', cluster2, ':', N_B, file=global_vars.log)
-    if verbose: print('Intersection:', intersection, file=global_vars.log)
-    if verbose: print('Union:', union, file=global_vars.log)
-    if verbose: print('Neighborhood similarity=|intersection|/|union|=', len(intersection), '/', len(union), result,
-                      file=global_vars.log)
+    printer.log([global_vars.LOG], 'Neighborhood of', cluster2, ':', N_B)
+    printer.log([global_vars.LOG], 'Intersection:', intersection)
+    printer.log([global_vars.LOG], 'Union:', union)
+    printer.log([global_vars.LOG], 'Neighborhood similarity=|intersection|/|union|=', len(intersection), '/', len(union), result)
     return result
 
 
@@ -332,8 +321,8 @@ def cluster_similarity(cluster1, cluster2, record_to_cluster, relationship_R, ve
         cluster_attribute_similarity(cluster1, cluster2, record_to_cluster, verbose), 2)
     # if verbose:
     # if verbose: print('Comparing:', cluster1, cluster2, file=global_vars.global_log)
-    if verbose: print('Attribute similarity of clusters (maximum sim. of cluster records)', cluster1, cluster2, '=',
-                      attribute_similarity, file=global_vars.log)
+    printer.log([global_vars.LOG], 'Attribute similarity of clusters (maximum sim. of cluster records)', cluster1, cluster2, '=',
+                      attribute_similarity)
 
     neighborhood_similarity = round(
         cluster_neighborhood_similarity(cluster1, cluster2, record_to_cluster, relationship_R, verbose=True), 2)
@@ -344,13 +333,13 @@ def cluster_similarity(cluster1, cluster2, record_to_cluster, relationship_R, ve
         config.default_program_parameters["constant_a"] * attribute_similarity + (
                 1 - config.default_program_parameters["constant_a"]) * neighborhood_similarity, 2)
     # if verbose:
-    if verbose: print('Combined cluster similarity=', config.default_program_parameters["constant_a"],
+    printer.log([global_vars.LOG], 'Combined cluster similarity=', config.default_program_parameters["constant_a"],
                       '* attribute_similarity + ',
                       (1 - config.default_program_parameters["constant_a"]),
                       '* neighborhood_similarity=', config.default_program_parameters["constant_a"], '*',
                       attribute_similarity, '+',
                       (1 - config.default_program_parameters["constant_a"]), '*',
-                      neighborhood_similarity, '=', clusters_combined_similarity, file=global_vars.log)
+                      neighborhood_similarity, '=', clusters_combined_similarity)
     # if verbose:
     # if verbose: print('Comparing:', cluster1, cluster2, ': clusters_combined_similarity=', constant_a, '*',
     #       attribute_similarity, '+', (1 - constant_a), '*',
