@@ -1,6 +1,6 @@
 import global_vars
-from util import get_records_of_cluster
-from config import program_parameters
+import util_funcs
+import config
 
 
 def name_vertical_similarity(record1, record2):
@@ -9,7 +9,7 @@ def name_vertical_similarity(record1, record2):
 
     name1 = record1['Name'][0]['name'].lower()
     name2 = record2['Name'][0]['name'].lower()
-    result = program_parameters["name_sim_func"](name1, name2)
+    result = config.default_program_parameters["name_sim_func"](name1, name2)
     # result5 = jellyfish.jaro_winkler_similarity(name1, name2)
     # result = jellyfish.jaro_similarity(name1, name2)
     # jw = JaroWinkler()
@@ -45,7 +45,7 @@ def location_vertical_similarity(record1, record2):
     location1 = record1['Location'][0]['location'].lower()
     location2 = record2['Location'][0]['location'].lower()
     # result = jellyfish.jaro_winkler_similarity(location1, location2)
-    result = program_parameters["location_sim_func"](location1, location2)
+    result = config.default_program_parameters["location_sim_func"](location1, location2)
     if global_vars.verbose_file: print(location1, 'vs', location2, '=', result, file=global_vars.log)
 
     if global_vars.verbose_file: print('Location similarity=', result, file=global_vars.log)
@@ -54,17 +54,17 @@ def location_vertical_similarity(record1, record2):
 
 
 def education_degree_similarity(degree1, degree2):
-    result = program_parameters["education_degree_sim_func"](degree1, degree2)
+    result = config.default_program_parameters["education_degree_sim_func"](degree1, degree2)
     return result
 
 
 def education_university_similarity(university1, university2):
-    result = program_parameters["education_university_sim_func"](university1, university2)
+    result = config.default_program_parameters["education_university_sim_func"](university1, university2)
     return result
 
 
 def education_year_similarity(year1, year2):
-    result = program_parameters["education_year_sim_func"](year1, year2)
+    result = config.default_program_parameters["education_year_sim_func"](year1, year2)
     return result
 
 
@@ -133,17 +133,17 @@ def education_vertical_similarity(record1, record2):
 
 
 def working_experience_title_similarity(title1, title2):
-    result = program_parameters["working_experience_title_sim_func"](title1, title2)
+    result = config.default_program_parameters["working_experience_title_sim_func"](title1, title2)
     return result
 
 
 def working_experience_company_similarity(company1, company2):
-    result = program_parameters["working_experience_company_sim_func"](company1, company2)
+    result = config.default_program_parameters["working_experience_company_sim_func"](company1, company2)
     return result
 
 
 def working_experience_years_similarity(year_range1, year_range2):
-    result = program_parameters["working_experience_years_sim_func"](year_range1, year_range2)
+    result = config.default_program_parameters["working_experience_years_sim_func"](year_range1, year_range2)
     return result
 
 
@@ -220,7 +220,7 @@ def relationship_similarity_v2(record1, record2):
 
 
 def relationship_similarity(record1, record2):
-    result = program_parameters["relationship_R_sim_func"](record1, record2)
+    result = config.default_program_parameters["relationship_R_sim_func"](record1, record2)
     return result
 
 
@@ -270,8 +270,8 @@ def cluster_attribute_similarity(cluster1, cluster2, record_to_cluster, verbose=
     # sim(c1,c2) = ½ [simattributes(c1,c2) + simneighbours(c1,c2)] - with Complete Link
 
     max_sim = 0
-    records_cluster1 = get_records_of_cluster(cluster1, record_to_cluster)
-    records_cluster2 = get_records_of_cluster(cluster2, record_to_cluster)
+    records_cluster1 = util_funcs.get_records_of_cluster(cluster1, record_to_cluster)
+    records_cluster2 = util_funcs.get_records_of_cluster(cluster2, record_to_cluster)
     for record1 in records_cluster1:
         for record2 in records_cluster2:
             if record1 == record2:
@@ -292,7 +292,7 @@ def cluster_neighborhood_similarity(cluster1, cluster2, record_to_cluster, relat
     if verbose: print('Calculating clusters', cluster1, 'vs', cluster2, 'Neighborhood similarity',
                       file=global_vars.log)
     N_A = set()
-    records_of_cluster1 = get_records_of_cluster(cluster1, record_to_cluster)
+    records_of_cluster1 = util_funcs.get_records_of_cluster(cluster1, record_to_cluster)
     if verbose: print('Records of cluster', cluster1, ':', records_of_cluster1, file=global_vars.log)
     for record in records_of_cluster1:
         rel_records_str = [(r + ' (in ' + record_to_cluster[r] + ')') for r in relationship_R[record]]
@@ -302,7 +302,7 @@ def cluster_neighborhood_similarity(cluster1, cluster2, record_to_cluster, relat
     if verbose: print('Neighborhood (clusters) of', cluster1, ':', N_A, file=global_vars.log)
 
     N_B = set()
-    records_of_cluster2 = get_records_of_cluster(cluster2, record_to_cluster)
+    records_of_cluster2 = util_funcs.get_records_of_cluster(cluster2, record_to_cluster)
     if verbose: print('Records of cluster', cluster2, ':', records_of_cluster2, file=global_vars.log)
     for record in records_of_cluster2:
         rel_records_str = [(r + ' (in ' + record_to_cluster[r] + ')') for r in relationship_R[record]]
@@ -341,13 +341,15 @@ def cluster_similarity(cluster1, cluster2, record_to_cluster, relationship_R, ve
     # if verbose: print('neighborhood_similarity=', '(', cluster1, cluster2, ')', neighborhood_similarity, file=global_vars.global_log)
 
     clusters_combined_similarity = round(
-        program_parameters["constant_a"] * attribute_similarity + (
-                1 - program_parameters["constant_a"]) * neighborhood_similarity, 2)
+        config.default_program_parameters["constant_a"] * attribute_similarity + (
+                1 - config.default_program_parameters["constant_a"]) * neighborhood_similarity, 2)
     # if verbose:
-    if verbose: print('Combined cluster similarity=', program_parameters["constant_a"], '* attribute_similarity + ',
-                      (1 - program_parameters["constant_a"]),
-                      '* neighborhood_similarity=', program_parameters["constant_a"], '*', attribute_similarity, '+',
-                      (1 - program_parameters["constant_a"]), '*',
+    if verbose: print('Combined cluster similarity=', config.default_program_parameters["constant_a"],
+                      '* attribute_similarity + ',
+                      (1 - config.default_program_parameters["constant_a"]),
+                      '* neighborhood_similarity=', config.default_program_parameters["constant_a"], '*',
+                      attribute_similarity, '+',
+                      (1 - config.default_program_parameters["constant_a"]), '*',
                       neighborhood_similarity, '=', clusters_combined_similarity, file=global_vars.log)
     # if verbose:
     # if verbose: print('Comparing:', cluster1, cluster2, ': clusters_combined_similarity=', constant_a, '*',

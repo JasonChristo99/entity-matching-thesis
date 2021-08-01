@@ -38,8 +38,7 @@ def ingest_observed_data(file_path):
                 fact_id += 1
 
         random.shuffle(bag_of_facts)
-        global observed_data
-        observed_data = bag_of_facts
+        global_vars.observed_data = bag_of_facts
         # return bag_of_facts
     except:
         if global_vars.verbose_file: print('Invalid file given as input.')

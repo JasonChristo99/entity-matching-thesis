@@ -1,10 +1,10 @@
-from EntityMatching import global_vars
-from EntityMatching.EntityMatcher import get_records_of_cluster
+import global_vars
+import util_funcs
 
 
 def evaluate_fact(fact_id, result_record_to_cluster):
     # find elements in the same cluster as the given fact
-    records_of_fact_cluster = get_records_of_cluster(result_record_to_cluster[fact_id], result_record_to_cluster)
+    records_of_fact_cluster = util_funcs.get_records_of_cluster(result_record_to_cluster[fact_id], result_record_to_cluster)
     records_of_fact_cluster.remove(fact_id)
     neighboring_elements_of_fact_in_cluster = records_of_fact_cluster
 

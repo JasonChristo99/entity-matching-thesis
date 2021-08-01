@@ -1,13 +1,13 @@
-import pandas as pd
 import itertools
 import json
 import data_ingest
 import writer
-from EntityMatching.config import set_config
-from util import *
-from evaluation import *
-from custom_similarity_funcs import *
-from general_str_sim import *
+import global_vars
+import util_funcs
+import evaluation
+import config
+import general_str_sim
+import custom_similarity_funcs
 
 
 # import jellyfish
@@ -33,10 +33,10 @@ def init_relationship_R():
             if record1['id'] not in relationship_R:
                 relationship_R[record1['id']] = []
             # calculate similarity of records based on a dedicated sim. measure, then decide if they are related
-            rel_sim = relationship_similarity(record1, record2)
+            rel_sim = custom_similarity_funcs.relationship_similarity(record1, record2)
             if global_vars.verbose_file: print('relationship sim.', record1, 'vs', record2, '=', rel_sim,
                                                file=global_vars.log)
-            if rel_sim >= program_parameters["relationship_similarity_threshold"]:
+            if rel_sim >= config.default_program_parameters["relationship_similarity_threshold"]:
                 relationship_R[record1['id']].append(record2['id'])
 
     return relationship_R
@@ -51,8 +51,8 @@ def init_record_to_cluster():
 
 
 def merge_clusters(cluster1, cluster2, record_to_cluster):
-    records_of_cluster1 = get_records_of_cluster(cluster1, record_to_cluster)
-    records_of_cluster2 = get_records_of_cluster(cluster2, record_to_cluster)
+    records_of_cluster1 = util_funcs.get_records_of_cluster(cluster1, record_to_cluster)
+    records_of_cluster2 = util_funcs.get_records_of_cluster(cluster2, record_to_cluster)
 
     new_cluster = cluster1 + '_' + cluster2
 
@@ -63,7 +63,7 @@ def merge_clusters(cluster1, cluster2, record_to_cluster):
         record_to_cluster[records_of_cluster2[i]] = new_cluster
 
     if global_vars.verbose_file: print('Result: records of', new_cluster, '=',
-                                       get_records_of_cluster(new_cluster, record_to_cluster),
+                                       util_funcs.get_records_of_cluster(new_cluster, record_to_cluster),
                                        file=global_vars.log)
 
     return record_to_cluster
@@ -86,13 +86,13 @@ def collective_clustering(relationship_R, record_to_cluster):
                 # if verbose: print_cluster(clusters[j], record_to_cluster)
                 if global_vars.verbose_file: print('Comparing clusters:', clusters[i], 'vs', clusters[j], '...',
                                                    file=global_vars.log)
-                print_cluster(clusters[i], record_to_cluster)
-                print_cluster(clusters[j], record_to_cluster)
-                clusters_combined_similarity = cluster_similarity(clusters[i], clusters[j],
-                                                                  record_to_cluster,
-                                                                  relationship_R,
-                                                                  # verbose=True
-                                                                  )
+                util_funcs.print_cluster(clusters[i], record_to_cluster)
+                util_funcs.print_cluster(clusters[j], record_to_cluster)
+                clusters_combined_similarity = custom_similarity_funcs.cluster_similarity(clusters[i], clusters[j],
+                                                                                          record_to_cluster,
+                                                                                          relationship_R,
+                                                                                          # verbose=True
+                                                                                          )
                 # if verbose: print('Comparing:', clusters[i], clusters[j], '=', clusters_combined_similarity)
 
                 if clusters_combined_similarity > max_cluster_similarity['max_sim_value']:
@@ -109,36 +109,38 @@ def collective_clustering(relationship_R, record_to_cluster):
                                            max_cluster_similarity['max_sim_value'],
                                            file=global_vars.log)
 
-        if max_cluster_similarity['max_sim_value'] < program_parameters["algorithm_threshold"]:
-            if global_vars.verbose_file: print('Threshold', program_parameters["algorithm_threshold"], 'was reached by',
+        if max_cluster_similarity['max_sim_value'] < config.default_program_parameters["algorithm_threshold"]:
+            if global_vars.verbose_file: print('Threshold', config.default_program_parameters["algorithm_threshold"],
+                                               'was reached by',
                                                max_cluster_similarity['max_sim_value'],
                                                '. Terminating...', file=global_vars.log)
-            if global_vars.verbose_file: print(reverse_cluster_to_record(record_to_cluster),
+            if global_vars.verbose_file: print(util_funcs.reverse_cluster_to_record(record_to_cluster),
                                                file=global_vars.log)
             print(iteration, 'total iterations.')
             return record_to_cluster
         else:
             if global_vars.verbose_file: print('Merging clusters:', file=global_vars.log)
-            print_cluster(max_cluster_similarity['cluster1'], record_to_cluster)
-            print_cluster(max_cluster_similarity['cluster2'], record_to_cluster)
-            cluster_similarity(max_cluster_similarity['cluster1'], max_cluster_similarity['cluster2'],
-                               record_to_cluster,
-                               relationship_R,
-                               # verbose=True
-                               )
+            util_funcs.print_cluster(max_cluster_similarity['cluster1'], record_to_cluster)
+            util_funcs.print_cluster(max_cluster_similarity['cluster2'], record_to_cluster)
+            custom_similarity_funcs.cluster_similarity(max_cluster_similarity['cluster1'],
+                                                       max_cluster_similarity['cluster2'],
+                                                       record_to_cluster,
+                                                       relationship_R,
+                                                       # verbose=True
+                                                       )
             if global_vars.verbose_file: print('Merging', max_cluster_similarity['cluster1'], '(',
-                                               get_records_of_cluster(max_cluster_similarity['cluster1'],
-                                                                      record_to_cluster), ')',
+                                               util_funcs.get_records_of_cluster(max_cluster_similarity['cluster1'],
+                                                                                 record_to_cluster), ')',
                                                max_cluster_similarity['cluster2'], '(',
-                                               get_records_of_cluster(max_cluster_similarity['cluster2'],
-                                                                      record_to_cluster), ')',
+                                               util_funcs.get_records_of_cluster(max_cluster_similarity['cluster2'],
+                                                                                 record_to_cluster), ')',
                                                '...',
                                                file=global_vars.log)
             record_to_cluster = merge_clusters(max_cluster_similarity['cluster1'], max_cluster_similarity['cluster2'],
                                                record_to_cluster)
             # print(reverse_cluster_to_record(record_to_cluster))
-            if global_vars.verbose_file: print('Result Clusters after iteration:', file=global_vars.log)
-            pretty_print_result_clusters(record_to_cluster)
+            if global_vars.verbose_file: print('Result Clusters after iteration:', file=[global_vars.log])
+            util_funcs.pretty_print_result_clusters(record_to_cluster)
             iteration += 1
 
 
@@ -147,8 +149,8 @@ def run_experiment():
 
     if global_vars.experiment_with_combinations:
         parameter_combinations = itertools.product(
-            [cosine_similarity],
-            [relationship_similarity_v1],
+            [general_str_sim.cosine_similarity],
+            [custom_similarity_funcs.relationship_similarity_v1],
             [0.5],
             [0.64, 0.645],
             [0.85, 0.95],
@@ -172,70 +174,71 @@ def run_experiment():
     else:
         experiment_configurations = [
             {
-                "name_sim_func": cosine_similarity,
-                "location_sim_func": cosine_similarity,
-                "education_degree_sim_func": cosine_similarity,
-                "education_university_sim_func": cosine_similarity,
-                "education_year_sim_func": cosine_similarity,
-                "working_experience_title_sim_func": cosine_similarity,
-                "working_experience_company_sim_func": cosine_similarity,
-                "working_experience_years_sim_func": cosine_similarity,
-                "relationship_R_sim_func": relationship_similarity_v1,
+                "name_sim_func": general_str_sim.cosine_similarity,
+                "location_sim_func": general_str_sim.cosine_similarity,
+                "education_degree_sim_func": general_str_sim.cosine_similarity,
+                "education_university_sim_func": general_str_sim.cosine_similarity,
+                "education_year_sim_func": general_str_sim.cosine_similarity,
+                "working_experience_title_sim_func": general_str_sim.cosine_similarity,
+                "working_experience_company_sim_func": general_str_sim.cosine_similarity,
+                "working_experience_years_sim_func": general_str_sim.cosine_similarity,
+                "relationship_R_sim_func": custom_similarity_funcs.relationship_similarity_v1,
                 "relationship_similarity_threshold": 0.6,
                 "algorithm_threshold": 0.6,
                 "constant_a": 0.7
             },
             {
-                "name_sim_func": cosine_similarity,
-                "location_sim_func": cosine_similarity,
-                "education_degree_sim_func": cosine_similarity,
-                "education_university_sim_func": cosine_similarity,
-                "education_year_sim_func": cosine_similarity,
-                "working_experience_title_sim_func": cosine_similarity,
-                "working_experience_company_sim_func": cosine_similarity,
-                "working_experience_years_sim_func": cosine_similarity,
-                "relationship_R_sim_func": relationship_similarity_v1,
+                "name_sim_func": general_str_sim.cosine_similarity,
+                "location_sim_func": general_str_sim.cosine_similarity,
+                "education_degree_sim_func": general_str_sim.cosine_similarity,
+                "education_university_sim_func": general_str_sim.cosine_similarity,
+                "education_year_sim_func": general_str_sim.cosine_similarity,
+                "working_experience_title_sim_func": general_str_sim.cosine_similarity,
+                "working_experience_company_sim_func": general_str_sim.cosine_similarity,
+                "working_experience_years_sim_func": general_str_sim.cosine_similarity,
+                "relationship_R_sim_func": custom_similarity_funcs.relationship_similarity_v1,
                 "relationship_similarity_threshold": 0.7,
                 "algorithm_threshold": 0.7,
                 "constant_a": 0.6
             },
             {
-                "name_sim_func": cosine_similarity,
-                "location_sim_func": cosine_similarity,
-                "education_degree_sim_func": cosine_similarity,
-                "education_university_sim_func": cosine_similarity,
-                "education_year_sim_func": cosine_similarity,
-                "working_experience_title_sim_func": cosine_similarity,
-                "working_experience_company_sim_func": cosine_similarity,
-                "working_experience_years_sim_func": cosine_similarity,
-                "relationship_R_sim_func": relationship_similarity_v1,
+                "name_sim_func": general_str_sim.cosine_similarity,
+                "location_sim_func": general_str_sim.cosine_similarity,
+                "education_degree_sim_func": general_str_sim.cosine_similarity,
+                "education_university_sim_func": general_str_sim.cosine_similarity,
+                "education_year_sim_func": general_str_sim.cosine_similarity,
+                "working_experience_title_sim_func": general_str_sim.cosine_similarity,
+                "working_experience_company_sim_func": general_str_sim.cosine_similarity,
+                "working_experience_years_sim_func": general_str_sim.cosine_similarity,
+                "relationship_R_sim_func": custom_similarity_funcs.relationship_similarity_v1,
                 "relationship_similarity_threshold": 0.5,
                 "algorithm_threshold": 0.8,
                 "constant_a": 0.4
             }
         ]
 
-    for config in experiment_configurations:
+    for exp_config in experiment_configurations:
         # print('Config:', json.dumps(config, sort_keys=True, indent=4), file=global_vars.global_log)
         # print('Config:', json.dumps(config, sort_keys=True, indent=4))
-        print('Config:', "name_sim_func=", config["name_sim_func"].__name__, "relationship_R_sim_func=",
-              config["relationship_R_sim_func"].__name__, "relationship_similarity_threshold=",
-              config["relationship_similarity_threshold"], "algorithm_threshold=",
-              config["algorithm_threshold"], "constant_a=",
-              config["constant_a"])
+        print('Config:', "name_sim_func=", exp_config["name_sim_func"].__name__, "relationship_R_sim_func=",
+              exp_config["relationship_R_sim_func"].__name__, "relationship_similarity_threshold=",
+              exp_config["relationship_similarity_threshold"], "algorithm_threshold=",
+              exp_config["algorithm_threshold"], "constant_a=",
+              exp_config["constant_a"])
         # config.program_parameters = config
-        set_config(config)
+        config.set_config(exp_config)
         # reinit_global_vars()
         data_ingest.ingest_observed_data(global_vars.observed_facts_file_path)
         relationship_R = init_relationship_R()
         record_to_cluster = init_record_to_cluster()
         result_record_to_cluster = collective_clustering(relationship_R, record_to_cluster)
-        pretty_print_result_clusters(result_record_to_cluster)
-        evaluation = evaluate_result_clusters(construct_result_clusters(record_to_cluster), result_record_to_cluster)
-        summed_evaluation = sum_evaluation_for_all_facts(evaluation)
+        util_funcs.pretty_print_result_clusters(result_record_to_cluster)
+        evaluation_res = evaluation.evaluate_result_clusters(util_funcs.construct_result_clusters(record_to_cluster),
+                                                             result_record_to_cluster)
+        summed_evaluation = evaluation.sum_evaluation_for_all_facts(evaluation_res)
         # print('Evaluation:', json.dumps(summed_evaluation, sort_keys=True, indent=4), file=global_vars.global_log)
         print('Evaluation:', json.dumps(summed_evaluation, sort_keys=True, indent=4))
-    # writer.write_log()
+        writer.write_log()
     print('End.')
 
 
@@ -251,12 +254,12 @@ def main():
     # observed_data = ingest_observed_data(global_vars.observed_facts_file_path)
     data_ingest.ingest_observed_data(global_vars.observed_facts_file_path)
     if global_vars.verbose_file: print('Observed facts:', file=global_vars.log)
-    print_observed_data()
+    util_funcs.print_observed_data()
     # if verbose: print(observed_data, file=global_vars.global_log)
 
     # step 2: build initial relationship R: groups similar records together as a preprocessing step
     relationship_R = init_relationship_R()
-    pretty_print_R(relationship_R)
+    util_funcs.pretty_print_R(relationship_R)
 
     # step 3: initialize the record to cluster relation: in which cluster does record X belong?
     record_to_cluster = init_record_to_cluster()
@@ -264,14 +267,15 @@ def main():
     # step 4: run the Collective Agglomerative Clustering algorithm to group the most similar records
     # together in the same clusters
     result_record_to_cluster = collective_clustering(relationship_R, record_to_cluster)
-    pretty_print_result_clusters(result_record_to_cluster)
+    util_funcs.pretty_print_result_clusters(result_record_to_cluster)
 
     # step 5: run evaluation metrics on the result
-    evaluation = evaluate_result_clusters(construct_result_clusters(record_to_cluster), result_record_to_cluster)
+    evaluation_res = evaluation.evaluate_result_clusters(util_funcs.construct_result_clusters(record_to_cluster),
+                                                         result_record_to_cluster)
     if global_vars.verbose_file: print('Evaluation:', file=global_vars.log)
-    if global_vars.verbose_file: print(json.dumps(evaluation, sort_keys=True, indent=4), file=global_vars.log)
+    if global_vars.verbose_file: print(json.dumps(evaluation_res, sort_keys=True, indent=4), file=global_vars.log)
     # if verbose: print(evaluation, file=global_vars.global_log)
-    summed_evaluation = sum_evaluation_for_all_facts(evaluation)
+    summed_evaluation = evaluation.sum_evaluation_for_all_facts(evaluation_res)
     if global_vars.verbose_file: print('Summed-up Evaluation:', file=global_vars.log)
 
     # step 6: write global log to file
