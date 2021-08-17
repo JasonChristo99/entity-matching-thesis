@@ -1,9 +1,9 @@
 # constants
-observed_facts_file_path = 'C:/Users/Iasonas/PycharmProjects/EntityMatching_Thesis/datasets/observed_facts.json'
+observed_facts_file_path = 'C:/Users/i.christofilakis/Documents/entity-matching-thesis/datasets/observed_facts.json'
 
 verbose_file = True
 verbose_console = True
-experiment = True
+experiment = False
 experiment_with_combinations = True
 
 # Logger names
@@ -15,3 +15,5 @@ EXP_CONSOLE = 'exp_console'
 # global variables
 observed_data = []
 correct_groups_of_facts = []
+relationship_R = {}
+record_to_cluster = {}

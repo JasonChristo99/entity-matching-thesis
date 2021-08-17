@@ -1,11 +1,10 @@
 import itertools
 import json
-import data_ingest
-import writer
+import data_reader
 import global_vars
 import util_funcs
 import evaluation
-import config
+import global_config
 import general_str_sim
 import custom_similarity_funcs
 import printer
@@ -37,7 +36,7 @@ def init_relationship_R():
             rel_sim = custom_similarity_funcs.relationship_similarity(record1, record2)
             if global_vars.verbose_file: printer.log([global_vars.LOG], 'relationship sim.', record1, 'vs', record2,
                                                      '=', rel_sim)
-            if rel_sim >= config.default_program_parameters["relationship_similarity_threshold"]:
+            if rel_sim >= global_config.default_program_parameters["relationship_similarity_threshold"]:
                 relationship_R[record1['id']].append(record2['id'])
 
     return relationship_R
@@ -51,31 +50,29 @@ def init_record_to_cluster():
     return record_to_cluster
 
 
-def merge_clusters(cluster1, cluster2, record_to_cluster):
-    records_of_cluster1 = util_funcs.get_records_of_cluster(cluster1, record_to_cluster)
-    records_of_cluster2 = util_funcs.get_records_of_cluster(cluster2, record_to_cluster)
+def merge_clusters(cluster1, cluster2):
+    records_of_cluster1 = util_funcs.get_records_of_cluster(cluster1)
+    records_of_cluster2 = util_funcs.get_records_of_cluster(cluster2)
 
     new_cluster = cluster1 + '_' + cluster2
 
     for i in range(len(records_of_cluster1)):
-        record_to_cluster[records_of_cluster1[i]] = new_cluster
+        global_vars.record_to_cluster[records_of_cluster1[i]] = new_cluster
 
     for i in range(len(records_of_cluster2)):
-        record_to_cluster[records_of_cluster2[i]] = new_cluster
+        global_vars.record_to_cluster[records_of_cluster2[i]] = new_cluster
 
     if global_vars.verbose_file: printer.log([global_vars.LOG], 'Result: records of', new_cluster, '=',
-                                             util_funcs.get_records_of_cluster(new_cluster, record_to_cluster))
-
-    return record_to_cluster
+                                             util_funcs.get_records_of_cluster(new_cluster))
 
 
-def collective_clustering(relationship_R, record_to_cluster):
+def collective_clustering():
     iteration = 1
 
     while True:
         printer.log([global_vars.LOG, global_vars.CONSOLE], 'Iteration', iteration, '...')
         num_comparisons = 0
-        clusters = list(set(record_to_cluster.values()))
+        clusters = list(set(global_vars.record_to_cluster.values()))
         max_cluster_similarity = {'max_sim_value': 0, 'cluster1': '', 'cluster2': ''}
 
         for i in range(len(clusters)):
@@ -85,21 +82,15 @@ def collective_clustering(relationship_R, record_to_cluster):
                 # if verbose: print_cluster(clusters[j], record_to_cluster)
                 if global_vars.verbose_file: printer.log([global_vars.LOG], 'Comparing clusters:', clusters[i], 'vs',
                                                          clusters[j], '...')
-                util_funcs.print_cluster(clusters[i], record_to_cluster)
-                util_funcs.print_cluster(clusters[j], record_to_cluster)
-                clusters_combined_similarity = custom_similarity_funcs.cluster_similarity(clusters[i], clusters[j],
-                                                                                          record_to_cluster,
-                                                                                          relationship_R,
-                                                                                          # verbose=True
-                                                                                          )
-                # if verbose: print('Comparing:', clusters[i], clusters[j], '=', clusters_combined_similarity)
+                printer.log([global_vars.LOG], util_funcs.construct_cluster(clusters[i]))
+                printer.log([global_vars.LOG], util_funcs.construct_cluster(clusters[j]))
+                clusters_combined_similarity = custom_similarity_funcs.cluster_similarity(clusters[i], clusters[j])
 
                 if clusters_combined_similarity > max_cluster_similarity['max_sim_value']:
                     max_cluster_similarity['max_sim_value'] = clusters_combined_similarity
                     max_cluster_similarity['cluster1'] = clusters[i]
                     max_cluster_similarity['cluster2'] = clusters[j]
 
-                # console.log(`sim(${clusters[i]},${clusters[j]}) = 1/2 [${attrSim} + ${neighSim}] = ${similarity}`)
                 num_comparisons += 1
 
         if global_vars.verbose_file: printer.log([global_vars.LOG], 'Maximum Similarity was between clusters',
@@ -107,47 +98,44 @@ def collective_clustering(relationship_R, record_to_cluster):
                                                  max_cluster_similarity['cluster2'], 'with value',
                                                  max_cluster_similarity['max_sim_value'])
 
-        if max_cluster_similarity['max_sim_value'] < config.default_program_parameters["algorithm_threshold"]:
+        if max_cluster_similarity['max_sim_value'] < global_config.default_program_parameters["algorithm_threshold"]:
             if global_vars.verbose_file: printer.log([global_vars.LOG], 'Threshold',
-                                                     config.default_program_parameters["algorithm_threshold"],
+                                                     global_config.default_program_parameters["algorithm_threshold"],
                                                      'was reached by',
                                                      max_cluster_similarity['max_sim_value'],
                                                      '. Terminating...')
             if global_vars.verbose_file: printer.log([global_vars.LOG],
-                                                     util_funcs.reverse_cluster_to_record(record_to_cluster))
+                                                     util_funcs.reverse_cluster_to_record())
             printer.log(printer.ALL_OUTPUTS, iteration, 'total iterations.')
-            return record_to_cluster
+            # global_vars.record_to_cluster = record_to_cluster
+            return
         else:
             printer.log([global_vars.LOG], 'Merging clusters:')
-            util_funcs.print_cluster(max_cluster_similarity['cluster1'], record_to_cluster)
-            util_funcs.print_cluster(max_cluster_similarity['cluster2'], record_to_cluster)
+            printer.log([global_vars.LOG], util_funcs.construct_cluster(max_cluster_similarity['cluster1']))
+            printer.log([global_vars.LOG], util_funcs.construct_cluster(max_cluster_similarity['cluster2']))
             custom_similarity_funcs.cluster_similarity(max_cluster_similarity['cluster1'],
-                                                       max_cluster_similarity['cluster2'],
-                                                       record_to_cluster,
-                                                       relationship_R,
-                                                       # verbose=True
-                                                       )
+                                                       max_cluster_similarity['cluster2'])
             if global_vars.verbose_file:  printer.log([global_vars.LOG], 'Merging', max_cluster_similarity['cluster1'],
                                                       '(',
                                                       util_funcs.get_records_of_cluster(
-                                                          max_cluster_similarity['cluster1'],
-                                                          record_to_cluster), ')',
+                                                          max_cluster_similarity['cluster1']
+                                                      ), ')',
                                                       max_cluster_similarity['cluster2'], '(',
                                                       util_funcs.get_records_of_cluster(
                                                           max_cluster_similarity['cluster2'],
-                                                          record_to_cluster), ')',
+                                                      ), ')',
                                                       '...')
-            record_to_cluster = merge_clusters(max_cluster_similarity['cluster1'], max_cluster_similarity['cluster2'],
-                                               record_to_cluster)
+            merge_clusters(max_cluster_similarity['cluster1'], max_cluster_similarity['cluster2'])
             # print(reverse_cluster_to_record(record_to_cluster))
             printer.log([global_vars.LOG], 'Result Clusters after iteration:')
-            util_funcs.pretty_print_result_clusters(record_to_cluster)
+            printer.log([global_vars.LOG], util_funcs.construct_result_clusters())
             iteration += 1
 
 
 def run_experiment():
     experiment_configurations: []
 
+    # to run the experiment, either use automatic combination of parameters, or a hardcoded bunch of configurations
     if global_vars.experiment_with_combinations:
         parameter_combinations = itertools.product(
             [general_str_sim.cosine_similarity],
@@ -218,81 +206,65 @@ def run_experiment():
             }
         ]
 
-    for exp_config in experiment_configurations:
-        # print('Config:', json.dumps(config, sort_keys=True, indent=4), file=global_vars.global_log)
-        # print('Config:', json.dumps(config, sort_keys=True, indent=4))
-        # print('Config:', "name_sim_func=", exp_config["name_sim_func"].__name__, "relationship_R_sim_func=",
-        #       exp_config["relationship_R_sim_func"].__name__, "relationship_similarity_threshold=",
-        #       exp_config["relationship_similarity_threshold"], "algorithm_threshold=",
-        #       exp_config["algorithm_threshold"], "constant_a=",
-        #       exp_config["constant_a"])
+    for experiment_config in experiment_configurations:
         printer.log([global_vars.EXP_LOG, global_vars.EXP_CONSOLE], 'Config:', "name_sim_func=",
-                    exp_config["name_sim_func"].__name__, "relationship_R_sim_func=",
-                    exp_config["relationship_R_sim_func"].__name__, "relationship_similarity_threshold=",
-                    exp_config["relationship_similarity_threshold"], "algorithm_threshold=",
-                    exp_config["algorithm_threshold"], "constant_a=",
-                    exp_config["constant_a"])
-        # config.program_parameters = config
-        config.set_config(exp_config)
-        # reinit_global_vars()
-        data_ingest.ingest_observed_data(global_vars.observed_facts_file_path)
-        relationship_R = init_relationship_R()
-        record_to_cluster = init_record_to_cluster()
-        result_record_to_cluster = collective_clustering(relationship_R, record_to_cluster)
-        util_funcs.pretty_print_result_clusters(result_record_to_cluster)
-        evaluation_res = evaluation.evaluate_result_clusters(util_funcs.construct_result_clusters(record_to_cluster),
-                                                             result_record_to_cluster)
+                    experiment_config["name_sim_func"].__name__, "relationship_R_sim_func=",
+                    experiment_config["relationship_R_sim_func"].__name__, "relationship_similarity_threshold=",
+                    experiment_config["relationship_similarity_threshold"], "algorithm_threshold=",
+                    experiment_config["algorithm_threshold"], "constant_a=",
+                    experiment_config["constant_a"])
+
+        global_config.set_config(experiment_config)
+
+        global_vars.relationship_R = init_relationship_R()
+        global_vars.record_to_cluster = init_record_to_cluster()
+
+        collective_clustering()
+
+        printer.log([global_vars.EXP_LOG, global_vars.EXP_CONSOLE], util_funcs.construct_result_clusters())
+
+        evaluation_res = evaluation.evaluate_result_clusters(util_funcs.construct_result_clusters())
         summed_evaluation = evaluation.sum_evaluation_for_all_facts(evaluation_res)
-        # print('Evaluation:', json.dumps(summed_evaluation, sort_keys=True, indent=4), file=global_vars.global_log)
-        # print('Evaluation:', json.dumps(summed_evaluation, sort_keys=True, indent=4))
+
         printer.log([global_vars.EXP_LOG, global_vars.EXP_CONSOLE], 'Evaluation:',
                     json.dumps(summed_evaluation, sort_keys=True, indent=4))
-        # writer.write_log()
-    printer.log([global_vars.EXP_LOG, global_vars.EXP_CONSOLE], 'End.')
+    printer.log([global_vars.EXP_LOG, global_vars.EXP_CONSOLE], '--- END ---')
 
 
 def main():
-    printer.log([global_vars.LOG, global_vars.CONSOLE, global_vars.EXP_LOG, global_vars.EXP_CONSOLE], 'Started...')
+    printer.log([global_vars.LOG, global_vars.CONSOLE, global_vars.EXP_LOG, global_vars.EXP_CONSOLE], '--- START ---')
+
+    # step 1: ingest observed data
+    data_reader.ingest_observed_facts(global_vars.observed_facts_file_path)
+    if global_vars.verbose_file: printer.log([global_vars.LOG], 'Observed facts:')
+    util_funcs.print_observed_data()
+
+    # step 2: initialize the record to cluster relation: in which cluster does record X belong?
+    global_vars.record_to_cluster = init_record_to_cluster()
+
+    # step 2.1: if the global configuration suggests that we run an experiment, run it,
+    # else continue with a run of the algorithm
     if global_vars.experiment:
-        # global verbose_console
-        # global_vars.verbose_console = False
         run_experiment()
         return
 
-        # step 1: ingest observed data
-    # observed_data = ingest_observed_data(global_vars.observed_facts_file_path)
-    data_ingest.ingest_observed_data(global_vars.observed_facts_file_path)
-    if global_vars.verbose_file: printer.log([global_vars.LOG], 'Observed facts:')
-    util_funcs.print_observed_data()
-    # if verbose: print(observed_data, file=global_vars.global_log)
-
-    # step 2: build initial relationship R: groups similar records together as a preprocessing step
-    relationship_R = init_relationship_R()
-    util_funcs.pretty_print_R(relationship_R)
-
-    # step 3: initialize the record to cluster relation: in which cluster does record X belong?
-    record_to_cluster = init_record_to_cluster()
+    # step 3: build initial relationship R: groups similar records together as a preprocessing step
+    global_vars.relationship_R = init_relationship_R()
+    printer.log([global_vars.LOG], util_funcs.construct_pretty_relationship_R())
 
     # step 4: run the Collective Agglomerative Clustering algorithm to group the most similar records
     # together in the same clusters
-    result_record_to_cluster = collective_clustering(relationship_R, record_to_cluster)
-    util_funcs.pretty_print_result_clusters(result_record_to_cluster)
+    collective_clustering()
+    printer.log([global_vars.LOG], util_funcs.construct_result_clusters())
 
     # step 5: run evaluation metrics on the result
-    evaluation_res = evaluation.evaluate_result_clusters(util_funcs.construct_result_clusters(record_to_cluster),
-                                                         result_record_to_cluster)
+    evaluation_res = evaluation.evaluate_result_clusters(util_funcs.construct_result_clusters())
     printer.log([global_vars.LOG], 'Evaluation:')
     printer.log([global_vars.LOG], json.dumps(evaluation_res, sort_keys=True, indent=4))
-    # if verbose: print(evaluation, file=global_vars.global_log)
     summed_evaluation = evaluation.sum_evaluation_for_all_facts(evaluation_res)
-    printer.log([global_vars.LOG], 'Summed-up Evaluation:')
+    printer.log([global_vars.LOG], 'Summed-up Evaluation:', summed_evaluation)
 
-    # step 6: write global log to file
-    # if verbose: print('GLOBAL LOG')
-    # if verbose: print(global_vars.global_log.getvalue())
-    # writer.write_log()
-
-    printer.log(printer.ALL_OUTPUTS, 'Finished.')
+    printer.log(printer.ALL_OUTPUTS, '--- END ---')
 
 
 main()

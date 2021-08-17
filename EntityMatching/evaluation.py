@@ -2,9 +2,9 @@ import global_vars
 import util_funcs
 
 
-def evaluate_fact(fact_id, result_record_to_cluster):
+def evaluate_fact(fact_id):
     # find elements in the same cluster as the given fact
-    records_of_fact_cluster = util_funcs.get_records_of_cluster(result_record_to_cluster[fact_id], result_record_to_cluster)
+    records_of_fact_cluster = util_funcs.get_records_of_cluster(global_vars.record_to_cluster[fact_id])
     records_of_fact_cluster.remove(fact_id)
     neighboring_elements_of_fact_in_cluster = records_of_fact_cluster
 
@@ -46,7 +46,7 @@ def evaluate_fact(fact_id, result_record_to_cluster):
     return result
 
 
-def evaluate_result_clusters(result_clusters, result_record_to_cluster):
+def evaluate_result_clusters(result_clusters):
     # for every fact in the result clusters count:
     # a) facts falsely in the same group (false positives) - ta stoixeia pou einai geitones enw de tha eprepe
     # b) facts correctly in the same group (true positives) - ta stoixeia pou einai geitones enw tha eprepe
@@ -56,7 +56,7 @@ def evaluate_result_clusters(result_clusters, result_record_to_cluster):
     for result_cluster in result_clusters:
         for fact in result_cluster:
             fact_id = fact["id"]
-            result[fact_id] = evaluate_fact(fact_id, result_record_to_cluster)
+            result[fact_id] = evaluate_fact(fact_id)
     return result
 
 

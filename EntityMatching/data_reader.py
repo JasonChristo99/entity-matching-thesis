@@ -5,7 +5,7 @@ import global_vars
 random.seed(10)
 
 
-def ingest_observed_data(file_path):
+def ingest_observed_facts(file_path):
     bag_of_facts = []
     fact_id = 1
     try:

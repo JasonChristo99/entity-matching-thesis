@@ -1,79 +1,104 @@
+import json
+
 import global_vars
 from EntityMatching import printer
 
 
-def get_records_of_cluster(cluster, record_to_cluster):
+def get_records_of_cluster(cluster):
     result = []
-    for rec in record_to_cluster:
-        if record_to_cluster[rec] == cluster:
+    for rec in global_vars.record_to_cluster:
+        if global_vars.record_to_cluster[rec] == cluster:
             result.append(rec)
 
     return result
 
 
-def reverse_cluster_to_record(record_to_cluster):
+def reverse_cluster_to_record():
     reverse_map = dict()
-    for record in record_to_cluster:
-        if record_to_cluster[record] not in reverse_map:
-            reverse_map[record_to_cluster[record]] = []
-        reverse_map[record_to_cluster[record]].append(record)
+    for record in global_vars.record_to_cluster:
+        if global_vars.record_to_cluster[record] not in reverse_map:
+            reverse_map[global_vars.record_to_cluster[record]] = []
+        reverse_map[global_vars.record_to_cluster[record]].append(record)
 
     return reverse_map
 
 
-def print_cluster(cluster, record_to_cluster):
-    printer.log([global_vars.LOG], cluster, '[')
-    for record in record_to_cluster:
-        if record_to_cluster[record] == cluster:
-            printer.log([global_vars.LOG], '\t', record, get_record_by_id(record))
-    printer.log([global_vars.LOG], ']')
+# def print_cluster(cluster):
+#     printer.log([global_vars.LOG], cluster, '[')
+#     for record in global_vars.record_to_cluster:
+#         if global_vars.record_to_cluster[record] == cluster:
+#             printer.log([global_vars.LOG], '\t', record, get_record_by_id(record))
+#     printer.log([global_vars.LOG], ']')
+
+def construct_cluster(cluster_id):
+    arr = []
+    for record in global_vars.record_to_cluster:
+        if global_vars.record_to_cluster[record] == cluster_id:
+            arr.append({record: get_record_by_id(record)})
+    return arr
 
 
 def print_observed_data():
-    printer.log([global_vars.LOG], '[')
+    s = '\n['
     for record in global_vars.observed_data:
-        printer.log([global_vars.LOG], '\t', record['id'], record)
-    printer.log([global_vars.LOG], ']')
+        s += '\n\t' + record['id'] + ' ' + str(record)
+    s += '\n]'
+    printer.log([global_vars.LOG], s)
 
 
-def pretty_print_R(relationship_R):
-    printer.log([global_vars.LOG], 'Relationship R...')
+# def pretty_print_R():
+#     printer.log([global_vars.LOG], 'Relationship R...')
+#     seen = set()
+#     for record_id in global_vars.relationship_R:
+#         if record_id in seen:
+#             continue
+#         seen.add(record_id)
+#         seen.update(global_vars.relationship_R[record_id])
+#         printer.log([global_vars.LOG], '[')
+#         printer.log([global_vars.LOG], '\t', record_id, get_record_by_id(record_id))
+#         for recd in global_vars.relationship_R[record_id]:
+#             printer.log([global_vars.LOG], '\t', recd, get_record_by_id(recd))
+#         printer.log([global_vars.LOG], ']')
+
+
+def construct_pretty_relationship_R():
+    groups = []
     seen = set()
-    for record_id in relationship_R:
+    for record_id in global_vars.relationship_R:
         if record_id in seen:
             continue
         seen.add(record_id)
-        seen.update(relationship_R[record_id])
-        printer.log([global_vars.LOG], '[')
-        printer.log([global_vars.LOG], '\t', record_id, get_record_by_id(record_id))
-        for recd in relationship_R[record_id]:
-            printer.log([global_vars.LOG], '\t', recd, get_record_by_id(recd))
-        printer.log([global_vars.LOG], ']')
+        seen.update(global_vars.relationship_R[record_id])
+        arr = [{record_id: get_record_by_id(record_id)}]
+        for recd in global_vars.relationship_R[record_id]:
+            arr.append({recd: get_record_by_id(recd)})
+        groups.append(arr)
+    return groups
 
 
 def get_record_by_id(record_id):
     return [rec for rec in global_vars.observed_data if rec['id'] == record_id][0]
 
 
-def pretty_print_result_clusters(record_to_cluster):
-    # examine results
-    reverse = reverse_cluster_to_record(record_to_cluster)
-    for cluster in reverse:
-        # if verbose: print(cluster)
-        printer.log([global_vars.LOG], cluster, '[')
-        printer.log([global_vars.LOG], cluster, '[')
-        for fact in reverse[cluster]:
-            printer.log([global_vars.LOG], '\t', get_record_by_id(fact))
-            printer.log([global_vars.LOG], '\t', get_record_by_id(fact))
-        printer.log([global_vars.LOG], ']')
-        printer.log([global_vars.LOG], ']')
-        printer.log([global_vars.LOG], )
-        printer.log([global_vars.LOG])
+# def pretty_print_result_clusters(record_to_cluster):
+#     # examine results
+#     reverse = reverse_cluster_to_record(record_to_cluster)
+#     for cluster in reverse:
+#         # if verbose: print(cluster)
+#         printer.log([global_vars.LOG], cluster, '[')
+#         printer.log([global_vars.LOG], cluster, '[')
+#         for fact in reverse[cluster]:
+#             printer.log([global_vars.LOG], '\t', get_record_by_id(fact))
+#             printer.log([global_vars.LOG], '\t', get_record_by_id(fact))
+#         printer.log([global_vars.LOG], ']')
+#         printer.log([global_vars.LOG], ']')
+#         printer.log([global_vars.LOG], )
+#         printer.log([global_vars.LOG])
 
 
-def construct_result_clusters(record_to_cluster):
+def construct_result_clusters():
     # examine results
-    reverse = reverse_cluster_to_record(record_to_cluster)
+    reverse = reverse_cluster_to_record()
     parent_group = []
     for cluster in reverse:
         # if verbose: print(cluster)
