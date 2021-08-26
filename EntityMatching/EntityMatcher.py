@@ -32,11 +32,17 @@ def init_relationship_R():
                 continue
             if record1['id'] not in relationship_R:
                 relationship_R[record1['id']] = []
+
+            printer.log([global_vars.LOG], '\tComparing records', record1['id'], 'VS', record2['id'], '(', record1,
+                        'VS', record2, ') ...')
+
             # calculate similarity of records based on a dedicated sim. measure, then decide if they are related
-            rel_sim = custom_similarity_funcs.relationship_similarity(record1, record2)
-            if global_vars.verbose_file: printer.log([global_vars.LOG], 'relationship sim.', record1, 'vs', record2,
-                                                     '=', rel_sim)
-            if rel_sim >= global_config.default_program_parameters["relationship_similarity_threshold"]:
+            rel_sim = round(custom_similarity_funcs.relationship_similarity(record1, record2), 4)
+            above_threshold = rel_sim >= global_config.default_program_parameters["relationship_similarity_threshold"]
+            if global_vars.verbose_file: printer.log([global_vars.LOG], '\tRelationship similarity of', record1['id'],
+                                                     'VS', record2['id'], '=', rel_sim, '(above threshold ?',
+                                                     above_threshold, ')')
+            if above_threshold:
                 relationship_R[record1['id']].append(record2['id'])
 
     return relationship_R
@@ -70,7 +76,7 @@ def collective_clustering():
     iteration = 1
 
     while True:
-        printer.log([global_vars.LOG, global_vars.CONSOLE], 'Iteration', iteration, '...')
+        printer.log([global_vars.LOG, global_vars.CONSOLE], '----- Iteration', iteration, '-----')
         num_comparisons = 0
         clusters = list(set(global_vars.record_to_cluster.values()))
         max_cluster_similarity = {'max_sim_value': 0, 'cluster1': '', 'cluster2': ''}
@@ -80,10 +86,12 @@ def collective_clustering():
                 if clusters[i] == clusters[j]: continue
                 # if verbose: print_cluster(clusters[i], record_to_cluster)
                 # if verbose: print_cluster(clusters[j], record_to_cluster)
-                if global_vars.verbose_file: printer.log([global_vars.LOG], 'Comparing clusters:', clusters[i], 'vs',
-                                                         clusters[j], '...')
-                printer.log([global_vars.LOG], util_funcs.construct_cluster(clusters[i]))
-                printer.log([global_vars.LOG], util_funcs.construct_cluster(clusters[j]))
+                if global_vars.verbose_file: printer.log([global_vars.LOG], 'Comparing clusters:', clusters[i],
+                                                         'VS', clusters[j], '(',
+                                                         util_funcs.construct_cluster_short(clusters[i]),
+                                                         'VS', util_funcs.construct_cluster_short(clusters[j]), ') ...')
+                # printer.log([global_vars.LOG], util_funcs.construct_cluster_short(clusters[i]))
+                # printer.log([global_vars.LOG], util_funcs.construct_cluster_short(clusters[j]))
                 clusters_combined_similarity = custom_similarity_funcs.cluster_similarity(clusters[i], clusters[j])
 
                 if clusters_combined_similarity > max_cluster_similarity['max_sim_value']:
@@ -250,7 +258,8 @@ def main():
 
     # step 3: build initial relationship R: groups similar records together as a preprocessing step
     global_vars.relationship_R = init_relationship_R()
-    printer.log([global_vars.LOG], util_funcs.construct_pretty_relationship_R())
+    printer.log([global_vars.LOG], 'Relationship R:')
+    util_funcs.print_pretty_relationship_R()
 
     # step 4: run the Collective Agglomerative Clustering algorithm to group the most similar records
     # together in the same clusters

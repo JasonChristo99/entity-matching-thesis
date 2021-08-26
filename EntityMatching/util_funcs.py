@@ -38,7 +38,16 @@ def construct_cluster(cluster_id):
     return arr
 
 
+def construct_cluster_short(cluster_id):
+    arr = []
+    for record in global_vars.record_to_cluster:
+        if global_vars.record_to_cluster[record] == cluster_id:
+            arr.append(record)
+    return arr
+
+
 def print_observed_data():
+    global_vars.observed_data = sorted(global_vars.observed_data, key=lambda k: int(k['id'][1:]))
     s = '\n['
     for record in global_vars.observed_data:
         s += '\n\t' + record['id'] + ' ' + str(record)
@@ -74,6 +83,17 @@ def construct_pretty_relationship_R():
             arr.append({recd: get_record_by_id(recd)})
         groups.append(arr)
     return groups
+
+
+def print_pretty_relationship_R():
+    s = '\n['
+    for group in construct_pretty_relationship_R():
+        s += '\n\t[ '
+        for record in group:
+            s += list(record.keys())[0] + ' '
+        s += ']'
+    s += '\n]'
+    printer.log([global_vars.LOG], s)
 
 
 def get_record_by_id(record_id):

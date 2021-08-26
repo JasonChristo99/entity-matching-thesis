@@ -1,7 +1,9 @@
 # constants
-observed_facts_file_path = 'C:/Users/i.christofilakis/Documents/entity-matching-thesis/datasets/observed_facts.json'
+# observed_facts_file_path = 'C:/Users/i.christofilakis/Documents/entity-matching-thesis/datasets/observed_facts.json'
+observed_facts_file_path = '../datasets/observed_facts.json'
 
 verbose_file = True
+analytical_output = False
 verbose_console = True
 experiment = False
 experiment_with_combinations = True
