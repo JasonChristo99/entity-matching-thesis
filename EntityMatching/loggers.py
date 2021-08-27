@@ -22,7 +22,8 @@ def init():
         os.makedirs(NORMAL_LOGS_FOLDER)
 
     # logging.basicConfig(level=logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(message)s')
 
     log = logging.getLogger(global_vars.LOG)
     hdlr1 = logging.FileHandler(filename=NORMAL_LOGS_FOLDER + '\\log_' + timestamp + '.txt', mode='w')

@@ -315,15 +315,16 @@ canonicals, observed = generate_multi(
         # source_config_perfect,
     ],
     # entities_count=500
-    entities_count=10
+    entities_count=50
 )
 print(canonicals)
 print(observed)
 
 # Canonical facts: All the true facts for every real world entity, grouped by entity
-print('JSON Canonical')
-with open('canonical_facts.json', 'w') as f:
-    f.write(all_canonical_json(canonicals))
+# - only for fusion
+# print('JSON Canonical')
+# with open('canonical_facts.json', 'w') as f:
+#     f.write(all_canonical_json(canonicals))
 # Observed: All the facts that the sources observed (vertical & value - source), grouped by entity
 print('JSON Observed')
 with open('../datasets/observed_facts.json', 'w') as f:

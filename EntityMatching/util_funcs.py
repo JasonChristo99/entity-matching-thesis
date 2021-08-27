@@ -52,7 +52,7 @@ def print_observed_data():
     for record in global_vars.observed_data:
         s += '\n\t' + record['id'] + ' ' + str(record)
     s += '\n]'
-    printer.log([global_vars.LOG], s)
+    printer.log(s, destinations=[global_vars.LOG])
 
 
 # def pretty_print_R():
@@ -70,50 +70,58 @@ def print_observed_data():
 #         printer.log([global_vars.LOG], ']')
 
 
-def construct_pretty_relationship_R():
-    groups = []
-    seen = set()
-    for record_id in global_vars.relationship_R:
-        if record_id in seen:
-            continue
-        seen.add(record_id)
-        seen.update(global_vars.relationship_R[record_id])
-        arr = [{record_id: get_record_by_id(record_id)}]
-        for recd in global_vars.relationship_R[record_id]:
-            arr.append({recd: get_record_by_id(recd)})
-        groups.append(arr)
-    return groups
+# def construct_pretty_relationship_R():
+#     groups = []
+#     seen = set()
+#     for record_id in global_vars.relationship_R:
+#         if record_id in seen:
+#             continue
+#         seen.add(record_id)
+#         seen.update(global_vars.relationship_R[record_id])
+#         arr = [{record_id: get_record_by_id(record_id)}]
+#         for recd in global_vars.relationship_R[record_id]:
+#             arr.append({recd: get_record_by_id(recd)})
+#         groups.append(arr)
+#     return groups
 
+
+# def print_pretty_relationship_R():
+#     s = '\n['
+#     for group in construct_pretty_relationship_R():
+#         s += '\n\t[ '
+#         for record in group:
+#             s += list(record.keys())[0] + ' '
+#         s += ']'
+#     s += '\n]'
+#     printer.log([global_vars.LOG], s)
 
 def print_pretty_relationship_R():
-    s = '\n['
-    for group in construct_pretty_relationship_R():
-        s += '\n\t[ '
-        for record in group:
-            s += list(record.keys())[0] + ' '
+    s = '\n{'
+    for key in global_vars.relationship_R.keys():
+        s += '\n\t' + key + ': [ '
+        for value in global_vars.relationship_R[key]:
+            s += value + ' '
         s += ']'
-    s += '\n]'
-    printer.log([global_vars.LOG], s)
+    s += '\n}'
+    printer.log(s, destinations=[global_vars.LOG])
 
 
 def get_record_by_id(record_id):
     return [rec for rec in global_vars.observed_data if rec['id'] == record_id][0]
 
 
-# def pretty_print_result_clusters(record_to_cluster):
-#     # examine results
-#     reverse = reverse_cluster_to_record(record_to_cluster)
-#     for cluster in reverse:
-#         # if verbose: print(cluster)
-#         printer.log([global_vars.LOG], cluster, '[')
-#         printer.log([global_vars.LOG], cluster, '[')
-#         for fact in reverse[cluster]:
-#             printer.log([global_vars.LOG], '\t', get_record_by_id(fact))
-#             printer.log([global_vars.LOG], '\t', get_record_by_id(fact))
-#         printer.log([global_vars.LOG], ']')
-#         printer.log([global_vars.LOG], ']')
-#         printer.log([global_vars.LOG], )
-#         printer.log([global_vars.LOG])
+def pretty_print_result_clusters(destinations=None):
+    if destinations is None:
+        destinations = [global_vars.LOG]
+    reverse = reverse_cluster_to_record()
+    s = '\n['
+    for cluster in reverse:
+        s += '\n\t' + cluster + ': [ '
+        for fact in reverse[cluster]:
+            s += '\n\t\t' + fact + ' ' + json.dumps(get_record_by_id(fact))
+        s += '\n\t]'
+    s += '\n]'
+    printer.log(s, destinations=destinations)
 
 
 def construct_result_clusters():
