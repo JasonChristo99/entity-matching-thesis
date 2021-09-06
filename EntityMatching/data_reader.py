@@ -30,6 +30,7 @@ def ingest_observed_facts(file_path):
             for source in observed_facts_of_source_for_entity:
                 observed_fact_normalized = observed_facts_of_source_for_entity[source]
                 observed_fact_normalized['id'] = 'f' + str(fact_id)
+                observed_fact_normalized['source'] = source
                 # construct correct groups for evaluation purposes
                 global_vars.correct_groups_of_facts[most_recent_group].append(observed_fact_normalized)
                 # construct bag of facts (not grouped facts)

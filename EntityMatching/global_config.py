@@ -15,7 +15,7 @@ default_program_parameters = {
     "relationship_R_sim_func": custom_similarity_funcs.relationship_similarity_v1,
     # constants
     "relationship_similarity_threshold": 0.6,
-    "algorithm_threshold": 0.45,
+    "algorithm_threshold": 0.3,
     "constant_a": 0.7,
     "record_similarity_name_weight": 0.1,
     "record_similarity_location_weight": 0.3,

@@ -80,6 +80,15 @@ def merge_clusters(cluster1, cluster2):
                                              destinations=[global_vars.LOG])
 
 
+def clusters_contain_facts_from_same_source(cluster1, cluster2):
+    r1 = util_funcs.get_records_of_cluster(cluster1)
+    r2 = util_funcs.get_records_of_cluster(cluster2)
+    sources_of_r1 = [util_funcs.get_record_by_id(r)['source'] for r in r1]
+    sources_of_r2 = [util_funcs.get_record_by_id(r)['source'] for r in r2]
+    common_sources = len(set(sources_of_r1).intersection(sources_of_r2))
+    return common_sources > 0
+
+
 def collective_clustering():
     iteration = 1
 
@@ -92,6 +101,7 @@ def collective_clustering():
         for i in range(len(clusters)):
             for j in range(i + 1, len(clusters)):
                 if clusters[i] == clusters[j]: continue
+                if (clusters_contain_facts_from_same_source(clusters[i], clusters[j])): continue
                 # if verbose: print_cluster(clusters[i], record_to_cluster)
                 # if verbose: print_cluster(clusters[j], record_to_cluster)
                 if global_vars.verbose_file: printer.log('Comparing clusters:', clusters[i], 'VS', clusters[j], '(',

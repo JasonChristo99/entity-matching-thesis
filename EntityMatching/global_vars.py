@@ -1,13 +1,12 @@
 # constants
-# observed_facts_file_path = 'C:/Users/i.christofilakis/Documents/entity-matching-thesis/datasets/observed_facts.json'
 observed_facts_file_path = '../datasets/observed_facts_100.json'
 
 verbose_file = True
-analytical_output = False
+analytical_output = True
 verbose_console = True
 experiment = False
 experiment_with_combinations = False
-analytical_evaluation = False
+analytical_evaluation = True
 evaluation_only = False
 
 # Logger names
