@@ -4,7 +4,7 @@ import util_funcs
 
 def evaluate_fact(fact_id):
     # find elements in the same cluster as the given fact
-    records_of_fact_cluster = util_funcs.get_records_of_cluster(global_vars.record_to_cluster[fact_id])
+    records_of_fact_cluster = util_funcs.get_records_of_cluster(global_vars.record_to_cluster[fact_id]).copy()
     records_of_fact_cluster.remove(fact_id)
     neighboring_elements_of_fact_in_cluster = records_of_fact_cluster
 
@@ -28,7 +28,7 @@ def evaluate_fact(fact_id):
     false_negatives = sum(
         el not in neighboring_elements_of_fact_in_cluster for el in correct_neighboring_elements_of_fact_in_cluster)
 
-    false_facts = [f["id"] for f in global_vars.observed_data]
+    false_facts = list(global_vars.observed_data.keys()).copy()
     for f in correct_neighboring_elements_of_fact_in_cluster:
         false_facts.remove(f)
 
@@ -41,7 +41,7 @@ def evaluate_fact(fact_id):
         "true_negatives": true_negatives,
         "predicted_neighbors": neighboring_elements_of_fact_in_cluster,
         "correct_neighbors": correct_neighboring_elements_of_fact_in_cluster,
-        "total_facts": len(global_vars.observed_data)
+        "total_facts": len(global_vars.observed_data.keys())
     }
     return result
 

@@ -5,20 +5,16 @@ from EntityMatching import printer
 
 
 def get_records_of_cluster(cluster):
-    result = []
-    for rec in global_vars.record_to_cluster:
-        if global_vars.record_to_cluster[rec] == cluster:
-            result.append(rec)
-
+    result = global_vars.cluster_to_record[cluster]
     return result
 
 
 def reverse_cluster_to_record():
     reverse_map = dict()
-    for record in global_vars.record_to_cluster:
-        if global_vars.record_to_cluster[record] not in reverse_map:
-            reverse_map[global_vars.record_to_cluster[record]] = []
-        reverse_map[global_vars.record_to_cluster[record]].append(record)
+    for fact_id in global_vars.record_to_cluster:
+        if global_vars.record_to_cluster[fact_id] not in reverse_map:
+            reverse_map[global_vars.record_to_cluster[fact_id]] = []
+        reverse_map[global_vars.record_to_cluster[fact_id]].append(fact_id)
 
     return reverse_map
 
@@ -32,25 +28,24 @@ def reverse_cluster_to_record():
 
 def construct_cluster(cluster_id):
     arr = []
-    for record in global_vars.record_to_cluster:
-        if global_vars.record_to_cluster[record] == cluster_id:
-            arr.append({record: get_record_by_id(record)})
+    for fact_id in global_vars.cluster_to_record[cluster_id]:
+        arr.append({fact_id: get_record_by_id(fact_id)})
     return arr
 
 
 def construct_cluster_short(cluster_id):
     arr = []
-    for record in global_vars.record_to_cluster:
-        if global_vars.record_to_cluster[record] == cluster_id:
-            arr.append(record)
+    for fact_id in global_vars.cluster_to_record[cluster_id]:
+        arr.append(fact_id)
     return arr
 
 
 def print_observed_data():
-    global_vars.observed_data = sorted(global_vars.observed_data, key=lambda k: int(k['id'][1:]))
+    # global_vars.observed_data = sorted(global_vars.observed_data, key=lambda k: int(k['id'][1:]))
+    data = sorted(global_vars.observed_data.keys(), key=lambda k: int(k[1:]))
     s = '\n['
-    for record in global_vars.observed_data:
-        s += '\n\t' + record['id'] + ' ' + str(record)
+    for fact_id in data:
+        s += '\n\t' + fact_id + ' ' + str(global_vars.observed_data[fact_id])
     s += '\n]'
     printer.log(s, destinations=[global_vars.LOG])
 
@@ -106,8 +101,8 @@ def print_pretty_relationship_R():
     printer.log(s, destinations=[global_vars.LOG])
 
 
-def get_record_by_id(record_id):
-    return [rec for rec in global_vars.observed_data if rec['id'] == record_id][0]
+def get_record_by_id(fact_id):
+    return global_vars.observed_data[fact_id]
 
 
 def pretty_print_result_clusters(destinations=None):
@@ -126,12 +121,12 @@ def pretty_print_result_clusters(destinations=None):
 
 def construct_result_clusters():
     # examine results
-    reverse = reverse_cluster_to_record()
+    # reverse = reverse_cluster_to_record()
     parent_group = []
-    for cluster in reverse:
+    for cluster in global_vars.cluster_to_record:
         # if verbose: print(cluster)
         parent_group.append([])
         most_recent_group = len(parent_group) - 1
-        for fact in reverse[cluster]:
+        for fact in global_vars.cluster_to_record[cluster]:
             parent_group[most_recent_group].append(get_record_by_id(fact))
     return parent_group

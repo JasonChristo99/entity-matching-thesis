@@ -251,28 +251,28 @@ def relationship_similarity(record1, record2):
     return result
 
 
-def record_similarity(record1_id, record2_id):
-    record1 = [rec for rec in global_vars.observed_data if rec["id"] == record1_id][0]
-    record2 = [rec for rec in global_vars.observed_data if rec["id"] == record2_id][0]
+def record_similarity(fact1_id, fact2_id):
+    fact1 = global_vars.observed_data[fact1_id]
+    fact2 = global_vars.observed_data[fact2_id]
 
     # if found in cache, just fetch the similarity and return it
-    if frozenset([record1_id, record2_id]) in global_vars.record_similarity_cache:
-        result = global_vars.record_similarity_cache[frozenset([record1_id, record2_id])]
-        printer.log('\t\tRecord similarity of', record1_id, 'VS', record2_id, '(cached) =', result,
+    if frozenset([fact1_id, fact2_id]) in global_vars.record_similarity_cache:
+        result = global_vars.record_similarity_cache[frozenset([fact1_id, fact2_id])]
+        printer.log('\t\tRecord similarity of', fact1_id, 'VS', fact2_id, '(cached) =', result,
                     destinations=[global_vars.LOG])
         return result
 
-    name_sim = round(name_vertical_similarity(record1, record2), 4)
-    loc_sim = round(location_vertical_similarity(record1, record2), 4)
-    edu_sim = round(education_vertical_similarity(record1, record2), 4)
-    work_sim = round(working_experience_vertical_similarity(record1, record2), 4)
+    name_sim = round(name_vertical_similarity(fact1, fact2), 4)
+    loc_sim = round(location_vertical_similarity(fact1, fact2), 4)
+    edu_sim = round(education_vertical_similarity(fact1, fact2), 4)
+    work_sim = round(working_experience_vertical_similarity(fact1, fact2), 4)
 
     result = global_config.default_program_parameters["record_similarity_location_weight"] * loc_sim + \
              global_config.default_program_parameters["record_similarity_name_weight"] * name_sim + \
              global_config.default_program_parameters["record_similarity_education_weight"] * edu_sim + \
              global_config.default_program_parameters["record_similarity_working_exp_weight"] * work_sim
 
-    printer.log('\t\tRecord similarity of', record1_id, 'VS', record2_id, '=',
+    printer.log('\t\tRecord similarity of', fact1_id, 'VS', fact2_id, '=',
                 global_config.default_program_parameters["record_similarity_name_weight"], '* (name similarity) +',
                 global_config.default_program_parameters["record_similarity_location_weight"],
                 '* (location similarity) +',
@@ -286,7 +286,7 @@ def record_similarity(record1_id, record2_id):
                 global_config.default_program_parameters["record_similarity_working_exp_weight"], '*', work_sim, '=',
                 round(result, 4), destinations=[global_vars.LOG])
 
-    global_vars.record_similarity_cache[frozenset([record1_id, record2_id])] = round(result, 4)
+    global_vars.record_similarity_cache[frozenset([fact1_id, fact2_id])] = round(result, 4)
     return result
 
 
@@ -297,18 +297,18 @@ def cluster_attribute_similarity(cluster1, cluster2):
     max_sim = 0
     records_cluster1 = util_funcs.get_records_of_cluster(cluster1)
     records_cluster2 = util_funcs.get_records_of_cluster(cluster2)
-    for record1_id in records_cluster1:
-        for record2_id in records_cluster2:
-            if record1_id == record2_id:
+    for fact1_id in records_cluster1:
+        for fact2_id in records_cluster2:
+            if fact1_id == fact2_id:
                 continue
 
-            record1 = [rec for rec in global_vars.observed_data if rec["id"] == record1_id][0]
-            record2 = [rec for rec in global_vars.observed_data if rec["id"] == record2_id][0]
+            fact1 = global_vars.observed_data[fact1_id]
+            fact2 = global_vars.observed_data[fact2_id]
 
-            printer.log('\t\tComparing records', record1_id, 'VS', record2_id,
-                        # '(', record1, 'VS', record2, ') ...',
+            printer.log('\t\tComparing records', fact1_id, 'VS', fact2_id,
+                        # '(', fact1, 'VS', fact2, ') ...',
                         destinations=[global_vars.LOG])
-            record_sim = record_similarity(record1_id, record2_id)
+            record_sim = record_similarity(fact1_id, fact2_id)
             if record_sim > max_sim:
                 max_sim = record_sim
 
@@ -319,29 +319,9 @@ def cluster_neighborhood_similarity(cluster1, cluster2, verbose=False):
     # sim(c1,c2) = ½ [simattributes(c1,c2) + simneighbours(c1,c2)] - with Complete Link
     printer.log('\tBy Neighborhood similarity:', destinations=[global_vars.LOG])
 
-    N_A = set()
-    records_of_cluster1 = util_funcs.get_records_of_cluster(cluster1)
-    printer.log('\t\tCluster', cluster1, 'consists of records:', records_of_cluster1, destinations=[global_vars.LOG])
-    for record in records_of_cluster1:
-        rel_records_str = [(r + ' (in ' + global_vars.record_to_cluster[r] + ')') for r in
-                           global_vars.relationship_R[record]]
-        printer.log('\t\t\tRecords related to', record, ':', rel_records_str, destinations=[global_vars.LOG])
-        for related_record in global_vars.relationship_R[record]:
-            N_A.add(global_vars.record_to_cluster[related_record])
-    printer.log('\t\t\tTherefore Neighborhood of', cluster1, 'consists of clusters:', sorted(N_A),
-                destinations=[global_vars.LOG])
+    N_A = get_neighborhood_of_cluster(cluster1)
 
-    N_B = set()
-    records_of_cluster2 = util_funcs.get_records_of_cluster(cluster2)
-    printer.log('\t\tCluster', cluster2, 'consists of records:', records_of_cluster2, destinations=[global_vars.LOG])
-    for record in records_of_cluster2:
-        rel_records_str = [(r + ' (in ' + global_vars.record_to_cluster[r] + ')') for r in
-                           global_vars.relationship_R[record]]
-        printer.log('\t\t\tRecords related to', record, ':', rel_records_str, destinations=[global_vars.LOG])
-        for related_record in global_vars.relationship_R[record]:
-            N_B.add(global_vars.record_to_cluster[related_record])
-    printer.log('\t\t\tTherefore Neighborhood of', cluster2, 'consists of clusters:', sorted(N_B),
-                destinations=[global_vars.LOG])
+    N_B = get_neighborhood_of_cluster(cluster2)
 
     intersection = N_A.intersection(N_B)
     union = N_A.union(N_B)
@@ -359,6 +339,21 @@ def cluster_neighborhood_similarity(cluster1, cluster2, verbose=False):
                 '= |Intersection of neighborhoods| / |Union of neighborhoods| =', len(intersection), '/', len(union),
                 '=', round(result, 4), destinations=[global_vars.LOG])
     return result
+
+
+def get_neighborhood_of_cluster(cluster):
+    neighborhood = set()
+    records_of_cluster = util_funcs.get_records_of_cluster(cluster)
+    printer.log('\t\tCluster', cluster, 'consists of records:', records_of_cluster, destinations=[global_vars.LOG])
+    for record in records_of_cluster:
+        rel_records_str = [(r + ' (in ' + global_vars.record_to_cluster[r] + ')') for r in
+                           global_vars.relationship_R[record]]
+        printer.log('\t\t\tRecords related to', record, ':', rel_records_str, destinations=[global_vars.LOG])
+        for related_record in global_vars.relationship_R[record]:
+            neighborhood.add(global_vars.record_to_cluster[related_record])
+    printer.log('\t\t\tTherefore Neighborhood of', cluster, 'consists of clusters:', sorted(neighborhood),
+                destinations=[global_vars.LOG])
+    return neighborhood
 
 
 def cluster_similarity(cluster1, cluster2):

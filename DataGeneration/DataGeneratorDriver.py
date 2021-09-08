@@ -1,5 +1,6 @@
 from faker import Faker
 
+from DataGeneration import global_config
 from serializers import *
 
 fake = Faker()
@@ -154,136 +155,6 @@ skills_vertical = {
     }
 }
 
-# CONFIGURE SOURCES
-
-source_config1 = {
-    'name': 'pro-profiles.com',
-    'Name': {
-        'typos_binomial_param': 0.07,
-        'synonym_chance': 0.6,
-    },
-    'Location': {
-        # 'omitted_fact_chance': 0.03,
-        # 'incorrect_fact_geom_param': 0.95,
-        'wrong_value_chance': 0.1,
-        # 'abstain_value_chance': 0.01,
-        'synonym_chance': 0.3,
-        'typos_binomial_param': 0.01,
-    },
-    'Education': {
-        # 'omitted_fact_chance': 0.03,  # chance for the source to omit a fact
-        'incorrect_fact_geom_param': 0.9,  # chance for the source to add incorrect facts to an entity
-        'wrong_value_chance': 0.1,  # chance for the source to give the wrong value for an attribute
-        # 'abstain_value_chance': 0.05,  # chance for the source to omit the value of an attribute
-        'synonym_chance': 0.1,
-        'typos_binomial_param': 0.01,
-    },
-    'Working Experience': {
-        # 'omitted_fact_chance': 0.03,
-        'incorrect_fact_geom_param': 0.9,
-        'wrong_value_chance': 0.03,
-        # 'abstain_value_chance': 0.05,
-        'synonym_chance': 0.03,
-        'typos_binomial_param': 0.01,
-    }
-}
-
-source_config2 = {
-    'name': 'find.jobs',
-    'Name': {
-        'typos_binomial_param': 0.06,
-        'synonym_chance': 0.5,
-    },
-    'Location': {
-        # 'omitted_fact_chance': 0.03,
-        # 'incorrect_fact_geom_param': 0.95,
-        'wrong_value_chance': 0.15,
-        # 'abstain_value_chance': 0.01,
-        'synonym_chance': 0.4,
-        'typos_binomial_param': 0.01,
-    },
-    'Education': {
-        # 'omitted_fact_chance': 0.03,
-        'incorrect_fact_geom_param': 0.95,
-        'wrong_value_chance': 0.08,
-        # 'abstain_value_chance': 0.01,
-        'synonym_chance': 0.1,
-        'typos_binomial_param': 0.01,
-    },
-    'Working Experience': {
-        # 'omitted_fact_chance': 0.03,
-        'incorrect_fact_geom_param': 0.9,
-        'wrong_value_chance': 0.18,
-        # 'abstain_value_chance': 0.05,
-        'synonym_chance': 0.06,
-        'typos_binomial_param': 0.01,
-    }
-}
-
-source_config3 = {
-    'name': 'internsteps.com',
-    'Name': {
-        'typos_binomial_param': 0.05,
-        'synonym_chance': 0.4,
-    },
-    'Location': {
-        # 'omitted_fact_chance': 0.03,
-        # 'incorrect_fact_geom_param': 0.95,
-        'wrong_value_chance': 0.2,
-        # 'abstain_value_chance': 0.01,
-        'synonym_chance': 0.5,
-        'typos_binomial_param': 0.01,
-    },
-    'Education': {
-        # 'omitted_fact_chance': 0.03,
-        'incorrect_fact_geom_param': 0.95,
-        'wrong_value_chance': 0.15,
-        # 'abstain_value_chance': 0.01,
-        'synonym_chance': 0.1,
-        'typos_binomial_param': 0.01,
-    },
-    'Working Experience': {
-        # 'omitted_fact_chance': 0.01,
-        'incorrect_fact_geom_param': 0.9,
-        'wrong_value_chance': 0.05,
-        # 'abstain_value_chance': 0.05,
-        'synonym_chance': 0.05,
-        'typos_binomial_param': 0.01,
-    }
-}
-
-source_config4 = {
-    'name': 'pipl.com',
-    'Name': {
-        'typos_binomial_param': 0.05,
-        'synonym_chance': 0.3,
-    },
-    'Location': {
-        # 'omitted_fact_chance': 0.03,
-        # 'incorrect_fact_geom_param': 0.95,
-        'wrong_value_chance': 0.15,
-        # 'abstain_value_chance': 0.01,
-        'synonym_chance': 0.4,
-        'typos_binomial_param': 0.01,
-    },
-    'Education': {
-        # 'omitted_fact_chance': 0.01,
-        'incorrect_fact_geom_param': 0.85,
-        'wrong_value_chance': 0.05,
-        # 'abstain_value_chance': 0.05,
-        'synonym_chance': 0.05,
-        'typos_binomial_param': 0.01,
-    },
-    'Working Experience': {
-        # 'omitted_fact_chance': 0.01,
-        'incorrect_fact_geom_param': 0.9,
-        'wrong_value_chance': 0.15,
-        # 'abstain_value_chance': 0.05,
-        'synonym_chance': 0.05,
-        'typos_binomial_param': 0.01,
-    }
-
-}
 
 # source_config_perfect = {
 #     'name': 'cnn.com',
@@ -299,33 +170,32 @@ source_config4 = {
 #     }
 # }
 
-canonicals, observed = generate_multi(
-    [
-        name_vertical,
-        location_vertical,
-        education_vertical,
-        working_experience_vertical,
-        # skills_vertical,
-    ],
-    [
-        source_config1,
-        source_config2,
-        source_config3,
-        source_config4,
-        # source_config_perfect,
-    ],
-    # entities_count=500
-    entities_count=50
-)
-print(canonicals)
-print(observed)
+def generate(config=None):
+    if config is not None:
+        global_config.default_program_parameters = config
 
-# Canonical facts: All the true facts for every real world entity, grouped by entity
-# - only for fusion
-# print('JSON Canonical')
-# with open('canonical_facts.json', 'w') as f:
-#     f.write(all_canonical_json(canonicals))
-# Observed: All the facts that the sources observed (vertical & value - source), grouped by entity
-print('JSON Observed')
-with open('../datasets/observed_facts.json', 'w') as f:
-    f.write(all_observed_json(observed))
+    canonicals, observed = generate_multi(
+        [
+            name_vertical,
+            location_vertical,
+            education_vertical,
+            working_experience_vertical,
+            # skills_vertical,
+        ],
+        global_config.default_program_parameters["sources"],
+        entities_count=global_config.default_program_parameters["entities_count"],
+    )
+    # print(canonicals)
+    # print(observed)
+
+    # Canonical facts: All the true facts for every real world entity, grouped by entity
+    # - only for fusion
+    # print('JSON Canonical')
+    # with open('canonical_facts.json', 'w') as f:
+    #     f.write(all_canonical_json(canonicals))
+    # Observed: All the facts that the sources observed (vertical & value - source), grouped by entity
+    print('JSON Observed')
+    with open('../datasets/' + global_config.default_program_parameters["out_file_name"] + '.json', 'w') as f:
+        f.write(all_observed_json(observed))
+
+# generate()
