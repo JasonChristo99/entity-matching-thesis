@@ -6,6 +6,8 @@ experiment = True
 experiment_with_combinations = True
 analytical_evaluation = True
 evaluation_only = True
+experiment_dataset_versions = False
+experiment_diff_datasets = True
 
 # Logger names
 LOG = 'log'

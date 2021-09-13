@@ -1,0 +1,276 @@
+{
+  "distinct": [
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2015",
+          "degree": "Bsc",
+          "university": "UC_Berkley"
+        },
+        {
+          "year": "1994",
+          "degree": "Phd",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "1992",
+          "degree": "Phd",
+          "university": "UC_Berkley"
+        },
+        {
+          "year": "2013",
+          "degree": "Bsc",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "1992",
+          "degree": "Bsc",
+          "university": "UC_Berkley"
+        },
+        {
+          "year": null,
+          "degree": "Ph d",
+          "university": "UMass"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "1993",
+          "degree": "Bsc",
+          "university": "UCSC"
+        },
+        {
+          "year": "1996",
+          "degree": "Msc",
+          "university": "UC_Berkley"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "1993",
+          "degree": "Msc",
+          "university": "UC_Berkley"
+        },
+        {
+          "year": "1998",
+          "degree": "Msc",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2009",
+          "degree": "Msc",
+          "university": "UC_Berkley"
+        },
+        {
+          "year": "2003",
+          "degree": "Msc",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "1998",
+          "degree": "Msc",
+          "university": "UCSC"
+        },
+        {
+          "year": "2014",
+          "degree": "Bsc",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2007",
+          "degree": "Bsc",
+          "university": "UCSC"
+        },
+        {
+          "year": "1994",
+          "degree": "Msc",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2014",
+          "degree": "Bsc",
+          "university": "UC_Berkley"
+        },
+        {
+          "year": "2014",
+          "degree": "Phd",
+          "university": "MIT"
+        }
+      ]
+    }
+  ],
+  "match": [
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2002",
+          "degree": "Phd",
+          "university": "UC_Berkley"
+        },
+        {
+          "year": "2000",
+          "degree": "Phd",
+          "university": "UC_Berkley"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2010",
+          "degree": "Bsc",
+          "university": "UCSC"
+        },
+        {
+          "year": "2019",
+          "degree": "Bsc",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "1993",
+          "degree": "Phd",
+          "university": "UCSC"
+        },
+        {
+          "year": "1994",
+          "degree": "Phd",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2004",
+          "degree": "Bsc",
+          "university": "UCSC"
+        },
+        {
+          "year": "2003",
+          "degree": "Bsc",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2012",
+          "degree": "Bsc",
+          "university": "MIT"
+        },
+        {
+          "year": "2017",
+          "degree": "Phd",
+          "university": "MIT"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2010",
+          "degree": "Bsc",
+          "university": "MIT"
+        },
+        {
+          "year": "2009",
+          "degree": "Phd",
+          "university": "MIT"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "2019",
+          "degree": "Phd",
+          "university": "UC_ Berkely"
+        },
+        {
+          "year": "2019",
+          "degree": "Bsc",
+          "university": "UCSC"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "1994",
+          "degree": "Phd",
+          "university": "UCSC"
+        },
+        {
+          "year": "1994",
+          "degree": "Msc",
+          "university": "UC_Berkley"
+        }
+      ]
+    },
+    {
+      "__class__": "tuple",
+      "__value__": [
+        {
+          "year": "1996",
+          "degree": "Phd",
+          "university": "UMass"
+        },
+        {
+          "year": "1995",
+          "degree": "Phd",
+          "university": "UMas s"
+        }
+      ]
+    }
+  ]
+}

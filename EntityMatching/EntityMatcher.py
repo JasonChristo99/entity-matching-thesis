@@ -206,3 +206,6 @@ def main(program_params=None):
 
     printer.log('--- END ---', destinations=printer.ALL_OUTPUTS, important=True)
 
+
+if __name__ == '__main__':
+    main()
