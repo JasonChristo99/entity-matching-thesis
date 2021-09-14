@@ -1,5 +1,5 @@
-from DataFusion.fuse.dataengine.readers.ingestjson import IngestJson
-from DataFusion.fuse.dataengine.readers.jsonreader import JsonReader
+from dataengine.readers.ingestjson import IngestJson
+from dataengine.readers.jsonreader import JsonReader
 
 __author__  = "Theodoros Rekatsinas"
 __status__  = "Development"

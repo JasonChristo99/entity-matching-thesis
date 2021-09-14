@@ -1,9 +1,9 @@
 import pandas as pd
-from DataFusion.fuse.fact import ObservedFactCollection
-from DataFusion.fuse.fact import CanonicalFact
-from DataFusion.fuse.matching import DedupeMatcher
-from DataFusion.fuse.fusion import TruthDiscovery
-from DataFusion.fuse.fusion import FuseObservations
+from fact import ObservedFactCollection
+from fact import CanonicalFact
+from matching import DedupeMatcher
+from fusion import TruthDiscovery
+from fusion import FuseObservations
 
 
 class Dataset:

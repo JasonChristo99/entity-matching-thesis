@@ -4,9 +4,9 @@ import logging
 import typing
 from fuzzywuzzy import fuzz
 
-from DataFusion.fuse.dataengine import DataEngine
-import DataFusion.fuse.utils.logger as log
-from DataFusion.fuse.evaluation import Evaluation
+from dataengine import DataEngine
+import utils.logger as log
+from evaluation import Evaluation
 
 from gensim.models import KeyedVectors
 filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'

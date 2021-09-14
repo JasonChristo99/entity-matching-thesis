@@ -1,7 +1,7 @@
 import sqlalchemy as sqla
-from DataFusion.fuse.dataengine.readers import IngestJson
-from DataFusion.fuse.dataset import Dataset
-from DataFusion.fuse.dataset_global_weights import DatasetGlobalWeights
+from dataengine.readers import IngestJson
+from dataset import Dataset
+from dataset_global_weights import DatasetGlobalWeights
 
 
 class DataEngine:

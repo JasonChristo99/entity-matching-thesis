@@ -1,4 +1,4 @@
-from DataFusion.fuse.evaluation.evaluation import Evaluation
+from evaluation.evaluation import Evaluation
 
 __author__  = "Theodoros Rekatsinas"
 __status__  = "Development"

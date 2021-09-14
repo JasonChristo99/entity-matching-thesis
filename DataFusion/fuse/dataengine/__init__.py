@@ -1,4 +1,4 @@
-from DataFusion.fuse.dataengine.dataengine import DataEngine
+from dataengine.dataengine import DataEngine
 
 __author__  = "Theodoros Rekatsinas"
 __status__  = "Development"

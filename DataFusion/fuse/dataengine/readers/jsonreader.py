@@ -1,5 +1,5 @@
 import pandas as pd
-from DataFusion.fuse.dataengine.readers.reader import Reader
+from dataengine.readers.reader import Reader
 
 
 class JsonReader(Reader):

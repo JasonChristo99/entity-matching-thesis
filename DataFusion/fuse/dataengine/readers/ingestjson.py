@@ -1,6 +1,6 @@
-from DataFusion.fuse.fact import ObservedFact
-from DataFusion.fuse.dataengine.readers.ingest import Ingest
-from DataFusion.fuse.dataengine.readers.jsonreader import JsonReader
+from fact import ObservedFact
+from dataengine.readers.ingest import Ingest
+from dataengine.readers.jsonreader import JsonReader
 
 class IngestJson(Ingest):
     """

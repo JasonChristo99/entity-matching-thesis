@@ -1,7 +1,7 @@
-from DataFusion.fuse.fuse import Fuse, Session
-from DataFusion.fuse.dataset import Dataset
-from DataFusion.fuse.fact import ObservedFact, ObservedFactCluster, ObservedFactCollection
-from DataFusion.fuse.evaluation import Evaluation
+from fuse import Fuse, Session
+from dataset import Dataset
+from fact import ObservedFact, ObservedFactCluster, ObservedFactCollection
+from evaluation import Evaluation
 
 __author__  = "Theodoros Rekatsinas"
 __status__  = "Development"

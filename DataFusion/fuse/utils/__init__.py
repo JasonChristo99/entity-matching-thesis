@@ -1,5 +1,5 @@
-from DataFusion.fuse.utils.unionfind import UnionFind
-from DataFusion.fuse.utils.labeler import Labeler
+from utils.unionfind import UnionFind
+from utils.labeler import Labeler
 
 __author__  = "Theodoros Rekatsinas"
 __status__  = "Development"

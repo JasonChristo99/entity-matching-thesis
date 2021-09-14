@@ -1,4 +1,4 @@
-from DataFusion.fuse.matching.matcher import DedupeMatcher
+from matching.matcher import DedupeMatcher
 
 __author__  = "Theodoros Rekatsinas"
 __status__  = "Development"

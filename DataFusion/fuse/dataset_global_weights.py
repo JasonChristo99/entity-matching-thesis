@@ -1,9 +1,9 @@
 import pandas as pd
-from DataFusion.fuse.fact import ObservedFactCollection
-from DataFusion.fuse.fact import CanonicalFact
-from DataFusion.fuse.matching import DedupeMatcher
-from DataFusion.fuse.fusion import FuseObservationsGlobalWeights
-from DataFusion.fuse.fusion import TruthDiscoveryGlobalWeights
+from fact import ObservedFactCollection
+from fact import CanonicalFact
+from matching import DedupeMatcher
+from fusion import FuseObservationsGlobalWeights
+from fusion import TruthDiscoveryGlobalWeights
 
 
 class DatasetGlobalWeights:
