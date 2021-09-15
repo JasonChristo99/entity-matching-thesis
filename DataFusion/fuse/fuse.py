@@ -7,8 +7,11 @@ from fuzzywuzzy import fuzz
 from dataengine import DataEngine
 import utils.logger as log
 from evaluation import Evaluation
+from matching.dedupe import DedupeMatcher
+from matching import MatchingStrategy
 
 from gensim.models import KeyedVectors
+
 filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
 word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
 
@@ -45,10 +48,10 @@ arguments = [
       'type': typing.Callable,
       'help': 'Function for string matching.'}),
     (('--matcher_function2'),
-      {'dest': 'matcher_function2',
-       'default': lambda a, b: word_vectors.similarity(a, b) > 0.5,
-       'type': typing.Callable,
-       'help': 'Function for string matching.'})
+     {'dest': 'matcher_function2',
+      'default': lambda a, b: word_vectors.similarity(a, b) > 0.5,
+      'type': typing.Callable,
+      'help': 'Function for string matching.'})
 ]
 flags = [
     (('-v', '--verbose'),
@@ -131,7 +134,7 @@ class Session:
         else:
             self.logger = log.setup_logger(self.name, logname, logging.ERROR)
 
-    def ingest(self, filepath, name, persist=False):
+    def ingest(self, filepath, name, matching_strategy: MatchingStrategy = DedupeMatcher, persist=False):
         """
         Ingest data from a JSON file and generate a new Dataset object.
         :param filepath: String literal indicating the path to a JSON file.
@@ -140,7 +143,7 @@ class Session:
         # Check that the file is in JSON format
         ext = os.path.splitext(filepath)[-1].lower()
         if ext == '.json':
-            self.dataset = self.env.dataengine.ingest_data(filepath, name, persist)
+            self.dataset = self.env.dataengine.ingest_data(filepath, name, matching_strategy, persist)
         else:
             self.logger.error("Wrong file extension. Only JSON files supported.")
         return self.dataset

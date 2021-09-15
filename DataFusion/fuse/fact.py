@@ -8,7 +8,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 import pickle
 filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
-word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
 # filen1 = 'fuz_word.sav'
 # loaded_model_1 = pickle.load(open(filen1, 'rb'))
 # filen2 = 'fuzz_model.sav'
@@ -319,6 +318,8 @@ class CanonicalFact:
         Compare an observed fact with the inferred fact
         :return: A correctness score
         """
+
+        word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
 
         attrs = float(len(self.canonicalTuple.keys()))
         correct = 0.0

@@ -1,7 +1,7 @@
 import pandas as pd
 from fact import ObservedFactCollection
 from fact import CanonicalFact
-from matching import DedupeMatcher
+from matching.dedupe import DedupeMatcher
 from fusion import FuseObservationsGlobalWeights
 from fusion import TruthDiscoveryGlobalWeights
 

@@ -2,12 +2,14 @@ import sqlalchemy as sqla
 from dataengine.readers import IngestJson
 from dataset import Dataset
 from dataset_global_weights import DatasetGlobalWeights
+from matching import MatchingStrategy
 
 
 class DataEngine:
     """
     This class provides a layer between Fuse and a persistent backend.
     """
+
     def __init__(self, fuse_env):
         """
         The constructor for DataEngine
@@ -66,10 +68,10 @@ class DataEngine:
         :param dtype: dict of column name to SQL type, default None
         :return: None.
         """
-        df.to_sql(name, self.db_conn, if_exists="replace",dtype=dtype)
+        df.to_sql(name, self.db_conn, if_exists="replace", dtype=dtype)
         return name
 
-    def ingest_data(self, filepath, dataset_name, persist=False):
+    def ingest_data(self, filepath, dataset_name, matching_strategy: MatchingStrategy, persist=False):
         """
         Loads the data from an input JSON file and
         :param filepath: The path of the file to be loaded.
@@ -98,7 +100,8 @@ class DataEngine:
                                    ent_attr_schema,
                                    sources,
                                    observed_facts,
-                                   src_to_fact_map)
+                                   src_to_fact_map,
+                                   matching_strategy)
 
         # Persist dataset frames
         if persist:
@@ -113,5 +116,3 @@ class DataEngine:
 
         # Return dataset
         return self.dataset
-
-

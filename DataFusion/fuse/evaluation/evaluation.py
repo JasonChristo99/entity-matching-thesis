@@ -10,24 +10,26 @@ from gensim.models import KeyedVectors
 from sklearn import model_selection
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
+
 filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
-word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
 # filen1 = 'fuz_word.sav'
 # loaded_model_1 = pickle.load(open(filen1, 'rb'))
 # filen2 = 'fuzz_model.sav'
 # loaded_model_2 = pickle.load(open(filen2, 'rb'))
 # filen3   = 'finalized_model.sav'
-filen3   = 'C:/Users/Iasonas/Downloads/MSc_DataInt_Code/Dataset_Generator/olddata/finalized_model.sav'
+filen3 = 'C:/Users/Iasonas/Downloads/MSc_DataInt_Code/Dataset_Generator/olddata/finalized_model.sav'
 loaded_model_3 = pickle.load(open(filen3, 'rb'))
 
 import matplotlib.pyplot as plt
+
 
 class Evaluation:
     """
     This class implements a collection of methods to evaluate
     the precision and recall of the inferred true facts.
     """
-    def __init__(self, fuse_env, grd_path, canonical_facts, out_path = ''):
+
+    def __init__(self, fuse_env, grd_path, canonical_facts, out_path=''):
         """
         Constructor for Evaluation
         :param fuse_env: A Fuse environment.
@@ -52,16 +54,16 @@ class Evaluation:
         :param fact2: A dict with fact attributes and their respective values.
         :return:
         """
+        word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
+
         score = 0.0
         f1attrs = set(fact1.keys())
         f2attrs = set(fact2.keys())
         common_attr = f1attrs & f2attrs
 
-
         if len(common_attr) == 0:
             return 0.0
         for attr in common_attr:
-
 
             # if (attr == 'degree') | (attr == 'university') | (attr== 'skill') | (attr == 'title'):
             #     fuz_sc = 0.0
@@ -91,17 +93,17 @@ class Evaluation:
             # else:
             #     if fact1[attr] == fact2[attr]:
             #         score +=1.0
-            #3
+            # 3
             fuz_sc = 0.0
             word_sc = 0.0
             tmp_sc = []
             scores = []
 
-            fuz_sc=fuzz.token_sort_ratio(fact1[attr],fact2[attr])
+            fuz_sc = fuzz.token_sort_ratio(fact1[attr], fact2[attr])
             if fact1[attr] in word_vectors and fact2[attr] in word_vectors:
-                word_sc=word_vectors.similarity(fact1[attr],fact2[attr])
+                word_sc = word_vectors.similarity(fact1[attr], fact2[attr])
             else:
-                word_sc =0.0
+                word_sc = 0.0
             tmp_sc.append(fuz_sc)
             tmp_sc.append(word_sc)
             scores.append(tmp_sc)
@@ -114,16 +116,16 @@ class Evaluation:
             # else:
             #     if self.env.matcher_function(fact1[attr], fact2[attr]):
             #         score += 1.0
-            #2
+            # 2
             # if (attr == "degree" or attr == "university") and (fact1[attr]  and fact2[attr] ):
             #       if (fuzz.token_sort_ratio(fact1[attr],fact2[attr]) * 0.01 + word_vectors.similarity(fact1[attr], fact2[attr])) > 0.6:
             #           score += 1.0
             # else:
             #     if fuzz.token_sort_ratio(fact1[attr], fact2[attr]) > 60:
             #         score += 1.0
-            #if self.env.matcher_function(fact1[attr], fact2[attr]):
+            # if self.env.matcher_function(fact1[attr], fact2[attr]):
 
-        return score/len(common_attr)
+        return score / len(common_attr)
 
     def get_fac_clusters(self):
         """
@@ -196,7 +198,7 @@ class Evaluation:
                     if s == '':
                         normalized[k] = None
                     else:
-                        #normalized[k] = s.lower().strip()
+                        # normalized[k] = s.lower().strip()
                         normalized[k] = s.strip()
                 else:
                     if s == '':
@@ -211,7 +213,7 @@ class Evaluation:
         :return: None.
         """
         inferred_facts = self.get_facts_dict()
-        #Iterate over entities in ground truth
+        # Iterate over entities in ground truth
         matched = 0.0
         total = 0.0
         unmatched_true = 0.0
@@ -239,14 +241,14 @@ class Evaluation:
                     fact1 = true_facts[f1id]
                     f2id = 0
                     for fact2 in inf_facts:
-                        new_score = self.match_score(fact1,fact2)
+                        new_score = self.match_score(fact1, fact2)
                         if new_score > max_score:
                             max_score = new_score
                             max_index = f2id
                         f2id += 1
                     if max_index > -1:
                         del inf_facts[max_index]
-                        #assert max_score <= 1
+                        # assert max_score <= 1
                         matched += max_score
                         self.matched_facts_dict.append((eid, ent_attr, fact1, fact2))
                     else:
@@ -257,32 +259,28 @@ class Evaluation:
                 for f2 in inf_facts:
                     self.unmatched_facts_dict_infer.append((eid, ent_attr, f2))
 
-
-
-        print("Matched = %.2f, Unmatched true = %.2f, Unmatched inferred = %.2f, Total = %.2f" % (matched, unmatched_true, unmatched_inferred, total))
-        #print("=========")
-        #print("ALL FACTS:")
+        print("Matched = %.2f, Unmatched true = %.2f, Unmatched inferred = %.2f, Total = %.2f" % (
+        matched, unmatched_true, unmatched_inferred, total))
+        # print("=========")
+        # print("ALL FACTS:")
         with open('unmatched.json', 'w') as f:
-               f.write(json.dumps(self.matched_facts_dict, indent=2))
+            f.write(json.dumps(self.matched_facts_dict, indent=2))
         with open('unmatched_tr.json', 'w') as f:
             f.write(json.dumps(self.unmatched_facts_dict_true, indent=2))
 
-
-
-        #print("=========")
+        # print("=========")
         recall = matched / total
-        precision= matched / (matched + unmatched_inferred)
-        f1score = (2 * (precision * recall) )/ (precision+recall)
+        precision = matched / (matched + unmatched_inferred)
+        f1score = (2 * (precision * recall)) / (precision + recall)
         print("recall= %.2f" % (matched / total))
         print("Precision = %.2f" % (matched / (matched + unmatched_inferred)))
-        print( "Accuracy = %.2f" %  (matched / (total+unmatched_inferred)))
+        print("Accuracy = %.2f" % (matched / (total + unmatched_inferred)))
         print("f1score = %.2f" % f1score)
-        #precision = matched / (matched + unmatched_inferred)
-        #recall = matched / ( matched + unmatched_true)
-        return {'recall': recall , 'precision':precision , 'f1score': (2 * (precision * recall) )/ (precision+recall)}
+        # precision = matched / (matched + unmatched_inferred)
+        # recall = matched / ( matched + unmatched_true)
+        return {'recall': recall, 'precision': precision, 'f1score': (2 * (precision * recall)) / (precision + recall)}
 
     def persist_dicts(self):
         pickle.dump(self.matched_facts_dict, open(self.out_path + "matched_facts_dict.pkl", "wb"))
         pickle.dump(self.unmatched_facts_dict_true, open(self.out_path + "unmatched_true_facts.pkl", "wb"))
         pickle.dump(self.unmatched_facts_dict_infer, open(self.out_path + "unmatched_inferred_facts.pkl", "wb"))
-

@@ -1,19 +1,20 @@
 import pandas as pd
 from fact import ObservedFactCollection
 from fact import CanonicalFact
-from matching import DedupeMatcher
 from fusion import TruthDiscovery
 from fusion import FuseObservations
+from matching import MatchingStrategy
 
 
 class Dataset:
     """
     This class defines a Dafu dataset.
     """
+
     def __init__(self, fuse_env, name, entity_attributes,
                  ent_attr_schema,
                  sources, observed_facts,
-                 src_to_fact_map):
+                 src_to_fact_map, matching_strategy: MatchingStrategy):
         """
         The constructor for Dataset
         :param fuse_env: A Fuse environment.
@@ -39,6 +40,7 @@ class Dataset:
         # Preparation for fusion
         self._collect_attributes()
         self._normalize_ent_attr_schema()
+        self.matching_strategy = matching_strategy
         self._init_entity_attr_matchers()
         self._create_fact_collections()
         # Data fusion results
@@ -97,7 +99,7 @@ class Dataset:
         :return: None
         """
         for attr in self.ent_attr_schema:
-            matcher = DedupeMatcher(self, attr)
+            matcher = self.matching_strategy(self, attr)
             self.entity_attribute_matchers[attr] = matcher
 
     # Fact matching methods
@@ -114,7 +116,7 @@ class Dataset:
         """
         for attr in self.entity_attribute_matchers:
             prematched_facts = None if matched_facts is None else matched_facts.get(attr, None)
-            self.entity_attribute_matchers[attr].train(prematched_facts, 200)
+            self.entity_attribute_matchers[attr].train(prematched_facts=prematched_facts, samples=200)
 
     def match_observations(self):
         """

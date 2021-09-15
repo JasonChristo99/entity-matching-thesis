@@ -1,43 +1,11 @@
 import os
-import sys
+
 import dedupe
-from dedupe.core import BlockingError, ChildProcessError
+from dedupe.core import BlockingError
+from matching import MatchingStrategy
 
 
-class SimpleDedupe:
-    def __init__(self, dataset, attr):
-        """
-        Constructor for a simple deduper.
-        :param dataset: An instance of the Dataset class.
-        :param attr: The entity attribute associated with the matcher.
-        """
-        self.dataset = dataset
-        self.attr = attr
-        self.attributes = dataset.ent_attr_schema[attr]
-
-    def train(self):
-        pass
-
-    def match(self, facts):
-        """
-        Return the similarity between to facts associated with the
-        entity attribute of the matcher.
-        :param facts: A dictionary with normalized attribute values
-        :return: A matching score
-        """
-        f1 = facts[0]
-        f2 = facts[1]
-        f1attrs = f1.keys()
-        f2attrs = f2.keys()
-        if set(f1attrs) != set(f2attrs):
-            return 0.0
-        for attr in f1attrs:
-            if f1.normalized[attr] != f2.normalized[attr]:
-                return False
-        return 1.0
-
-
-class DedupeMatcher:
+class DedupeMatcher(MatchingStrategy):
     def __init__(self, dataset, attr, matcher_home='', num_cores=2, simple=False):
         """
         Constructor for a fact matcher.
@@ -139,7 +107,7 @@ class DedupeMatcher:
         with open(self.model_file_path, 'wb') as f:
             self.deduper.write_settings(f)
 
-    def train(self, matched_facts=None, samples=100):
+    def train(self, **kwargs):
         """
         If deduper is an instance of Dedupe: train the dedupe classifier.
         We use the dedupe active learning console. If deduper is an instance
@@ -149,6 +117,8 @@ class DedupeMatcher:
         :param samples: The number of samples per collection.
         :return:
         """
+        matched_facts = kwargs.get("prematched_facts", None)
+        samples = kwargs.get("samples", 100)
         if self.static or self.simple:
             return
         else:
@@ -182,11 +152,11 @@ class DedupeMatcher:
         try:
             duplicates = self.deduper.partition(facts, threshold=threshold)
         except BlockingError:
-            #TODO: if verbose log
+            # TODO: if verbose log
             match = facts.keys()
             matches.append(match)
         except Exception:
-            #TODO: fix problem with empty strings.
+            # TODO: fix problem with empty strings.
             # What does the above mean? Is this what causes the following error?
             # ValueError: shapes (13,6) and (2,) not aligned: 6 (dim 1) != 2 (dim 0)
             # For now, this happens only after training, so we assume it is
@@ -194,7 +164,7 @@ class DedupeMatcher:
             # As a workaround, after training and saving the model, we switch
             # to StaticDedupe() (see train()). So we do not expect any
             # exceptions here, so raise.
-            #raise
+            # raise
             match = facts.keys()
             matches.append(match)
         else:
@@ -217,7 +187,40 @@ class DedupeMatcher:
             if score > threshold:
                 return 1.0
         except BlockingError as e:
-            #TODO: if verbose log
-            #print("Trying to match:", d)
-            #print("No block found. Returning non-match.")
+            # TODO: if verbose log
+            # print("Trying to match:", d)
+            # print("No block found. Returning non-match.")
             return 0.0
+
+
+class SimpleDedupe:
+    def __init__(self, dataset, attr):
+        """
+        Constructor for a simple deduper.
+        :param dataset: An instance of the Dataset class.
+        :param attr: The entity attribute associated with the matcher.
+        """
+        self.dataset = dataset
+        self.attr = attr
+        self.attributes = dataset.ent_attr_schema[attr]
+
+    def train(self):
+        pass
+
+    def match(self, facts):
+        """
+        Return the similarity between to facts associated with the
+        entity attribute of the matcher.
+        :param facts: A dictionary with normalized attribute values
+        :return: A matching score
+        """
+        f1 = facts[0]
+        f2 = facts[1]
+        f1attrs = f1.keys()
+        f2attrs = f2.keys()
+        if set(f1attrs) != set(f2attrs):
+            return 0.0
+        for attr in f1attrs:
+            if f1.normalized[attr] != f2.normalized[attr]:
+                return False
+        return 1.0
