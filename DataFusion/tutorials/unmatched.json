@@ -6,7 +6,7 @@
       "name": "Melissa Johnson"
     },
     {
-      "name": "MELISSA JOHNSON"
+      "name": "Mfelissa Johnson"
     }
   ],
   [
@@ -28,9 +28,9 @@
       "year": "1995"
     },
     {
-      "year": "1997",
       "degree": "Msc",
-      "university": "MIT"
+      "university": "UC_Berkley",
+      "year": "1995"
     }
   ],
   [
@@ -42,8 +42,8 @@
       "years": "1992-2006"
     },
     {
-      "years": "1992-2006",
       "title": "doctor",
+      "years": "1992-2006",
       "company": "Banks, Reynolds and Goodwin"
     }
   ],
@@ -64,7 +64,7 @@
       "location": "Tylerside"
     },
     {
-      "location": "Tylersiee"
+      "location": "TYLERSIDE"
     }
   ],
   [
@@ -76,9 +76,9 @@
       "year": "2017"
     },
     {
-      "year": "2017",
       "degree": "Bsc",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2017"
     }
   ],
   [
@@ -90,8 +90,8 @@
       "years": "1991-2005"
     },
     {
-      "years": "1991-2005",
       "title": "developer",
+      "years": "1991-2005",
       "company": "Hoover-Gonzalez"
     }
   ],
@@ -102,7 +102,7 @@
       "name": "Reginald Jackson"
     },
     {
-      "name": "Reginald Jaackson"
+      "name": "REGINALD JACKSN"
     }
   ],
   [
@@ -124,9 +124,9 @@
       "year": "2003"
     },
     {
-      "year": "2003",
       "degree": "Bsc",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "2003"
     }
   ],
   [
@@ -138,8 +138,8 @@
       "years": "1993-2005"
     },
     {
-      "years": "1993-2005",
       "title": "analyst",
+      "years": "1993-2005",
       "company": "Simpson, Mendoza and Carlson"
     }
   ],
@@ -172,9 +172,9 @@
       "year": "1993"
     },
     {
-      "year": "1993",
-      "degree": "Msc",
-      "university": "MIT"
+      "degree": "Bsc",
+      "university": "UC_Berkley",
+      "year": "2000"
     }
   ],
   [
@@ -186,8 +186,8 @@
       "years": "2006-2016"
     },
     {
-      "years": "2006-2016",
       "title": "developer",
+      "years": "2006-2016",
       "company": "Pearson LLC"
     }
   ],
@@ -220,9 +220,9 @@
       "year": "2020"
     },
     {
-      "year": "2020",
       "degree": "Bsc",
-      "university": "UMass"
+      "university": "UMass",
+      "year": "2020"
     }
   ],
   [
@@ -234,8 +234,8 @@
       "years": "1991-1995"
     },
     {
-      "years": "1991-1995",
       "title": "doctor",
+      "years": "1991-1995",
       "company": "Sanchez PLC"
     }
   ],
@@ -256,7 +256,7 @@
       "location": "Matthewhaven"
     },
     {
-      "location": "Mattiewhaven"
+      "location": "MATTHEWHAVEN"
     }
   ],
   [
@@ -268,9 +268,9 @@
       "year": "2018"
     },
     {
-      "year": "2018",
       "degree": "Bsc",
-      "university": "UMass"
+      "university": "UMass",
+      "year": "2018"
     }
   ],
   [
@@ -282,8 +282,8 @@
       "years": "1991-1998"
     },
     {
-      "years": "1991-1998",
       "title": "manager",
+      "years": "1991-1998",
       "company": "Blackburn Group"
     }
   ],
@@ -316,9 +316,9 @@
       "year": "2011"
     },
     {
-      "year": "2011",
       "degree": "Phd",
-      "university": "UMass"
+      "university": "UMass",
+      "year": "2011"
     }
   ],
   [
@@ -330,8 +330,8 @@
       "years": "1999-2017"
     },
     {
-      "years": "1999-2017",
       "title": "analyst",
+      "years": "1999-2017",
       "company": "Williamson-Jennings"
     }
   ],
@@ -364,9 +364,9 @@
       "year": "2013"
     },
     {
-      "year": "2013",
       "degree": "Bsc",
-      "university": "UMass"
+      "university": "UMass",
+      "year": "2013"
     }
   ],
   [
@@ -378,8 +378,8 @@
       "years": "1994-2008"
     },
     {
-      "years": "1994-2008",
       "title": "manager",
+      "years": "1994-2008",
       "company": "Reyes-Golden"
     }
   ],
@@ -412,9 +412,9 @@
       "year": "2014"
     },
     {
-      "year": "2014",
       "degree": "Msc",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "2014"
     }
   ],
   [
@@ -426,8 +426,8 @@
       "years": "2011-2020"
     },
     {
-      "years": "2011-2020",
       "title": "manager",
+      "years": "2011-2020",
       "company": "Schwartz PLC"
     }
   ],
@@ -438,7 +438,7 @@
       "name": "Angelica Jones"
     },
     {
-      "name": "BAngelica Jones"
+      "name": "Angelica Jpones"
     }
   ],
   [
@@ -460,9 +460,9 @@
       "year": "2014"
     },
     {
-      "year": "2010",
-      "degree": "Msc",
-      "university": "UMass"
+      "degree": "Bsc",
+      "university": "UC_Berkley",
+      "year": "2014"
     }
   ],
   [
@@ -474,8 +474,8 @@
       "years": "1992-1999"
     },
     {
-      "years": "1992-1999",
       "title": "analyst",
+      "years": "1992-1999",
       "company": "Rivera LLC"
     }
   ],
@@ -496,7 +496,7 @@
       "location": "Garciaville"
     },
     {
-      "location": "GARCIAVILLE"
+      "location": "Garciaville"
     }
   ],
   [
@@ -508,9 +508,9 @@
       "year": "2019"
     },
     {
-      "year": "2019",
       "degree": "Phd",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2019"
     }
   ],
   [
@@ -522,8 +522,8 @@
       "years": "1995-2004"
     },
     {
-      "years": "1995-2004",
       "title": "doctor",
+      "years": "1995-2004",
       "company": "Beard-Evans"
     }
   ],
@@ -544,7 +544,7 @@
       "location": "North Tylermouth"
     },
     {
-      "location": "North T."
+      "location": "North Tylermouth"
     }
   ],
   [
@@ -556,9 +556,9 @@
       "year": "2015"
     },
     {
-      "year": "2015",
       "degree": "Phd",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2015"
     }
   ],
   [
@@ -570,8 +570,8 @@
       "years": "2005-2013"
     },
     {
-      "years": "2005-2013",
       "title": "developer",
+      "years": "2005-2013",
       "company": "Hughes-Fitzgerald"
     }
   ],
@@ -592,7 +592,7 @@
       "location": "North Mark"
     },
     {
-      "location": "North Mark"
+      "location": "North Mike"
     }
   ],
   [
@@ -604,9 +604,9 @@
       "year": "2019"
     },
     {
-      "year": "2019",
       "degree": "Bsc",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2019"
     }
   ],
   [
@@ -618,8 +618,8 @@
       "years": "1993-1996"
     },
     {
-      "years": "1993-1996",
       "title": "manager",
+      "years": "1993-1996",
       "company": "Martinez-Duran"
     }
   ],
@@ -652,9 +652,9 @@
       "year": "2013"
     },
     {
-      "year": "2020",
       "degree": "Bsc",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2020"
     }
   ],
   [
@@ -666,8 +666,8 @@
       "years": "1997-2012"
     },
     {
-      "years": "1997-2012",
       "title": "developer",
+      "years": "1997-2012",
       "company": "Flores LLC"
     }
   ],
@@ -678,7 +678,7 @@
       "name": "Crystal Robinson"
     },
     {
-      "name": "Crystal Rocinson"
+      "name": "Robinson"
     }
   ],
   [
@@ -690,9 +690,9 @@
       "year": "2010"
     },
     {
-      "year": "2005",
       "degree": "Phd",
-      "university": "MIT"
+      "university": "UCSC",
+      "year": "2010"
     }
   ],
   [
@@ -704,8 +704,8 @@
       "years": "2012-2019"
     },
     {
-      "years": "2012-2019",
       "title": "developer",
+      "years": "2012-2019",
       "company": "Collins, Ortega and Perry"
     }
   ],
@@ -716,7 +716,7 @@
       "name": "Juan Stone"
     },
     {
-      "name": "STONE JUAN"
+      "name": "S. J."
     }
   ],
   [
@@ -738,9 +738,9 @@
       "year": "2016"
     },
     {
-      "year": "2016",
       "degree": "Phd",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2016"
     }
   ],
   [
@@ -752,8 +752,8 @@
       "years": "1996-2012"
     },
     {
-      "years": "1996-2012",
       "title": "doctor",
+      "years": "1996-2012",
       "company": "Johns-Montoya"
     }
   ],
@@ -764,7 +764,7 @@
       "name": "Alicia Reyes"
     },
     {
-      "name": "Aliicia Reyes"
+      "name": "Alicia"
     }
   ],
   [
@@ -786,9 +786,9 @@
       "year": "2009"
     },
     {
-      "year": "2009",
       "degree": "Phd",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "2009"
     }
   ],
   [
@@ -800,8 +800,8 @@
       "years": "2008-2009"
     },
     {
-      "years": "2008-2009",
       "title": "doctor",
+      "years": "2008-2009",
       "company": "Rogers, Brown and Holmes"
     }
   ],
@@ -812,7 +812,7 @@
       "name": "Jessica Kelly"
     },
     {
-      "name": "Jessica Kelmly"
+      "name": "JJESSICA"
     }
   ],
   [
@@ -834,9 +834,9 @@
       "year": "2013"
     },
     {
-      "year": "2013",
       "degree": "Msc",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2013"
     }
   ],
   [
@@ -848,8 +848,8 @@
       "years": "1991-1997"
     },
     {
-      "years": "1991-1997",
       "title": "manager",
+      "years": "1991-1997",
       "company": "Mendoza LLC"
     }
   ],
@@ -882,9 +882,9 @@
       "year": "1999"
     },
     {
-      "year": "1999",
       "degree": "Bsc",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "1999"
     }
   ],
   [
@@ -896,9 +896,9 @@
       "years": "1990-1999"
     },
     {
-      "years": "1990-1999",
       "title": "manager",
-      "company": "Rowe-Smith"
+      "years": "1990-1999",
+      "company": "Larson-Welch"
     }
   ],
   [
@@ -908,7 +908,7 @@
       "name": "Ryan Turner"
     },
     {
-      "name": "Ryan Tuurner"
+      "name": "RYAN"
     }
   ],
   [
@@ -918,7 +918,7 @@
       "location": "North Matthewmouth"
     },
     {
-      "location": "North M."
+      "location": "Norh Matthewmouth"
     }
   ],
   [
@@ -930,9 +930,9 @@
       "year": "2018"
     },
     {
-      "year": "2018",
       "degree": "Bsc",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "2018"
     }
   ],
   [
@@ -944,8 +944,8 @@
       "years": "2016-2017"
     },
     {
-      "years": "2016-2017",
       "title": "analyst",
+      "years": "2016-2017",
       "company": "Alvarez, Horton and Roach"
     }
   ],
@@ -966,7 +966,7 @@
       "location": "Port Elizabethfurt"
     },
     {
-      "location": "E. Port"
+      "location": "Port E"
     }
   ],
   [
@@ -978,9 +978,9 @@
       "year": "2018"
     },
     {
-      "year": "2018",
       "degree": "Msc",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "2018"
     }
   ],
   [
@@ -992,8 +992,8 @@
       "years": "2015-2017"
     },
     {
-      "years": "2015-2017",
       "title": "manager",
+      "years": "2015-2017",
       "company": "Smith-Flores"
     }
   ],
@@ -1014,7 +1014,7 @@
       "location": "Christinaberg"
     },
     {
-      "location": "CHRISTINABERG"
+      "location": "Christinaberg"
     }
   ],
   [
@@ -1026,9 +1026,9 @@
       "year": "2003"
     },
     {
-      "year": "1994",
       "degree": "Phd",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "1994"
     }
   ],
   [
@@ -1040,8 +1040,8 @@
       "years": "2004-2018"
     },
     {
-      "years": "2004-2018",
       "title": "analyst",
+      "years": "2004-2018",
       "company": "Moon, Hamilton and Berry"
     }
   ],
@@ -1074,9 +1074,9 @@
       "year": "2003"
     },
     {
-      "year": "1994",
       "degree": "Bsc",
-      "university": "UMass"
+      "university": "UMass",
+      "year": "2003"
     }
   ],
   [
@@ -1088,9 +1088,9 @@
       "years": "1999-2012"
     },
     {
-      "years": "1999-2012",
       "title": "developer",
-      "company": "Atkinson, Nguyen and Robcins"
+      "years": "1999-2012",
+      "company": "Atkinson, Nguyyen and Robbins"
     }
   ],
   [
@@ -1122,9 +1122,9 @@
       "year": "2012"
     },
     {
-      "year": "2020",
       "degree": "Phd",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "2020"
     }
   ],
   [
@@ -1136,8 +1136,8 @@
       "years": "2007-2020"
     },
     {
-      "years": "2007-2020",
       "title": "doctor",
+      "years": "2007-2020",
       "company": "Horn Ltd"
     }
   ],
@@ -1148,7 +1148,7 @@
       "name": "Christopher Mathis"
     },
     {
-      "name": "MATHIS"
+      "name": "Christopher Mathis"
     }
   ],
   [
@@ -1170,9 +1170,9 @@
       "year": "2009"
     },
     {
-      "year": "2009",
-      "degree": "Msc",
-      "university": "UC_Berkley"
+      "degree": "Bsc",
+      "university": "MIT",
+      "year": "2002"
     }
   ],
   [
@@ -1184,8 +1184,8 @@
       "years": "1999-2009"
     },
     {
-      "years": "1999-2009",
       "title": "manager",
+      "years": "1999-2009",
       "company": "Williams, Jackson and Castaneda"
     }
   ],
@@ -1196,7 +1196,7 @@
       "name": "Lauren Valentine"
     },
     {
-      "name": "Lausenn Valfentine"
+      "name": "VALENTJINE"
     }
   ],
   [
@@ -1218,9 +1218,9 @@
       "year": "1990"
     },
     {
-      "year": "1990",
       "degree": "Bsc",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "1990"
     }
   ],
   [
@@ -1232,8 +1232,8 @@
       "years": "1994-2003"
     },
     {
-      "years": "1994-2003",
       "title": "manager",
+      "years": "1994-2003",
       "company": "Walker Inc"
     }
   ],
@@ -1254,7 +1254,7 @@
       "location": "New Erinstad"
     },
     {
-      "location": "Erinstad N."
+      "location": "ONew Erinstad"
     }
   ],
   [
@@ -1266,9 +1266,9 @@
       "year": "1992"
     },
     {
-      "year": "1992",
       "degree": "Bsc",
-      "university": "UMass"
+      "university": "UMass",
+      "year": "1992"
     }
   ],
   [
@@ -1280,8 +1280,8 @@
       "years": "2000-2009"
     },
     {
-      "years": "2000-2009",
       "title": "doctor",
+      "years": "2000-2009",
       "company": "Morgan LLC"
     }
   ],
@@ -1292,7 +1292,7 @@
       "name": "Benjamin Moreno"
     },
     {
-      "name": "BENJAMINN"
+      "name": "Benjamin Moreno"
     }
   ],
   [
@@ -1314,9 +1314,9 @@
       "year": "2017"
     },
     {
-      "year": "2017",
       "degree": "Msc",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2017"
     }
   ],
   [
@@ -1328,8 +1328,8 @@
       "years": "1998-2013"
     },
     {
-      "years": "1998-2013",
       "title": "manager",
+      "years": "1998-2013",
       "company": "Henderson Ltd"
     }
   ],
@@ -1340,7 +1340,7 @@
       "name": "Lauren Pennington"
     },
     {
-      "name": "Lauren Pennington"
+      "name": "Lauure Pennington"
     }
   ],
   [
@@ -1362,9 +1362,9 @@
       "year": "2013"
     },
     {
-      "year": "2013",
       "degree": "Msc",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "2013"
     }
   ],
   [
@@ -1376,8 +1376,8 @@
       "years": "1991-2007"
     },
     {
-      "years": "1991-2007",
       "title": "doctor",
+      "years": "1991-2007",
       "company": "Campbell, Cruz and Walker"
     }
   ],
@@ -1410,9 +1410,9 @@
       "year": "1996"
     },
     {
-      "year": "1996",
       "degree": "Bsc",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "1996"
     }
   ],
   [
@@ -1424,8 +1424,8 @@
       "years": "1993-2003"
     },
     {
-      "years": "1993-2003",
       "title": "doctor",
+      "years": "1993-2003",
       "company": "Hernandez Inc"
     }
   ],
@@ -1436,7 +1436,7 @@
       "name": "Christopher Logan"
     },
     {
-      "name": "Logan C."
+      "name": "Logan"
     }
   ],
   [
@@ -1458,9 +1458,9 @@
       "year": "2010"
     },
     {
-      "year": "2010",
       "degree": "Msc",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "2010"
     }
   ],
   [
@@ -1472,8 +1472,8 @@
       "years": "1997-2007"
     },
     {
-      "years": "1997-2007",
       "title": "doctor",
+      "years": "1997-2007",
       "company": "Brewer and Sons"
     }
   ],
@@ -1484,7 +1484,7 @@
       "name": "Roger Luna"
     },
     {
-      "name": "LUA ROGER"
+      "name": "Rooger Luna"
     }
   ],
   [
@@ -1506,9 +1506,9 @@
       "year": "1993"
     },
     {
-      "year": "1993",
       "degree": "Msc",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "1993"
     }
   ],
   [
@@ -1520,8 +1520,8 @@
       "years": "1999-2014"
     },
     {
-      "years": "1999-2014",
       "title": "doctor",
+      "years": "1999-2014",
       "company": "Henderson PLC"
     }
   ],
@@ -1554,9 +1554,9 @@
       "year": "1993"
     },
     {
-      "year": "1993",
       "degree": "Bsc",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "1993"
     }
   ],
   [
@@ -1568,8 +1568,8 @@
       "years": "1995-2017"
     },
     {
-      "years": "1995-2017",
       "title": "developer",
+      "years": "1995-2017",
       "company": "Luna-Mcneil"
     }
   ],
@@ -1580,7 +1580,7 @@
       "name": "Jason Vargas"
     },
     {
-      "name": "KJason Vargas"
+      "name": "JASON"
     }
   ],
   [
@@ -1602,9 +1602,9 @@
       "year": "2018"
     },
     {
-      "year": "2018",
       "degree": "Phd",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2018"
     }
   ],
   [
@@ -1616,8 +1616,8 @@
       "years": "1997-2018"
     },
     {
-      "years": "1997-2018",
       "title": "manager",
+      "years": "1997-2018",
       "company": "Collins-Alvarado"
     }
   ],
@@ -1650,9 +1650,9 @@
       "year": "1996"
     },
     {
-      "year": "1996",
       "degree": "Bsc",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "1996"
     }
   ],
   [
@@ -1664,8 +1664,8 @@
       "years": "1995-2019"
     },
     {
-      "years": "1995-2019",
       "title": "developer",
+      "years": "1995-2019",
       "company": "Sullivan-Hammond"
     }
   ],
@@ -1676,7 +1676,7 @@
       "name": "Jason Smith"
     },
     {
-      "name": "Jason Smith"
+      "name": "Jason S."
     }
   ],
   [
@@ -1698,9 +1698,9 @@
       "year": "2004"
     },
     {
-      "year": "2004",
       "degree": "Bsc",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "2004"
     }
   ],
   [
@@ -1712,8 +1712,8 @@
       "years": "1997-2011"
     },
     {
-      "years": "1997-2011",
       "title": "analyst",
+      "years": "1997-2011",
       "company": "Smith-Case"
     }
   ],
@@ -1724,7 +1724,7 @@
       "name": "Courtney Martinez"
     },
     {
-      "name": "Courtnney Marrtinez"
+      "name": "Martinez"
     }
   ],
   [
@@ -1746,9 +1746,9 @@
       "year": "2008"
     },
     {
-      "year": "2008",
       "degree": "Phd",
-      "university": "UMass"
+      "university": "UMass",
+      "year": "2008"
     }
   ],
   [
@@ -1760,8 +1760,8 @@
       "years": "2008-2016"
     },
     {
-      "years": "2008-2016",
       "title": "developer",
+      "years": "2008-2016",
       "company": "Griffin, Davis and Alvarado"
     }
   ],
@@ -1772,7 +1772,7 @@
       "name": "Rebecca Wheeler"
     },
     {
-      "name": "WHEELER REBECCA"
+      "name": "Rebfcca Wheeler"
     }
   ],
   [
@@ -1794,9 +1794,9 @@
       "year": "2006"
     },
     {
-      "year": "2006",
       "degree": "Bsc",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "2006"
     }
   ],
   [
@@ -1808,8 +1808,8 @@
       "years": "1991-1992"
     },
     {
+      "title": "developer",
       "years": "1991-1992",
-      "title": "manager",
       "company": "Rodriguez PLC"
     }
   ],
@@ -1820,7 +1820,7 @@
       "name": "Joshua Dorsey"
     },
     {
-      "name": "Joshua"
+      "name": "Joshua Dorsey"
     }
   ],
   [
@@ -1842,9 +1842,9 @@
       "year": "1997"
     },
     {
-      "year": "1997",
       "degree": "Phd",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "1997"
     }
   ],
   [
@@ -1856,9 +1856,9 @@
       "years": "1994-2006"
     },
     {
-      "years": "1994-2006",
       "title": "doctor",
-      "company": "Jackson, Vargas and Ibarra"
+      "years": "1994-2006",
+      "company": "Wol, Hunter and Mays"
     }
   ],
   [
@@ -1868,7 +1868,7 @@
       "name": "Patricia Krueger"
     },
     {
-      "name": "KRUEGER"
+      "name": "Pbatricia Krueger"
     }
   ],
   [
@@ -1890,9 +1890,9 @@
       "year": "2019"
     },
     {
-      "year": "2019",
       "degree": "Msc",
-      "university": "UMass"
+      "university": "UMass",
+      "year": "2019"
     }
   ],
   [
@@ -1904,9 +1904,9 @@
       "years": "1995-1999"
     },
     {
-      "years": "2003-2017",
       "title": "doctor",
-      "company": "Bker and Sons"
+      "years": "2003-2017",
+      "company": "Baker and Sons"
     }
   ],
   [
@@ -1916,7 +1916,7 @@
       "name": "Thomas Francis"
     },
     {
-      "name": "Thomas Francis"
+      "name": "Thomas Frbancis"
     }
   ],
   [
@@ -1938,9 +1938,9 @@
       "year": "1995"
     },
     {
-      "year": "1995",
       "degree": "Phd",
-      "university": "UMass"
+      "university": "UMass",
+      "year": "1995"
     }
   ],
   [
@@ -1952,8 +1952,8 @@
       "years": "2004-2018"
     },
     {
-      "years": "2004-2018",
       "title": "analyst",
+      "years": "2004-2018",
       "company": "Smith, Ferrell and Thompson"
     }
   ],
@@ -1976,9 +1976,9 @@
       "year": "2003"
     },
     {
-      "year": "2017",
       "degree": "Bsc",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "2017"
     }
   ],
   [
@@ -1990,9 +1990,9 @@
       "years": "2003-2004"
     },
     {
-      "years": "2003-2004",
       "title": "manager",
-      "company": "Jones-Conner"
+      "years": "2003-2004",
+      "company": "Jimenez and Sons"
     }
   ],
   [
@@ -2002,7 +2002,7 @@
       "name": "Taylor Greer"
     },
     {
-      "name": "Taylor Grfer"
+      "name": "TAYLOR"
     }
   ],
   [
@@ -2014,9 +2014,9 @@
       "year": "2016"
     },
     {
-      "year": "2016",
       "degree": "Msc",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "2016"
     }
   ],
   [
@@ -2028,8 +2028,8 @@
       "years": "2004-2019"
     },
     {
-      "years": "2004-2019",
       "title": "developer",
+      "years": "2004-2019",
       "company": "Garrison-Morton"
     }
   ],
@@ -2062,9 +2062,9 @@
       "year": "2011"
     },
     {
-      "year": "2011",
       "degree": "Phd",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "2011"
     }
   ],
   [
@@ -2076,8 +2076,8 @@
       "years": "1990-2014"
     },
     {
-      "years": "1990-2014",
       "title": "doctor",
+      "years": "1990-2014",
       "company": "Ross, Holloway and Rosario"
     }
   ],
@@ -2088,7 +2088,7 @@
       "name": "April Ross"
     },
     {
-      "name": "APRI"
+      "name": "April Ross"
     }
   ],
   [
@@ -2110,9 +2110,9 @@
       "year": "2016"
     },
     {
-      "year": "2016",
       "degree": "Phd",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "2016"
     }
   ],
   [
@@ -2124,9 +2124,9 @@
       "years": "1991-2010"
     },
     {
-      "years": "1991-2010",
       "title": "developer",
-      "company": "Prince LLC"
+      "years": "2007-2018",
+      "company": "Roberts, Wilson and Middleton"
     }
   ],
   [
@@ -2136,7 +2136,7 @@
       "name": "Zachary Lozano"
     },
     {
-      "name": "ZACHARY"
+      "name": "Zahary Lozano"
     }
   ],
   [
@@ -2146,7 +2146,7 @@
       "location": "Chentown"
     },
     {
-      "location": "Chentown"
+      "location": "CHENTOWN"
     }
   ],
   [
@@ -2158,9 +2158,9 @@
       "year": "2019"
     },
     {
-      "year": "2019",
       "degree": "Bsc",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "2019"
     }
   ],
   [
@@ -2172,8 +2172,8 @@
       "years": "1990-2013"
     },
     {
-      "years": "2006-2018",
       "title": "manager",
+      "years": "1990-32013",
       "company": "Powers and Sons"
     }
   ],
@@ -2206,9 +2206,9 @@
       "year": "1996"
     },
     {
-      "year": "1996",
       "degree": "Msc",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "1996"
     }
   ],
   [
@@ -2220,8 +2220,8 @@
       "years": "2010-2013"
     },
     {
-      "years": "2010-2013",
       "title": "manager",
+      "years": "2010-2013",
       "company": "Valentine, Novak and Sanchez"
     }
   ],
@@ -2244,9 +2244,9 @@
       "year": "2015"
     },
     {
-      "year": "1990",
       "degree": "Bsc",
-      "university": "UCSC"
+      "university": "UCSC",
+      "year": "1990"
     }
   ],
   [
@@ -2258,8 +2258,8 @@
       "years": "2003-2020"
     },
     {
-      "years": "2003-2020",
       "title": "doctor",
+      "years": "2003-2020",
       "company": "Olson, Rogers and Brown"
     }
   ],
@@ -2270,7 +2270,7 @@
       "name": "Cindy Simmons"
     },
     {
-      "name": "SIMMONS"
+      "name": "Ciindy Simmos"
     }
   ],
   [
@@ -2292,9 +2292,9 @@
       "year": "1998"
     },
     {
-      "year": "1998",
       "degree": "Bsc",
-      "university": "UC_Berkley"
+      "university": "UC_Berkley",
+      "year": "1998"
     }
   ],
   [
@@ -2306,8 +2306,8 @@
       "years": "2005-2008"
     },
     {
-      "years": "2005-2008",
       "title": "analyst",
+      "years": "2005-2008",
       "company": "Anderson Group"
     }
   ],
@@ -2318,7 +2318,7 @@
       "name": "Tyler Anderson"
     },
     {
-      "name": "ANDERSON"
+      "name": "TYLERUANDERSON"
     }
   ],
   [
@@ -2340,9 +2340,9 @@
       "year": "1996"
     },
     {
-      "year": "1996",
       "degree": "Msc",
-      "university": "MIT"
+      "university": "MIT",
+      "year": "1996"
     }
   ],
   [
@@ -2354,8 +2354,8 @@
       "years": "2013-2015"
     },
     {
-      "years": "2013-2015",
       "title": "analyst",
+      "years": "2013-2015",
       "company": "Collins, Diaz and Wagner"
     }
   ]
