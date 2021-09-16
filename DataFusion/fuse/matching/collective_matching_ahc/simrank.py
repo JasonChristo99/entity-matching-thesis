@@ -2,12 +2,17 @@ from typing import Union
 
 from strsimpy.jaro_winkler import JaroWinkler
 from strsimpy.cosine import Cosine
+from strsimpy.normalized_levenshtein import NormalizedLevenshtein
+from strsimpy.damerau import Damerau
 
 cosine = Cosine(2)
+jarowinkler = JaroWinkler()
+levenshtein = NormalizedLevenshtein()
+damerau = Damerau()
 
 
 class SimRank:
-    def __init__(self, dataset, attr, property):
+    def __init__(self, dataset, attr, property, num_iterations=10):
         """
         This is a matcher for structural similarity of values of the same entity ettribute property
         Constructor for a fact matcher.
@@ -19,15 +24,18 @@ class SimRank:
         self.property = property
         self.attributes = dataset.ent_attr_schema[attr]
         self.value_clusters = dict()
-        self.value_pair_similarites = {}
+        self.value_pair_similarites = dict()
         self.distinct_values = list()
         self.entity_to_cluster_graph = dict()
         self.cluster_to_enity_graph = dict()
         # key: iteration number, value: n^2 score table
         self.entity_simrank_buffer = dict()
         self.cluster_simrank_buffer = dict()
+        self.num_iterations = num_iterations
 
         # 1. Cluster string-similar property values
+        self.distinct_values = self.get_distinct_values_for_property()
+        self.init_value_clusters()
         self.cluster_similar_values()
         # 2. Get data to graph form of entity->value
         self.form_entity_cluster_graph()
@@ -36,9 +44,6 @@ class SimRank:
         self.compute_simrank_scores()
 
     def cluster_similar_values(self, threshold=0.45):
-        self.distinct_values = self.get_all_distinct_values_of_property()
-        self.init_value_clusters()
-
         iteration = 1
         self.calculate_all_value_pair_similarities()
         max_pair_similarity = self.get_max_cluster_pair_similarity()
@@ -48,7 +53,7 @@ class SimRank:
             # calculate new maximum simlarity score
             max_pair_similarity = self.get_max_cluster_pair_similarity()
 
-    def get_all_distinct_values_of_property(self):
+    def get_distinct_values_for_property(self):
         values_set = set()
         for fact_col in self.dataset.observed_fact_collections[self.attr]:
             for fact in fact_col.facts:
@@ -64,7 +69,18 @@ class SimRank:
                 self.value_pair_similarites[frozenset({x, y})] = similarity
 
     def get_value_pair_similarity(self, x: str, y: str):
-        result = cosine.similarity(x, y)
+        if self.attr == 'Education' and self.property == 'degree':
+            # result = jarowinkler.similarity(x.lower(), y.lower())
+            # result = levenshtein.similarity(x.lower(), y.lower())
+            # result = damerau.similarity(x.lower(), y.lower())
+            result = 1 - damerau.distance(x.lower(), y.lower()) / max(len(x), len(y))
+            return result
+        if self.attr == 'Education' and self.property == 'university':
+            # result = 1 - damerau.distance(x.lower(), y.lower()) / max(len(x), len(y))
+            result = cosine.similarity(x.lower(), y.lower())
+            return result
+        # result = 1 - damerau.distance(x.lower(), y.lower()) / max(len(x), len(y))
+        result = cosine.similarity(x.lower(), y.lower())
         return result
 
     def init_value_clusters(self):
@@ -143,9 +159,9 @@ class SimRank:
                 else:
                     self.cluster_simrank_buffer[frozenset({0, frozenset({cluster1, cluster2})})] = 1
 
-    def compute_simrank_scores(self, iterations=10, constant_c1=0.8, constant_c2=0.8):
+    def compute_simrank_scores(self, constant_c1=0.8, constant_c2=0.8):
         # first calulate entity scores
-        for i in range(iterations):
+        for i in range(self.num_iterations):
             # simrank formula
             for entity1 in self.entity_to_cluster_graph:
                 for entity2 in self.entity_to_cluster_graph:
@@ -190,3 +206,9 @@ class SimRank:
             iteration = list(key)[0] if type(list(key)[0]) == int else list(key)[1]
             if iteration == i:
                 del self.entity_simrank_buffer[key]
+
+    def get_simrank_score_of_values(self, x: str, y: str):
+        c1 = self.get_cluster_of_value(x)
+        c2 = self.get_cluster_of_value(y)
+        simrank_similarity = self.cluster_simrank_buffer[frozenset({self.num_iterations, frozenset({c1, c2})})]
+        return simrank_similarity

@@ -46,7 +46,7 @@ class Evaluation:
         self.all_facts = {}
         self.out_path = out_path
 
-    def match_score(self, fact1, fact2):
+    def match_score(self, fact1, fact2, word_vectors):
         """
         Return the similarity between to facts associated with the
         entity attribute of the matcher.
@@ -54,7 +54,6 @@ class Evaluation:
         :param fact2: A dict with fact attributes and their respective values.
         :return:
         """
-        word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
 
         score = 0.0
         f1attrs = set(fact1.keys())
@@ -212,6 +211,8 @@ class Evaluation:
         Iterate over facts and evaluate the precision and recall of Fusion.
         :return: None.
         """
+        word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
+
         inferred_facts = self.get_facts_dict()
         # Iterate over entities in ground truth
         matched = 0.0
@@ -241,7 +242,7 @@ class Evaluation:
                     fact1 = true_facts[f1id]
                     f2id = 0
                     for fact2 in inf_facts:
-                        new_score = self.match_score(fact1, fact2)
+                        new_score = self.match_score(fact1, fact2, word_vectors)
                         if new_score > max_score:
                             max_score = new_score
                             max_index = f2id
@@ -260,7 +261,7 @@ class Evaluation:
                     self.unmatched_facts_dict_infer.append((eid, ent_attr, f2))
 
         print("Matched = %.2f, Unmatched true = %.2f, Unmatched inferred = %.2f, Total = %.2f" % (
-        matched, unmatched_true, unmatched_inferred, total))
+            matched, unmatched_true, unmatched_inferred, total))
         # print("=========")
         # print("ALL FACTS:")
         with open('unmatched.json', 'w') as f:

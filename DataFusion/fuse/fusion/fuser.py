@@ -1,14 +1,17 @@
 import re
 import math
 
+
 def _vertical_from_fact_id(fact):
     return re.sub(r"(^\d+_|_\d+$)", '', fact)
+
 
 class TruthDiscovery:
     """
     This class defines a fuser to identify true facts given
     a collection of conflicting source votes on a fact being true or not.
     """
+
     def __init__(self, fuse_env, votes, src_weights):
         """
         :param fuse_env: A Fuse environment.
@@ -41,7 +44,7 @@ class TruthDiscovery:
         """
         score = 0.0
         for src in votes:
-            score += votes[src]*self.src_weights[vertical][src]
+            score += votes[src] * self.src_weights[vertical][src]
         return score > 0.0
 
     def _update_src_weights(self):
@@ -57,19 +60,19 @@ class TruthDiscovery:
             for src in self.votes[fact]:
                 src_stats[vertical][src]['total'] += 1.0
                 # Check if source agrees with map state
-                if self.votes[fact][src] == 2*int(map_state) - 1:
+                if self.votes[fact][src] == 2 * int(map_state) - 1:
                     src_stats[vertical][src]['correct'] += 1.0
         # Compute src accuracy and then weight
         for vertical in self.src_weights:
             for src in self.src_weights[vertical]:
                 accu = 0.5
                 if src_stats[vertical][src]['total'] != 0.0:
-                    accu = src_stats[vertical][src]['correct']/src_stats[vertical][src]['total']
+                    accu = src_stats[vertical][src]['correct'] / src_stats[vertical][src]['total']
                 if accu == 1.0:
                     accu = 0.99
                 elif accu == 0.0:
                     accu = 0.01
-                self.src_weights[vertical][src] = math.log(accu/(1-accu))
+                self.src_weights[vertical][src] = math.log(accu / (1 - accu))
 
     def run(self, iterations=10):
         """
@@ -79,7 +82,7 @@ class TruthDiscovery:
         """
         self.env.logger.info("Running truth discovery for " + str(iterations) + " iterations.")
         for iter in range(iterations):
-            self.env.logger.info("Iteration = "+str(iter))
+            self.env.logger.info("Iteration = " + str(iter))
             self.env.logger.info("Source weights = " + str(self.src_weights))
             self._find_fact_assignments()
             self._update_src_weights()
@@ -90,6 +93,7 @@ class FuseObservations:
     """
     This class defines a fuser to merge observations in a true cluster.
     """
+
     def __init__(self, fuse_env, clusters, src_acc, no_weights):
         """
         :param fuse_env: A Fuse environment.
@@ -102,7 +106,7 @@ class FuseObservations:
         self.src_acc = src_acc
         self.no_weights = no_weights
 
-    def _update_src_acc(self):
+    def _update_src_acc(self, word_vectors):
         """
         Iterate over map fact assignments and update source weights.
         :return: None.
@@ -113,7 +117,7 @@ class FuseObservations:
             vertical = _vertical_from_fact_id(cluster.ent_attr)
             for fact in cluster.get_facts():
                 src = fact.src
-                score = cluster.evaluate_fact(fact)
+                score = cluster.evaluate_fact(fact, word_vectors)
                 src_stats[vertical][src]['total'] += 1.0
                 src_stats[vertical][src]['correct'] += score
         # Compute src accuracy and then weight
@@ -154,19 +158,20 @@ class FuseObservations:
                 facts.append(f)
         return facts
 
-    def run(self, iterations=10):
+    def run(self, word_vectors, iterations=10):
         """
         Run iterative truth discovery.
         :param iterations: The number of iterations to run for.
         :return: Fact map assignments.
         """
+
         if self.no_weights:
             self.env.logger.info("Running fusion with majority voting.")
             self._find_map_state()
         else:
             self.env.logger.info("Running fusion for " + str(iterations) + " iterations.")
             for iter in range(iterations):
-                self.env.logger.info("Iteration = "+str(iter))
+                self.env.logger.info("Iteration = " + str(iter))
                 self.env.logger.info("Source weights = " + str(self.src_acc))
                 self._find_map_state()
-                self._update_src_acc()
+                self._update_src_acc(word_vectors)

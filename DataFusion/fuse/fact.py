@@ -2,24 +2,28 @@ import six
 import math
 import operator
 from fuzzywuzzy import fuzz
-from gensim.models import KeyedVectors
 from sklearn import model_selection
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 import pickle
-filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
+from matching.collective_matching_ahc import CollectiveMatchingAHC
+from matching.dedupe import DedupeMatcher
+
 # filen1 = 'fuz_word.sav'
 # loaded_model_1 = pickle.load(open(filen1, 'rb'))
 # filen2 = 'fuzz_model.sav'
 # loaded_model_2 = pickle.load(open(filen2, 'rb'))
 # filen3   = 'finalized_model.sav'
-filen3   = 'C:/Users/Iasonas/Downloads/MSc_DataInt_Code/Dataset_Generator/olddata/finalized_model.sav'
+filen3 = 'C:/Users/Iasonas/Downloads/MSc_DataInt_Code/Dataset_Generator/olddata/finalized_model.sav'
 loaded_model_3 = pickle.load(open(filen3, 'rb'))
+
+
 class ObservedFact:
     """
     This class defines an observed fact reported by a source.
     A fact is a relational tuple reporting an entry for an entity attribute.
     """
+
     def __init__(self, fact_id, entity_id, entity_attr, source, raw_dict):
         """
         Constructor for Observed fact.
@@ -76,7 +80,7 @@ class ObservedFact:
                     if s == '':
                         self.normalized[k] = None
                     else:
-                        #self.normalized[k] = s.lower().strip()
+                        # self.normalized[k] = s.lower().strip()
                         self.normalized[k] = s.strip()
                 else:
                     if s == '':
@@ -102,6 +106,7 @@ class ObservedFactCollection:
     """
     This class defines a set of observed facts for one attribute of an entity.
     """
+
     def __init__(self, entity_id, entity_attr, matcher):
         """
         Constructor for ObservedFactCollection.
@@ -141,7 +146,7 @@ class ObservedFactCollection:
         """
         return self.matcher.get_matches(self.fact_records)
 
-    def _fids_to_facts(self,fid_set):
+    def _fids_to_facts(self, fid_set):
         """
         Convert a set of fact ids to set of fact objects.
         :param fid_set: A set of local (collection-based) fact ids.
@@ -188,6 +193,7 @@ class ObservedFactCluster:
     entity. All facts in a cluster refer to the same entity attribute and support
     each other.
     """
+
     def __init__(self, cluster_id, ent_id, ent_attr, facts):
         """
         Constructor for ObservedFactCollection.
@@ -250,10 +256,12 @@ class ObservedFactCluster:
         f = next(iter(self.facts))
         return f.eid
 
+
 class CanonicalFact:
     """
     This class defines a canonical fact.
     """
+
     def __init__(self, fuse_env, cluster, src_acc):
         """
         :param fuse_env: A Fuse environment.
@@ -283,7 +291,6 @@ class CanonicalFact:
         vote_count = {key: {} for key in self.canonicalTuple.keys()}
         # Iterate over observed facts
 
-
         for fact in self.cluster.facts:
 
             weight = self.src_acc[fact.src]
@@ -294,38 +301,34 @@ class CanonicalFact:
                         score[attr][value] = weight
                         vote_count[attr][value] = 1
                     else:
-                        score[attr][value] += weight #pairnei to varos tis anistoixis pigis pou to exei psifisei
-                        vote_count[attr][value] += 1 #kai an psifise ki auti tin idia timi
+                        score[attr][value] += weight  # pairnei to varos tis anistoixis pigis pou to exei psifisei
+                        vote_count[attr][value] += 1  # kai an psifise ki auti tin idia timi
 
         # Find Max Score attribute value
         for attr in self.canonicalTuple.keys():
-            #Iter over values and add normalizing score
+            # Iter over values and add normalizing score
             n = len(score[attr].keys())
             if n == 1:
                 max_value = max(score[attr].items(), key=operator.itemgetter(1))[0]
                 self.canonicalTuple[attr] = max_value
             else:
                 for value in score[attr]:
-                    score[attr][value] += vote_count[attr][value]*math.log(n-1)
+                    score[attr][value] += vote_count[attr][value] * math.log(n - 1)
                 if len(score[attr]) == 0:
                     max_value = None
                 else:
                     max_value = max(score[attr].items(), key=operator.itemgetter(1))[0]
             self.canonicalTuple[attr] = max_value
 
-    def evaluate_fact(self, fact):
+    def evaluate_fact(self, fact, word_vectors):
         """
         Compare an observed fact with the inferred fact
         :return: A correctness score
         """
 
-        word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
-
         attrs = float(len(self.canonicalTuple.keys()))
         correct = 0.0
         for attr in self.canonicalTuple:
-
-
 
             fuz_sc = 0.0
             word_sc = 0.0
@@ -333,7 +336,7 @@ class CanonicalFact:
             scores = []
 
             fuz_sc = fuzz.token_sort_ratio(fact.normalized[attr], self.canonicalTuple[attr])
-            if fact.normalized[attr]in word_vectors and  self.canonicalTuple[attr]  in word_vectors:
+            if fact.normalized[attr] in word_vectors and self.canonicalTuple[attr] in word_vectors:
                 word_sc = word_vectors.similarity(fact.normalized[attr], self.canonicalTuple[attr])
             else:
                 word_sc = 0.0
@@ -342,7 +345,6 @@ class CanonicalFact:
             scores.append(tmp_sc)
             if loaded_model_3.predict(scores):
                 correct += 1.0
-
 
             # if self.env.matcher_function(fact.normalized[attr], self.canonicalTuple[attr]):
             #    correct += 1.0
@@ -353,7 +355,7 @@ class CanonicalFact:
             # else:
             #     if self.env.matcher_function(fact.normalized[attr], self.canonicalTuple[attr]):
             #         correct += 1.0
-            #2
+            # 2
             # if (attr == "degree" or  attr == "university") and ( fact.normalized[attr] and  self.canonicalTuple[attr]):
             #
             #       if (fuzz.token_sort_ratio(fact.normalized[attr],self.canonicalTuple[attr]) * 0.01 + word_vectors.similarity(fact.normalized[attr], self.canonicalTuple[attr])) > 0.6:
@@ -362,7 +364,7 @@ class CanonicalFact:
             # else :
             #     if fuzz.token_sort_ratio(fact.normalized[attr], self.canonicalTuple[attr]) > 60:
             #       correct += 1.0
-        return correct/attrs
+        return correct / attrs
 
     def get_canonical_fact(self):
         """

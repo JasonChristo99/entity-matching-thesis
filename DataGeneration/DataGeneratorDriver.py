@@ -198,4 +198,12 @@ def generate(config=None):
     with open('../datasets/' + global_config.default_program_parameters["out_file_name"] + '.json', 'w') as f:
         f.write(all_observed_json(observed))
 
+    print('JSON Canonical')
+    with open('eval.json', 'w') as f:
+        f.write(all_canonical_json(canonicals))
+
+    print('JSON Observed Matched')
+    with open('matched.json', 'w') as f:
+        f.write(matched_observed_json(observed, 200))
+
 # generate()
