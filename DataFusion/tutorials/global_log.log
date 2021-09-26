@@ -1817,3 +1817,11 @@
 2021-09-17 02:07:45,482 INFO Source weights = {'Education': {'internsteps.com': 3.0122615755051965, 'find.jobs': 2.6554064676167846, 'pro-profiles.com': 2.607966742545224, 'pipl.com': 3.1060803307228575}, 'Location': {'internsteps.com': 4.595119850134589, 'find.jobs': 4.595119850134589, 'pro-profiles.com': 4.595119850134589, 'pipl.com': 4.595119850134589}, 'Working Experience': {'internsteps.com': 4.595119850134589, 'find.jobs': 5.220355825078326, 'pro-profiles.com': 5.252273428046623, 'pipl.com': 4.595119850134589}, 'Name': {'internsteps.com': 3.7135720667043066, 'find.jobs': 4.595119850134589, 'pro-profiles.com': 4.595119850134589, 'pipl.com': 4.595119850134589}}
 2021-09-17 02:07:45,720 INFO Iteration = 9
 2021-09-17 02:07:45,721 INFO Source weights = {'Education': {'internsteps.com': 3.0122615755051965, 'find.jobs': 2.6554064676167846, 'pro-profiles.com': 2.607966742545224, 'pipl.com': 3.1060803307228575}, 'Location': {'internsteps.com': 4.595119850134589, 'find.jobs': 4.595119850134589, 'pro-profiles.com': 4.595119850134589, 'pipl.com': 4.595119850134589}, 'Working Experience': {'internsteps.com': 4.595119850134589, 'find.jobs': 5.220355825078326, 'pro-profiles.com': 5.252273428046623, 'pipl.com': 4.595119850134589}, 'Name': {'internsteps.com': 3.7135720667043066, 'find.jobs': 4.595119850134589, 'pro-profiles.com': 4.595119850134589, 'pipl.com': 4.595119850134589}}
+2021-09-18 11:10:19,301 INFO Connection established to database.
+2021-09-23 19:26:58,251 INFO Connection established to database.
+2021-09-23 19:36:34,545 INFO Connection established to database.
+2021-09-23 19:36:34,545 INFO Connection established to database.
+2021-09-23 19:38:02,354 INFO Connection established to database.
+2021-09-23 19:43:05,393 INFO Connection established to database.
+2021-09-23 19:46:07,335 INFO Connection established to database.
+2021-09-23 19:50:52,547 INFO Connection established to database.

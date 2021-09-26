@@ -12,7 +12,7 @@ levenshtein = NormalizedLevenshtein()
 damerau = Damerau()
 
 
-class CollectiveMatchingAHC(MatchingStrategy):
+class AgglomerativeHierarchicalClustering(MatchingStrategy):
     def __init__(self, dataset, attr, threshold=0.6, constant_a=0.6):
         """
         Constructor for a fact matcher.
@@ -45,20 +45,20 @@ class CollectiveMatchingAHC(MatchingStrategy):
         # TODO: never merge facts from the same source
         self.init_state()
         self.fact_records = facts
-        self.init_value_clusters()
+        self.init_token_clusters()
+        self.calculate_all_fact_pair_similarities()
         self.cluster_similar_facts()
         self.form_cluster_arrays()
         return self.formed_cluster_arrays
         # print('GETMATCHES')
 
     def cluster_similar_facts(self, threshold=0.45):
-        iteration = 1
-        self.calculate_all_fact_pair_similarities()
+        # iteration = 1
         max_pair_similarity = self.get_max_cluster_pair_similarity()
-        while (max_pair_similarity["score"] > threshold and len(self.fact_clusters) > 1):
+        while max_pair_similarity["score"] > threshold and len(self.fact_clusters) > 1:
             # merge the most similar cluster pair
             self.merge_clusters(max_pair_similarity["pair"])
-            # calculate new maximum simlarity score
+            # calculate new maximum similarity score
             max_pair_similarity = self.get_max_cluster_pair_similarity()
 
     def form_cluster_arrays(self):
@@ -70,7 +70,7 @@ class CollectiveMatchingAHC(MatchingStrategy):
     def get_cluster_arrays(self):
         return self.formed_cluster_arrays
 
-    def init_value_clusters(self):
+    def init_token_clusters(self):
         for key in self.fact_records:
             self.fact_clusters[frozenset({key})] = [key]
 
@@ -109,11 +109,11 @@ class CollectiveMatchingAHC(MatchingStrategy):
     def get_education_fact_similarity(self, fact1, fact2):
         degree_sim = self.constant_a * self.cosine_similarity(fact1['degree'], fact2['degree']) + (
                 1 - self.constant_a) * \
-                     self.attribute_to_simrank_matcher['degree'].get_simrank_score_of_values(fact1['degree'],
+                     self.attribute_to_simrank_matcher['degree'].get_simrank_score_of_tokens(fact1['degree'],
                                                                                              fact2['degree'])
         university_sim = self.constant_a * self.cosine_similarity(fact1['university'], fact2['university']) + (
                 1 - self.constant_a) * \
-                         self.attribute_to_simrank_matcher['university'].get_simrank_score_of_values(
+                         self.attribute_to_simrank_matcher['university'].get_simrank_score_of_tokens(
                              fact1['university'],
                              fact2['university'])
         year_sim: float
@@ -128,7 +128,7 @@ class CollectiveMatchingAHC(MatchingStrategy):
 
     def get_working_experience_fact_similarity(self, fact1, fact2):
         title_sim = self.constant_a * self.cosine_similarity(fact1['title'], fact2['title']) + (1 - self.constant_a) * \
-                    self.attribute_to_simrank_matcher['title'].get_simrank_score_of_values(fact1['title'],
+                    self.attribute_to_simrank_matcher['title'].get_simrank_score_of_tokens(fact1['title'],
                                                                                            fact2['title'])
         company_sim = self.cosine_similarity(fact1['company'], fact2['company'])
 
