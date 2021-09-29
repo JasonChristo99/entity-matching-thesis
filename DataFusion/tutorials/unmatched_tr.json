@@ -1,30 +1,56 @@
 [
   [
-    14,
-    "Location",
+    0,
+    "Education",
     {
-      "location": "Maxwellfort"
+      "degree": "Msc",
+      "university": "UC_Berkley",
+      "year": "1995"
     }
   ],
   [
-    41,
-    "Location",
+    5,
+    "Education",
     {
-      "location": "Wendyland"
+      "degree": "Bsc",
+      "university": "UMass",
+      "year": "2018"
+    }
+  ],
+  [
+    28,
+    "Education",
+    {
+      "degree": "Msc",
+      "university": "UCSC",
+      "year": "2013"
+    }
+  ],
+  [
+    32,
+    "Education",
+    {
+      "degree": "Phd",
+      "university": "UCSC",
+      "year": "1993"
     }
   ],
   [
     42,
-    "Location",
+    "Education",
     {
-      "location": "West Christopher"
+      "degree": "Msc",
+      "university": "MIT",
+      "year": "2016"
     }
   ],
   [
-    47,
-    "Location",
+    48,
+    "Education",
     {
-      "location": "Sharonport"
+      "degree": "Bsc",
+      "university": "UC_Berkley",
+      "year": "1998"
     }
   ]
 ]

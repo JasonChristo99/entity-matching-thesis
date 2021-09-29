@@ -11,5 +11,5 @@ class MatchingStrategy(ABC):
         pass
 
     @abstractmethod
-    def get_matches(self, facts, threshold):
+    def get_matches(self, **kwargs):
         pass

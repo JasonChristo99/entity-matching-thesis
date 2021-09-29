@@ -142,7 +142,9 @@ class DedupeMatcher(MatchingStrategy):
             # See get_matches().
             self.deduper = self._get_static_deduper()
 
-    def get_matches(self, facts, threshold=0.6):
+    def get_matches(self, **kwargs):
+        facts = kwargs.get("fact_records")
+        threshold = 0.6
         matches = []
         all_facts = list(facts.keys())
         if len(facts) == 1:

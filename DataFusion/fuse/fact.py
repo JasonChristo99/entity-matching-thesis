@@ -144,7 +144,7 @@ class ObservedFactCollection:
         similarity of facts in the collection.
         :return: None.
         """
-        return self.matcher.get_matches(self.fact_records)
+        return self.matcher.get_matches(fact_records=self.fact_records, facts=self.facts)
 
     def _fids_to_facts(self, fid_set):
         """

@@ -28,6 +28,7 @@ class AgglomerativeHierarchicalClustering(MatchingStrategy):
         self.init_state()
 
     def init_state(self):
+        self.facts = dict()
         self.fact_records = dict()
         self.fact_clusters = dict()
         self.fact_pair_similarites = dict()
@@ -41,10 +42,13 @@ class AgglomerativeHierarchicalClustering(MatchingStrategy):
             self.attribute_to_simrank_matcher['degree'] = SimRank(self.dataset, self.attr, 'degree')
             self.attribute_to_simrank_matcher['university'] = SimRank(self.dataset, self.attr, 'university')
 
-    def get_matches(self, facts, threshold=0.6):
+    def get_matches(self, **kwargs):
+        facts = kwargs.get("facts")
+        fact_records = kwargs.get("fact_records")
         # TODO: never merge facts from the same source
         self.init_state()
-        self.fact_records = facts
+        self.facts = facts
+        self.fact_records = fact_records
         self.init_token_clusters()
         self.calculate_all_fact_pair_similarities()
         self.cluster_similar_facts()
@@ -155,10 +159,17 @@ class AgglomerativeHierarchicalClustering(MatchingStrategy):
         max_pair_similarity = {"pair": frozenset({-1, -1}), "score": -1}
         for k, x in enumerate(clusters):
             for y in clusters[k + 1:]:
+                if self.clusters_contain_facts_from_same_source(x, y): continue
                 sim_score = self.get_cluster_pair_similarity(x, y)
                 if sim_score > max_pair_similarity["score"]:
                     max_pair_similarity = {"pair": frozenset({x, y}), "score": sim_score}
         return max_pair_similarity
+
+    def clusters_contain_facts_from_same_source(self, x, y):
+        sources_of_r1 = [self.facts[r].src for r in list(x)]
+        sources_of_r2 = [self.facts[r].src for r in list(y)]
+        common_sources = len(set(sources_of_r1).intersection(sources_of_r2))
+        return common_sources > 0
 
     def get_cluster_pair_similarity(self, x, y):
         # with maximum link
