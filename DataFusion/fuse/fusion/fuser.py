@@ -106,7 +106,7 @@ class FuseObservations:
         self.src_acc = src_acc
         self.no_weights = no_weights
 
-    def _update_src_acc(self, word_vectors):
+    def _update_src_acc(self):
         """
         Iterate over map fact assignments and update source weights.
         :return: None.
@@ -117,7 +117,7 @@ class FuseObservations:
             vertical = _vertical_from_fact_id(cluster.ent_attr)
             for fact in cluster.get_facts():
                 src = fact.src
-                score = cluster.evaluate_fact(fact, word_vectors)
+                score = cluster.evaluate_fact(fact)
                 src_stats[vertical][src]['total'] += 1.0
                 src_stats[vertical][src]['correct'] += score
         # Compute src accuracy and then weight
@@ -158,7 +158,7 @@ class FuseObservations:
                 facts.append(f)
         return facts
 
-    def run(self, word_vectors, iterations=10):
+    def run(self, iterations=10):
         """
         Run iterative truth discovery.
         :param iterations: The number of iterations to run for.
@@ -174,4 +174,4 @@ class FuseObservations:
                 self.env.logger.info("Iteration = " + str(iter))
                 self.env.logger.info("Source weights = " + str(self.src_acc))
                 self._find_map_state()
-                self._update_src_acc(word_vectors)
+                self._update_src_acc()

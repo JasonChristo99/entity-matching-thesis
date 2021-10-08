@@ -14,6 +14,8 @@ from matching.dedupe import DedupeMatcher
 # filen2 = 'fuzz_model.sav'
 # loaded_model_2 = pickle.load(open(filen2, 'rb'))
 # filen3   = 'finalized_model.sav'
+from utils import WordVectors
+
 filen3 = 'C:/Users/Iasonas/Downloads/MSc_DataInt_Code/Dataset_Generator/olddata/finalized_model.sav'
 loaded_model_3 = pickle.load(open(filen3, 'rb'))
 
@@ -320,11 +322,12 @@ class CanonicalFact:
                     max_value = max(score[attr].items(), key=operator.itemgetter(1))[0]
             self.canonicalTuple[attr] = max_value
 
-    def evaluate_fact(self, fact, word_vectors):
+    def evaluate_fact(self, fact):
         """
         Compare an observed fact with the inferred fact
         :return: A correctness score
         """
+        word_vectors = WordVectors.getInstance()
 
         attrs = float(len(self.canonicalTuple.keys()))
         correct = 0.0
