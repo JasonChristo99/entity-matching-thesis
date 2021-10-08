@@ -7,13 +7,11 @@ from fuzzywuzzy import fuzz
 from dataengine import DataEngine
 import utils.logger as log
 from evaluation import Evaluation
+from utils import WordVectors
 from matching.dedupe import DedupeMatcher
 from matching import MatchingStrategy
 
-from gensim.models import KeyedVectors
-
-filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
-word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
+word_vectors = WordVectors.getInstance()
 
 # Define arguments and flags for Fuse
 # Define arguments for HoloClean

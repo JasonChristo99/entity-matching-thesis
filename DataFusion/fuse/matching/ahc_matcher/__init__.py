@@ -1,5 +1,5 @@
-from matching.collective_matching_ahc.matcher import AgglomerativeHierarchicalClustering
-# from matching.collective_matching_ahc.simrank import SimRank
+from matching.ahc_matcher.matcher import AgglomerativeHierarchicalClustering
+# from matching.ahc_matcher.simrank import SimRank
 
 __author__ = "Iason Christofilakis"
 # __status__  = "Development"

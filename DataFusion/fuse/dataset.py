@@ -4,9 +4,8 @@ from fact import CanonicalFact
 from fusion import TruthDiscovery
 from fusion import FuseObservations
 from matching import MatchingStrategy
-from gensim.models import KeyedVectors
+from utils import WordVectors
 
-filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
 
 
 class Dataset:
@@ -188,7 +187,7 @@ class Dataset:
             self.canonical_facts.add(cfact)
         # Call fusion with true clusters and src accuracy
         fuser = FuseObservations(self.env, self.canonical_facts, self.src_acc, no_weights)
-        word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
+        word_vectors = WordVectors.getInstance()
         fuser.run(word_vectors)
         self.true_facts = fuser.get_canonical_facts()
         self.true_facts_flat = fuser.flatten_facts()

@@ -1,5 +1,5 @@
 from matching import MatchingStrategy
-from matching.collective_matching_ahc.simrank import SimRank
+from matching.ahc_matcher.simrank import SimRank
 
 from strsimpy.jaro_winkler import JaroWinkler
 from strsimpy.cosine import Cosine
@@ -139,7 +139,7 @@ class AgglomerativeHierarchicalClustering(MatchingStrategy):
         years_sim: float
         try:
             y11 = int(fact1['years'].split('-')[0])
-            y22 = int(fact1['years'].split('-')[1])
+            y12 = int(fact1['years'].split('-')[1])
             y21 = int(fact2['years'].split('-')[0])
             y22 = int(fact2['years'].split('-')[1])
             diff = abs(y11 - y12) + abs(y21 - y22)

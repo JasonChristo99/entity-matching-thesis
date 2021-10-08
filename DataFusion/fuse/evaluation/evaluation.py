@@ -6,17 +6,18 @@ import json
 import pickle
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
-from gensim.models import KeyedVectors
+
 from sklearn import model_selection
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 
-filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
 # filen1 = 'fuz_word.sav'
 # loaded_model_1 = pickle.load(open(filen1, 'rb'))
 # filen2 = 'fuzz_model.sav'
 # loaded_model_2 = pickle.load(open(filen2, 'rb'))
 # filen3   = 'finalized_model.sav'
+from utils import WordVectors
+
 filen3 = 'C:/Users/Iasonas/Downloads/MSc_DataInt_Code/Dataset_Generator/olddata/finalized_model.sav'
 loaded_model_3 = pickle.load(open(filen3, 'rb'))
 
@@ -211,7 +212,7 @@ class Evaluation:
         Iterate over facts and evaluate the precision and recall of Fusion.
         :return: None.
         """
-        word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
+        word_vectors = WordVectors.getInstance()
 
         inferred_facts = self.get_facts_dict()
         # Iterate over entities in ground truth

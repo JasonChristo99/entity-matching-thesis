@@ -1,7 +1,7 @@
 import sqlalchemy as sqla
 from dataengine.readers import IngestJson
-from dataset import Dataset
 from dataset_global_weights import DatasetGlobalWeights
+from dataset import Dataset
 from matching import MatchingStrategy
 
 
