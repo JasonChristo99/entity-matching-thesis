@@ -1,3 +1,5 @@
+import math
+
 import six
 import pickle
 import pandas as pd
@@ -47,7 +49,7 @@ class Evaluation:
         self.all_facts = {}
         self.out_path = out_path
 
-    def match_score(self, fact1, fact2, word_vectors):
+    def match_score(self, fact1, fact2):
         """
         Return the similarity between to facts associated with the
         entity attribute of the matcher.
@@ -55,6 +57,7 @@ class Evaluation:
         :param fact2: A dict with fact attributes and their respective values.
         :return:
         """
+        word_vectors = WordVectors.getInstance()
 
         score = 0.0
         f1attrs = set(fact1.keys())
@@ -166,13 +169,10 @@ class Evaluation:
                     raise RuntimeError("Invalid ground truth file")
                 attr = list(category.keys())[0]
                 normalized_facts = {}
-                facts = category[attr]
-                if not isinstance(facts, list):
-                    facts = [facts]
-                for index, fact in enumerate(facts):
-                    # Similar to what CanonicalFact.canonicalTuple has
-                    normalized_facts[index] = self.normalize_fact(fact)
-                grd_truth[eid][attr] = normalized_facts
+                fact = category[attr]
+                normalized_fact = self.normalize_fact(fact)
+                grd_truth[eid].setdefault(attr, []).append(normalized_fact)
+                # grd_truth[eid][attr] = normalized_facts # depr
             eid += 1
         return grd_truth
 
@@ -212,7 +212,6 @@ class Evaluation:
         Iterate over facts and evaluate the precision and recall of Fusion.
         :return: None.
         """
-        word_vectors = WordVectors.getInstance()
 
         inferred_facts = self.get_facts_dict()
         # Iterate over entities in ground truth
@@ -228,44 +227,47 @@ class Evaluation:
                 true_facts = self.grd_truth[eid][ent_attr]
                 if eid in inferred_facts:
                     if ent_attr in inferred_facts[eid]:
-                        inf_facts = inferred_facts[eid][ent_attr]
+                        inf_facts = deepcopy(inferred_facts[eid][ent_attr])
 
-                        self.all_facts[eid][ent_attr] = (list(true_facts.values()), deepcopy(inf_facts))
+                        # self.all_facts[eid][ent_attr] = (list(true_facts.values()), deepcopy(inf_facts)) # depr
+                        self.all_facts[eid][ent_attr] = (deepcopy(true_facts), deepcopy(inf_facts))
                     else:
-                        self.all_facts[eid][ent_attr] = (list(true_facts.values()), None)
+                        # self.all_facts[eid][ent_attr] = (list(true_facts.values()), None) # depr
+                        self.all_facts[eid][ent_attr] = (deepcopy(true_facts), None)
                         inf_facts = []
                 else:
-                    self.all_facts[eid][ent_attr] = (list(true_facts.values()), None)
+                    # self.all_facts[eid][ent_attr] = (list(true_facts.values()), None) # depr
+                    self.all_facts[eid][ent_attr] = (deepcopy(true_facts), None)
                     inf_facts = []
-                for f1id in true_facts:
+                for f1id, fact1 in enumerate(true_facts):
                     max_score = 0.0
                     max_index = -1
-                    fact1 = true_facts[f1id]
-                    f2id = 0
-                    for fact2 in inf_facts:
-                        new_score = self.match_score(fact1, fact2, word_vectors)
+                    for f2id, fact2 in enumerate(inf_facts):
+                        new_score = self.match_score(fact1, fact2)
                         if new_score > max_score:
                             max_score = new_score
                             max_index = f2id
-                        f2id += 1
                     if max_index > -1:
                         del inf_facts[max_index]
                         # assert max_score <= 1
-                        matched += max_score
+                        # matched += math.ceil(max_score)
+                        # matched += math.ceil(max_score)
+                        matched += 1
                         self.matched_facts_dict.append((eid, ent_attr, fact1, fact2))
                     else:
                         self.unmatched_facts_dict_true.append((eid, ent_attr, fact1))
-                        unmatched_true += 1.0
+                        unmatched_true += 1
                     total += 1.0
                 unmatched_inferred += len(inf_facts)
                 for f2 in inf_facts:
                     self.unmatched_facts_dict_infer.append((eid, ent_attr, f2))
 
-        print("Matched = %.2f, Unmatched true = %.2f, Unmatched inferred = %.2f, Total = %.2f" % (
-            matched, unmatched_true, unmatched_inferred, total))
+        print(
+            "Matched = %.2f, Unmatched true = %.2f, Unmatched inferred = %.2f, Total = %.2f" % (
+                matched, unmatched_true, unmatched_inferred, total))
         # print("=========")
         # print("ALL FACTS:")
-        with open('unmatched.json', 'w') as f:
+        with open('matched.json', 'w') as f:
             f.write(json.dumps(self.matched_facts_dict, indent=2))
         with open('unmatched_tr.json', 'w') as f:
             f.write(json.dumps(self.unmatched_facts_dict_true, indent=2))
@@ -273,14 +275,15 @@ class Evaluation:
         # print("=========")
         recall = matched / total
         precision = matched / (matched + unmatched_inferred)
+        accuracy = matched / (total + unmatched_inferred)
         f1score = (2 * (precision * recall)) / (precision + recall)
-        print("recall= %.2f" % (matched / total))
-        print("Precision = %.2f" % (matched / (matched + unmatched_inferred)))
-        print("Accuracy = %.2f" % (matched / (total + unmatched_inferred)))
+        print("Recall= %.2f" % recall)
+        print("Precision = %.2f" % precision)
+        print("Accuracy = %.2f" % accuracy)
         print("f1score = %.2f" % f1score)
         # precision = matched / (matched + unmatched_inferred)
         # recall = matched / ( matched + unmatched_true)
-        return {'recall': recall, 'precision': precision, 'f1score': (2 * (precision * recall)) / (precision + recall)}
+        return {'recall': recall, 'precision': precision, 'accuracy': accuracy, 'f1score': f1score}
 
     def persist_dicts(self):
         pickle.dump(self.matched_facts_dict, open(self.out_path + "matched_facts_dict.pkl", "wb"))
