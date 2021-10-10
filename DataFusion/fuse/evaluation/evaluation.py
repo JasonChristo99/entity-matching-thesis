@@ -264,6 +264,8 @@ class Evaluation:
             f.write(json.dumps(self.matched_facts_dict, indent=2))
         with open('unmatched_tr.json', 'w') as f:
             f.write(json.dumps(self.unmatched_facts_dict_true, indent=2))
+        with open('inferred.json', 'w') as f:
+            f.write(json.dumps(self.get_facts_dict(), indent=2, sort_keys=True))
 
         # print("=========")
         recall = matched / total
