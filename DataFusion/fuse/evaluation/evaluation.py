@@ -18,10 +18,7 @@ from sklearn.tree import DecisionTreeClassifier
 # filen2 = 'fuzz_model.sav'
 # loaded_model_2 = pickle.load(open(filen2, 'rb'))
 # filen3   = 'finalized_model.sav'
-from utils import WordVectors
-
-filen3 = 'C:/Users/Iasonas/Downloads/MSc_DataInt_Code/Dataset_Generator/olddata/finalized_model.sav'
-loaded_model_3 = pickle.load(open(filen3, 'rb'))
+from utils import WordVectors, RegressionModel
 
 import matplotlib.pyplot as plt
 
@@ -58,6 +55,7 @@ class Evaluation:
         :return:
         """
         word_vectors = WordVectors.getInstance()
+        loaded_model_3 = RegressionModel.getInstance()
 
         score = 0.0
         f1attrs = set(fact1.keys())

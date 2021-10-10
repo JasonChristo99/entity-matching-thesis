@@ -5,7 +5,6 @@ from fuzzywuzzy import fuzz
 from sklearn import model_selection
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-import pickle
 from matching.ahc_matcher import AgglomerativeHierarchicalClustering
 from matching.dedupe import DedupeMatcher
 
@@ -15,9 +14,7 @@ from matching.dedupe import DedupeMatcher
 # loaded_model_2 = pickle.load(open(filen2, 'rb'))
 # filen3   = 'finalized_model.sav'
 from utils import WordVectors
-
-filen3 = 'C:/Users/Iasonas/Downloads/MSc_DataInt_Code/Dataset_Generator/olddata/finalized_model.sav'
-loaded_model_3 = pickle.load(open(filen3, 'rb'))
+from utils import RegressionModel
 
 
 class ObservedFact:
@@ -328,6 +325,7 @@ class CanonicalFact:
         :return: A correctness score
         """
         word_vectors = WordVectors.getInstance()
+        loaded_model_3 = RegressionModel.getInstance()
 
         attrs = float(len(self.canonicalTuple.keys()))
         correct = 0.0

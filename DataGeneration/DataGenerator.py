@@ -6,6 +6,15 @@ from faker import Faker
 from DataGeneration import global_config
 from serializers import *
 
+import pandas as pd
+from sklearn import linear_model
+from fuzzywuzzy import fuzz
+from gensim.models import KeyedVectors
+import pickle
+
+filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
+word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
+
 
 class DataGenerator:
     def __init__(self, sources, entities_count):
@@ -15,6 +24,10 @@ class DataGenerator:
         self.observed = []
         self.sources = sources
         self.entities_count = entities_count
+
+        # prepare output folder
+        self.out_folder = '../datasets/' + time.strftime("%Y%m%d_%H%M%S") + '/'
+        Path(self.out_folder).mkdir(parents=True, exist_ok=True)
 
         # verticals definitions
         self.name_vertical = {
@@ -178,23 +191,46 @@ class DataGenerator:
         self.output_results()
 
     def output_results(self, observed_name='observed', canonical_name='eval', matched_name='matched'):
-        folder = '../datasets/' + time.strftime("%Y%m%d_%H%M%S") + '/'
-        Path(folder).mkdir(parents=True, exist_ok=True)
-        
         print('JSON Observed')
-        with open(folder + observed_name + '.json', 'w') as f:
+        with open(self.out_folder + observed_name + '.json', 'w') as f:
             f.write(all_observed_json(self.observed))
 
         print('JSON Canonical')
-        with open(folder + canonical_name + '.json', 'w') as f:
+        with open(self.out_folder + canonical_name + '.json', 'w') as f:
             f.write(all_canonical_json(self.canonicals))
 
         print('JSON Observed Matched')
-        with open(folder + matched_name + '.json', 'w') as f:
+        with open(self.out_folder + matched_name + '.json', 'w') as f:
             f.write(matched_observed_json(self.observed, 200))
+
+    def train_regression_model_for_threshold(self):
+        res = generate_value_matcher_dataset(
+            [self.name_vertical, self.education_vertical, self.working_experience_vertical, self.location_vertical])
+        fuzz_sc = []
+        word_sc = []
+        actual = []
+        for i in range(len(res)):
+            fuzz_sc.append(fuzz.token_sort_ratio(res[i].__getitem__(0), res[i].__getitem__(1)) * 0.01)
+            if res[i].__getitem__(0) in word_vectors and res[i].__getitem__(1) in word_vectors:
+                word_sc.append(word_vectors.similarity(res[i].__getitem__(0), res[i].__getitem__(1)))
+            else:
+                word_sc.append(0.0)
+            actual.append(res[i].__getitem__(2))
+        dict = {'fuzzy score': fuzz_sc, 'word2vec score': word_sc, 'true/false': actual}
+        df = pd.DataFrame(dict, columns=['fuzzy score', 'word2vec score', 'true/false'])
+        print(df)
+        X = df[['fuzzy score', 'word2vec score']]
+        y = df['true/false']
+        regr = linear_model.LogisticRegression()
+        regr.fit(X, y)
+        pred = regr.predict(X)
+        filename = self.out_folder + 'finalized_model.sav'
+        pickle.dump(regr, open(filename, 'wb'))
 
 
 if __name__ == '__main__':
     gen = DataGenerator(global_config.default_program_parameters["sources"],
                         entities_count=global_config.default_program_parameters["entities_count"])
     gen.generate()
+
+    gen.train_regression_model_for_threshold()
