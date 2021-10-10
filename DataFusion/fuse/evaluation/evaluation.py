@@ -1,17 +1,11 @@
-import math
-
-import six
-import pickle
-import pandas as pd
-from copy import deepcopy
 import json
 import pickle
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
+from copy import deepcopy
+from pprint import pprint
 
-from sklearn import model_selection
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
+import pandas as pd
+import six
+from fuzzywuzzy import fuzz
 
 # filen1 = 'fuz_word.sav'
 # loaded_model_1 = pickle.load(open(filen1, 'rb'))
@@ -19,8 +13,6 @@ from sklearn.tree import DecisionTreeClassifier
 # loaded_model_2 = pickle.load(open(filen2, 'rb'))
 # filen3   = 'finalized_model.sav'
 from utils import WordVectors, RegressionModel
-
-import matplotlib.pyplot as plt
 
 
 class Evaluation:
@@ -260,9 +252,12 @@ class Evaluation:
                 for f2 in inf_facts:
                     self.unmatched_facts_dict_infer.append((eid, ent_attr, f2))
 
-        print(
-            "Matched = %.2f, Unmatched true = %.2f, Unmatched inferred = %.2f, Total = %.2f" % (
-                matched, unmatched_true, unmatched_inferred, total))
+        print("Matched = %.2f, Unmatched true = %.2f, Unmatched inferred = %.2f, Total = %.2f"
+              % (matched, unmatched_true, unmatched_inferred, total))
+        print("Unmatched true facts:")
+        pprint(self.unmatched_facts_dict_true)
+        print("Unmatched inferred facts:")
+        pprint(self.unmatched_facts_dict_infer)
         # print("=========")
         # print("ALL FACTS:")
         with open('matched.json', 'w') as f:

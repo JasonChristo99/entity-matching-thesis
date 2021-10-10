@@ -1,5 +1,6 @@
 import pickle
-filepath = '../../../../datasets/current/finalized_model.sav'
+filepath = '../../datasets/current/finalized_model.sav'
+# filepath = '../../../datasets/current/finalized_model.sav'
 
 
 class RegressionModel:

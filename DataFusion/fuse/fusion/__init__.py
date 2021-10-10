@@ -1,7 +1,7 @@
 from fusion.fuser import TruthDiscovery
 from fusion.fuser import FuseObservations
-from fusion.fuser_global_weigts import TruthDiscoveryGlobalWeights
-from fusion.fuser_global_weigts import FuseObservationsGlobalWeights
+from fusion.fuser_global_weights import TruthDiscoveryGlobalWeights
+from fusion.fuser_global_weights import FuseObservationsGlobalWeights
 
 __author__  = "Theodoros Rekatsinas"
 __status__  = "Development"
