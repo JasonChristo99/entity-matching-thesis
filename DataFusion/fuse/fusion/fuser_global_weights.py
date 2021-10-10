@@ -6,6 +6,7 @@ class TruthDiscoveryGlobalWeights:
     This class defines a fuser to identify true facts given
     a collection of conflicting source votes on a fact being true or not.
     """
+
     def __init__(self, fuse_env, votes, src_weights):
         """
         :param fuse_env: A Fuse environment.
@@ -37,7 +38,7 @@ class TruthDiscoveryGlobalWeights:
         """
         score = 0.0
         for src in votes:
-            score += votes[src]*self.src_weights[src]
+            score += votes[src] * self.src_weights[src]
         return score > 0.0
 
     def _update_src_weights(self):
@@ -45,24 +46,24 @@ class TruthDiscoveryGlobalWeights:
         Iterate over map fact assignments and update source weights.
         :return: None.
         """
-        src_stats = {k: {'total':0.0, 'correct':0.0} for k in self.src_weights.keys()}
+        src_stats = {k: {'total': 0.0, 'correct': 0.0} for k in self.src_weights.keys()}
         for fact in self.votes:
             map_state = self.fact_assignments[fact]
             for src in self.votes[fact]:
                 src_stats[src]['total'] += 1.0
                 # Check if source agrees with map state
-                if self.votes[fact][src] == 2*int(map_state) - 1:
+                if self.votes[fact][src] == 2 * int(map_state) - 1:
                     src_stats[src]['correct'] += 1.0
         # Compute src accuracy and then weight
         for src in self.src_weights:
             accu = 0.5
             if src_stats[src]['total'] != 0.0:
-                accu = src_stats[src]['correct']/src_stats[src]['total']
+                accu = src_stats[src]['correct'] / src_stats[src]['total']
             if accu == 1.0:
                 accu = 0.99
             elif accu == 0.0:
                 accu = 0.01
-            self.src_weights[src] = math.log(accu/(1-accu))
+            self.src_weights[src] = math.log(accu / (1 - accu))
 
     def run(self, iterations=10):
         """
@@ -72,7 +73,7 @@ class TruthDiscoveryGlobalWeights:
         """
         self.env.logger.info("Running truth discovery for " + str(iterations) + " iterations.")
         for iter in range(iterations):
-            self.env.logger.info("Iteration = "+str(iter))
+            self.env.logger.info("Iteration = " + str(iter))
             self.env.logger.info("Source weights = " + str(self.src_weights))
             self._find_fact_assignments()
             self._update_src_weights()
@@ -83,6 +84,7 @@ class FuseObservationsGlobalWeights:
     """
     This class defines a fuser to merge observations in a true cluster.
     """
+
     def __init__(self, fuse_env, clusters, src_acc, no_weights):
         """
         :param fuse_env: A Fuse environment.
@@ -160,7 +162,7 @@ class FuseObservationsGlobalWeights:
         else:
             self.env.logger.info("Running fusion for " + str(iterations) + " iterations.")
             for iter in range(iterations):
-                self.env.logger.info("Iteration = "+str(iter))
+                self.env.logger.info("Iteration = " + str(iter))
                 self.env.logger.info("Source weights = " + str(self.src_acc))
                 self._find_map_state()
                 self._update_src_acc()

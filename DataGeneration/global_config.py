@@ -1,7 +1,7 @@
 # default program parameters
 default_program_parameters = {
     # constants
-    "entities_count": 50,
+    "entities_count": 500,
     "out_file_name": "observed_facts",
     # sources
     "sources": [

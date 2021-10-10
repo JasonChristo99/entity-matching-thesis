@@ -176,4 +176,6 @@ def run_experiment_dataset_versions():
               experiment_config["out_file_name"])
         generate(experiment_config)
 
-run_experiment_dataset_versions()
+
+if __name__ == "__main__":
+    run_experiment_dataset_versions()

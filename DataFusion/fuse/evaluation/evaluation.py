@@ -252,18 +252,20 @@ class Evaluation:
                 for f2 in inf_facts:
                     self.unmatched_facts_dict_infer.append((eid, ent_attr, f2))
 
-        print("Matched = %.2f, Unmatched true = %.2f, Unmatched inferred = %.2f, Total = %.2f"
+        print("Matched = %d, Unmatched true = %d, Unmatched inferred = %d, Total = %d"
               % (matched, unmatched_true, unmatched_inferred, total))
-        print("Unmatched true facts:")
-        pprint(self.unmatched_facts_dict_true)
-        print("Unmatched inferred facts:")
-        pprint(self.unmatched_facts_dict_infer)
+        # print("Unmatched true facts:")
+        # pprint(self.unmatched_facts_dict_true)
+        # print("Unmatched inferred facts:")
+        # pprint(self.unmatched_facts_dict_infer)
         # print("=========")
         # print("ALL FACTS:")
         with open('matched.json', 'w') as f:
             f.write(json.dumps(self.matched_facts_dict, indent=2))
         with open('unmatched_tr.json', 'w') as f:
             f.write(json.dumps(self.unmatched_facts_dict_true, indent=2))
+        with open('unmatched_inf.json', 'w') as f:
+            f.write(json.dumps(self.unmatched_facts_dict_infer, indent=2, sort_keys=True))
         with open('inferred.json', 'w') as f:
             f.write(json.dumps(self.get_facts_dict(), indent=2, sort_keys=True))
 
@@ -272,10 +274,10 @@ class Evaluation:
         precision = matched / (matched + unmatched_inferred)
         accuracy = matched / (total + unmatched_inferred)
         f1score = (2 * (precision * recall)) / (precision + recall)
-        print("Recall= %.2f" % recall)
-        print("Precision = %.2f" % precision)
-        print("Accuracy = %.2f" % accuracy)
-        print("f1score = %.2f" % f1score)
+        print("Recall= %.4f" % recall)
+        print("Precision = %.4f" % precision)
+        print("Accuracy = %.4f" % accuracy)
+        print("f1score = %.4f" % f1score)
         # precision = matched / (matched + unmatched_inferred)
         # recall = matched / ( matched + unmatched_true)
         return {'recall': recall, 'precision': precision, 'accuracy': accuracy, 'f1score': f1score}
