@@ -13,7 +13,7 @@ damerau = Damerau()
 
 
 class AgglomerativeHierarchicalClustering(MatchingStrategy):
-    def __init__(self, dataset, attr, threshold=0.6, constant_a=0.6):
+    def __init__(self, dataset, attr, matcher_home='', threshold=0.6, constant_a=0.6):
         """
         Constructor for a fact matcher.
         :param dataset: An instance of the Dataset class.
@@ -25,6 +25,7 @@ class AgglomerativeHierarchicalClustering(MatchingStrategy):
         self.threshold = threshold
         self.constant_a = constant_a
         self.attribute_to_simrank_matcher = {}
+        self.matcher_home = matcher_home
         self.init_state()
 
     def init_state(self):

@@ -1,4 +1,4 @@
-from fuse import Fuse, Session
+from .fuse import Fuse, Session
 from dataset import Dataset
 from fact import ObservedFact, ObservedFactCluster, ObservedFactCollection
 from evaluation import Evaluation

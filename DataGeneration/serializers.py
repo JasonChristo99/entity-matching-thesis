@@ -1,7 +1,7 @@
 import itertools
 import json
 import dedupe
-from generators import *
+from DataGeneration.generators import *
 
 
 def _extract_values(fact: Fact):

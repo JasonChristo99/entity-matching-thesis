@@ -4,7 +4,7 @@ from pathlib import Path
 from faker import Faker
 
 from DataGeneration import global_config
-from serializers import *
+from DataGeneration.serializers import *
 
 import pandas as pd
 from sklearn import linear_model
@@ -12,12 +12,11 @@ from fuzzywuzzy import fuzz
 from gensim.models import KeyedVectors
 import pickle
 
-filename = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
-word_vectors = KeyedVectors.load_word2vec_format(filename, binary=True)
+from utils import WordVectors
 
 
 class DataGenerator:
-    def __init__(self, sources, entities_count):
+    def __init__(self, sources, entities_count, out_folder=None):
         self.fake = Faker()
         self.YEARS = range(1990, 2021)
         self.canonicals = []
@@ -26,7 +25,9 @@ class DataGenerator:
         self.entities_count = entities_count
 
         # prepare output folder
-        self.out_folder = '../datasets/' + time.strftime("%Y%m%d_%H%M%S") + '/'
+        if out_folder is None:
+            out_folder = '../datasets/' + time.strftime("%Y%m%d_%H%M%S") + '/'
+        self.out_folder = out_folder
         Path(self.out_folder).mkdir(parents=True, exist_ok=True)
 
         # verticals definitions
@@ -175,7 +176,7 @@ class DataGenerator:
 
         return CanonicalValue(city, synonyms)
 
-    def generate(self):
+    def generate(self, verbose=True):
         self.canonicals, self.observed = generate_multi(
             [
                 self.name_vertical,
@@ -188,22 +189,25 @@ class DataGenerator:
             self.entities_count,
         )
 
-        self.output_results()
+        self.output_results(verbose=verbose)
+        self.train_regression_model_for_threshold(verbose)
 
-    def output_results(self, observed_name='observed', canonical_name='eval', matched_name='matched'):
-        print('JSON Observed')
+    def output_results(self, observed_name='observed', canonicals_name='eval', matched_name='matched', verbose=True):
+        if verbose: print('JSON Observed')
         with open(self.out_folder + observed_name + '.json', 'w') as f:
             f.write(all_observed_json(self.observed))
 
-        print('JSON Canonical')
-        with open(self.out_folder + canonical_name + '.json', 'w') as f:
+        if verbose: print('JSON Canonical')
+        with open(self.out_folder + canonicals_name + '.json', 'w') as f:
             f.write(all_canonical_json(self.canonicals))
 
-        print('JSON Observed Matched')
+        if verbose: print('JSON Observed Matched')
         with open(self.out_folder + matched_name + '.json', 'w') as f:
             f.write(matched_observed_json(self.observed, 200))
 
-    def train_regression_model_for_threshold(self):
+    def train_regression_model_for_threshold(self, verbose=True):
+        word_vectors = WordVectors.getInstance()
+
         res = generate_value_matcher_dataset(
             [self.name_vertical, self.education_vertical, self.working_experience_vertical, self.location_vertical])
         fuzz_sc = []
@@ -218,7 +222,7 @@ class DataGenerator:
             actual.append(res[i].__getitem__(2))
         dict = {'fuzzy score': fuzz_sc, 'word2vec score': word_sc, 'true/false': actual}
         df = pd.DataFrame(dict, columns=['fuzzy score', 'word2vec score', 'true/false'])
-        print(df)
+        if verbose: print(df)
         X = df[['fuzzy score', 'word2vec score']]
         y = df['true/false']
         regr = linear_model.LogisticRegression()
@@ -232,5 +236,3 @@ if __name__ == '__main__':
     gen = DataGenerator(global_config.default_program_parameters["sources"],
                         entities_count=global_config.default_program_parameters["entities_count"])
     gen.generate()
-
-    gen.train_regression_model_for_threshold()

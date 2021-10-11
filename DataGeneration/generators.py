@@ -5,7 +5,7 @@ import operator
 import numpy as np
 import pandas as pd
 
-from typo_generation import misspell
+from DataGeneration.typo_generation import misspell
 
 
 class Value:

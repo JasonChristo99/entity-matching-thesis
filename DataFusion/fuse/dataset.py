@@ -7,7 +7,6 @@ from matching import MatchingStrategy
 from utils import WordVectors
 
 
-
 class Dataset:
     """
     This class defines a Dafu dataset.
@@ -16,7 +15,7 @@ class Dataset:
     def __init__(self, fuse_env, name, entity_attributes,
                  ent_attr_schema,
                  sources, observed_facts,
-                 src_to_fact_map, matching_strategy: MatchingStrategy):
+                 src_to_fact_map, matching_strategy: MatchingStrategy, home_dir=''):
         """
         The constructor for Dataset
         :param fuse_env: A Fuse environment.
@@ -50,6 +49,7 @@ class Dataset:
         self.canonical_facts = set([])
         self.true_facts = []
         self.true_facts_flat = []
+        self.home_dir = home_dir
 
     # Initialiation methods
 
@@ -101,7 +101,7 @@ class Dataset:
         :return: None
         """
         for attr in self.ent_attr_schema:
-            matcher = self.matching_strategy(self, attr)
+            matcher = self.matching_strategy(self, attr, getattr(self.env, 'home_dir', ''))
             self.entity_attribute_matchers[attr] = matcher
 
     # Fact matching methods

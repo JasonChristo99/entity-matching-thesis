@@ -47,7 +47,8 @@ class Evaluation:
         :return:
         """
         word_vectors = WordVectors.getInstance()
-        loaded_model_3 = RegressionModel.getInstance()
+        loaded_model_3 = RegressionModel.getInstance(
+            getattr(self.env, 'home_dir', '') + 'dataset/' + 'finalized_model.sav')
 
         score = 0.0
         f1attrs = set(fact1.keys())
@@ -260,13 +261,13 @@ class Evaluation:
         # pprint(self.unmatched_facts_dict_infer)
         # print("=========")
         # print("ALL FACTS:")
-        with open('matched.json', 'w') as f:
+        with open(getattr(self.env, 'home_dir', '') + 'matched.json', 'w') as f:
             f.write(json.dumps(self.matched_facts_dict, indent=2))
-        with open('unmatched_tr.json', 'w') as f:
+        with open(getattr(self.env, 'home_dir', '') + 'unmatched_tr.json', 'w') as f:
             f.write(json.dumps(self.unmatched_facts_dict_true, indent=2))
-        with open('unmatched_inf.json', 'w') as f:
+        with open(getattr(self.env, 'home_dir', '') + 'unmatched_inf.json', 'w') as f:
             f.write(json.dumps(self.unmatched_facts_dict_infer, indent=2, sort_keys=True))
-        with open('inferred.json', 'w') as f:
+        with open(getattr(self.env, 'home_dir', '') + 'inferred.json', 'w') as f:
             f.write(json.dumps(self.get_facts_dict(), indent=2, sort_keys=True))
 
         # print("=========")
@@ -280,6 +281,13 @@ class Evaluation:
         print("f1score = %.4f" % f1score)
         # precision = matched / (matched + unmatched_inferred)
         # recall = matched / ( matched + unmatched_true)
+        self.env.logger.info("Matched = %d, Unmatched true = %d, Unmatched inferred = %d, Total = %d"
+                             % (matched, unmatched_true, unmatched_inferred, total))
+        self.env.logger.info("Recall= %.4f" % recall)
+        self.env.logger.info("Precision = %.4f" % precision)
+        self.env.logger.info("Accuracy = %.4f" % accuracy)
+        self.env.logger.info("f1score = %.4f" % f1score)
+
         return {'recall': recall, 'precision': precision, 'accuracy': accuracy, 'f1score': f1score}
 
     def persist_dicts(self):

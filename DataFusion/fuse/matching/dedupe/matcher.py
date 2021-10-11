@@ -28,13 +28,13 @@ class DedupeMatcher(MatchingStrategy):
     @property
     def model_file_path(self):
         model_name = 'fuse_model_' + self.attr
-        model_dir = self.home_dir + 'models'
+        model_dir = self.home_dir + 'dedupe_models'
         return model_dir + '/' + model_name
 
     @property
     def training_file_path(self):
         td_name = 'fuse_train_' + self.attr + '.json'
-        td_dir = self.home_dir + 'data'
+        td_dir = self.home_dir + 'dedupe_data'
         return td_dir + '/' + td_name
 
     def _form_variables(self):

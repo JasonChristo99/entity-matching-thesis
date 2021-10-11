@@ -92,7 +92,7 @@ class Fuse:
             setattr(self, arg, kwargs.get(arg, default))
 
         # Initialize global logger
-        logname = 'global_log.log'
+        logname = kwargs.get('home_dir', '') + 'global_log.log'
         if self.verbose:
             self.logger = log.setup_logger('global', logname, logging.INFO)
         else:
@@ -126,7 +126,7 @@ class Session:
         self.dataset = None
         self.eval = None
         # Initialize logger
-        logname = 'session_' + self.name + '.log'
+        logname = getattr(fuse_env, 'home_dir', '') + 'session_' + self.name + '.log'
         if self.env.verbose:
             self.logger = log.setup_logger(self.name, logname, logging.INFO)
         else:
