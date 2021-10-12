@@ -326,7 +326,7 @@ class CanonicalFact:
         """
         word_vectors = WordVectors.getInstance()
         loaded_model_3 = RegressionModel.getInstance(
-            getattr(self.env, 'home_dir', '') + 'dataset/' + 'finalized_model.sav')
+            getattr(self.env, 'home_dir', '') + '../dataset/' + 'finalized_model.sav')
 
         attrs = float(len(self.canonicalTuple.keys()))
         correct = 0.0

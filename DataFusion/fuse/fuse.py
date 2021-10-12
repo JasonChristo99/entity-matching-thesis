@@ -94,9 +94,9 @@ class Fuse:
         # Initialize global logger
         logname = kwargs.get('home_dir', '') + 'global_log.log'
         if self.verbose:
-            self.logger = log.setup_logger('global', logname, logging.INFO)
+            self.logger = log.setup_logger(logname, logname, logging.INFO)
         else:
-            self.logger = log.setup_logger('global', logname, logging.ERROR)
+            self.logger = log.setup_logger(logname, logname, logging.ERROR)
         # Initialize data engine
         self.dataengine = DataEngine(self)
         # Initialize dataset object

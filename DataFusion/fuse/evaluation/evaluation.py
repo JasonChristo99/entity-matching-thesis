@@ -48,7 +48,7 @@ class Evaluation:
         """
         word_vectors = WordVectors.getInstance()
         loaded_model_3 = RegressionModel.getInstance(
-            getattr(self.env, 'home_dir', '') + 'dataset/' + 'finalized_model.sav')
+            getattr(self.env, 'home_dir', '') + '../dataset/' + 'finalized_model.sav')
 
         score = 0.0
         f1attrs = set(fact1.keys())

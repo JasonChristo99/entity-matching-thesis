@@ -32,11 +32,12 @@ class FusionExperiment:
             f.write(json.dumps(dataset_config, indent=2))
 
     def prepare_dataset_configs(self):
+        entities_count = 200
         self.dataset_configurations = [
             # config 1
             {
                 # constants
-                "entities_count": 100,
+                "entities_count": entities_count,
                 "out_file_name": "observed_facts_400_v1",
                 # sources
                 "sources": [
@@ -63,7 +64,7 @@ class FusionExperiment:
             # config 2
             {
                 # constants
-                "entities_count": 100,
+                "entities_count": entities_count,
                 "out_file_name": "observed_facts_400_v2",
                 # sources
                 "sources": [
@@ -90,7 +91,7 @@ class FusionExperiment:
             # config 3
             {
                 # constants
-                "entities_count": 100,
+                "entities_count": entities_count,
                 "out_file_name": "observed_facts_400_v3",
                 # sources
                 "sources": [
@@ -117,7 +118,7 @@ class FusionExperiment:
             # config 4
             {
                 # constants
-                "entities_count": 100,
+                "entities_count": entities_count,
                 "out_file_name": "observed_facts_400_v4",
                 # sources
                 "sources": [
@@ -144,7 +145,7 @@ class FusionExperiment:
             # config 5
             {
                 # constants
-                "entities_count": 100,
+                "entities_count": entities_count,
                 "out_file_name": "observed_facts_400_v5",
                 # sources
                 "sources": [
@@ -218,7 +219,6 @@ class FusionExperiment:
         tr_clusters = fuse_session.find_true_clusters()
         true_facts = fuse_session.find_true_facts(persist=True, no_weights=False)
         eval = fuse_session.evaluate(inferred_facts=true_facts, grd_path=self.experiment_folder + 'dataset/eval.json')
-
 
     def run_experiment(self):
         # for each dataset version

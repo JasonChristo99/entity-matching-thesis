@@ -19,3 +19,4 @@ class WordVectors:
             raise Exception("This class is a Singleton!")
         else:
             WordVectors.__instance = KeyedVectors.load_word2vec_format(filename, binary=True)
+            # WordVectors.__instance = None
