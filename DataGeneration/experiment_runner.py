@@ -1,7 +1,9 @@
-import random
 from DataGeneration.DataGeneratorDriver import generate
+from DataGeneration import RANDOM_SEED
 
-random.seed(10)
+import random
+
+random.seed(RANDOM_SEED)
 
 
 def getRandomSourceConfig():

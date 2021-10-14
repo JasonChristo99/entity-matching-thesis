@@ -6,7 +6,7 @@ from matching import MatchingStrategy
 
 
 class DedupeMatcher(MatchingStrategy):
-    def __init__(self, dataset, attr, matcher_home='', num_cores=2, simple=False):
+    def __init__(self, dataset, attr, matcher_home='', num_cores=0, simple=False):
         """
         Constructor for a fact matcher.
         :param dataset: An instance of the Dataset class.
@@ -130,6 +130,7 @@ class DedupeMatcher(MatchingStrategy):
             # Collect more training data and store it.
             records = self._form_dataset()
             self.deduper._sample(records, sample_size=samples)
+            # self.deduper._sample(records)
 
             if matched_facts is None:
                 dedupe.console_label(self.deduper)
@@ -140,11 +141,11 @@ class DedupeMatcher(MatchingStrategy):
             # to create good clusters for some reason with the following error:
             # ValueError: shapes (13,6) and (2,) not aligned: 6 (dim 1) != 2 (dim 0)
             # See get_matches().
-            self.deduper = self._get_static_deduper()
+            self.deduper = self._get_static_deduper() # TODO : test not switching
 
     def get_matches(self, **kwargs):
         facts = kwargs.get("fact_records")
-        threshold = 0.6
+        threshold = 0.5
         matches = []
         all_facts = list(facts.keys())
         if len(facts) == 1:
@@ -153,11 +154,12 @@ class DedupeMatcher(MatchingStrategy):
             return matches
         try:
             duplicates = self.deduper.partition(facts, threshold=threshold)
-        except BlockingError:
+        except BlockingError as e:
             # TODO: if verbose log
+            # self.dataset.env.logger.log(e)
             match = facts.keys()
             matches.append(match)
-        except Exception:
+        except Exception as ex:
             # TODO: fix problem with empty strings.
             # What does the above mean? Is this what causes the following error?
             # ValueError: shapes (13,6) and (2,) not aligned: 6 (dim 1) != 2 (dim 0)

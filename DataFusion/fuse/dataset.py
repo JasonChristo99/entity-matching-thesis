@@ -1,3 +1,6 @@
+import json
+import os
+
 import pandas as pd
 from fact import ObservedFactCollection
 from fact import CanonicalFact
@@ -130,6 +133,8 @@ class Dataset:
                 cmap = col.compute_fact_clusters()
                 for cluster_id in cmap:
                     self.cluster_map[cluster_id] = cmap[cluster_id]
+        # write observed fact clusters to file, so we can compare the matching strategies
+        self._store_cluster_map()
 
     # Truth finding methods
     def _gather_cluster_votes(self):
@@ -223,3 +228,27 @@ class Dataset:
         :return: Pandas dataframe with schema ['entity id', 'entity attribute'
         """
         return pd.DataFrame(self.true_facts_flat, columns=['eid', 'entity_attr', 'attr', 'val'])
+
+    @property
+    def clusters_file_path(self):
+        td_name = 'observed_fact_clusters.json'
+        td_dir = getattr(self.env, 'home_dir', '')
+        return td_dir + '/' + td_name
+
+    def _store_cluster_map(self):
+        """
+       A function to store observed fact clusters.
+       :return: None.
+       """
+        td_dir = os.path.dirname(self.clusters_file_path)
+        if not os.path.exists(td_dir):
+            os.makedirs(td_dir)
+
+        # serialize
+        clusters_serial = {}
+        for attr in self.cluster_map:
+            for fact in list(self.cluster_map[attr].facts):
+                clusters_serial.setdefault(attr, []).append(fact.normalized)
+
+        with open(self.clusters_file_path, 'w') as f:
+            json.dump(clusters_serial, f, sort_keys=True)

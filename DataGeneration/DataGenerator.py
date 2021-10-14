@@ -2,17 +2,20 @@ import time
 from pathlib import Path
 
 from faker import Faker
-
 from DataGeneration import global_config
 from DataGeneration.serializers import *
 
 import pandas as pd
 from sklearn import linear_model
 from fuzzywuzzy import fuzz
-from gensim.models import KeyedVectors
+
 import pickle
 
 from utils import WordVectors
+from DataGeneration import RANDOM_SEED
+
+Faker.seed(RANDOM_SEED)
+random.seed(RANDOM_SEED)
 
 
 class DataGenerator:

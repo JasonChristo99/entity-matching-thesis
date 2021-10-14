@@ -253,8 +253,8 @@ class Evaluation:
                 for f2 in inf_facts:
                     self.unmatched_facts_dict_infer.append((eid, ent_attr, f2))
 
-        print("Matched = %d, Unmatched true = %d, Unmatched inferred = %d, Total = %d"
-              % (matched, unmatched_true, unmatched_inferred, total))
+        # print("Matched = %d, Unmatched true = %d, Unmatched inferred = %d, Total = %d"
+        #       % (matched, unmatched_true, unmatched_inferred, total))
         # print("Unmatched true facts:")
         # pprint(self.unmatched_facts_dict_true)
         # print("Unmatched inferred facts:")
@@ -275,10 +275,10 @@ class Evaluation:
         precision = matched / (matched + unmatched_inferred)
         accuracy = matched / (total + unmatched_inferred)
         f1score = (2 * (precision * recall)) / (precision + recall)
-        print("Recall= %.4f" % recall)
-        print("Precision = %.4f" % precision)
-        print("Accuracy = %.4f" % accuracy)
-        print("f1score = %.4f" % f1score)
+        # print("Recall= %.4f" % recall)
+        # print("Precision = %.4f" % precision)
+        # print("Accuracy = %.4f" % accuracy)
+        # print("f1score = %.4f" % f1score)
         # precision = matched / (matched + unmatched_inferred)
         # recall = matched / ( matched + unmatched_true)
         self.env.logger.info("Matched = %d, Unmatched true = %d, Unmatched inferred = %d, Total = %d"

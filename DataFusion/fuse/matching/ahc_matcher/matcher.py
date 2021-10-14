@@ -1,5 +1,6 @@
 from matching import MatchingStrategy
 from matching.ahc_matcher.simrank import SimRank
+from matching.ahc_matcher import similarity_funcs
 
 from strsimpy.jaro_winkler import JaroWinkler
 from strsimpy.cosine import Cosine
@@ -13,7 +14,7 @@ damerau = Damerau()
 
 
 class AgglomerativeHierarchicalClustering(MatchingStrategy):
-    def __init__(self, dataset, attr, matcher_home='', threshold=0.6, constant_a=0.6):
+    def __init__(self, dataset, attr, matcher_home='', threshold=0.6, constant_a=0.7):
         """
         Constructor for a fact matcher.
         :param dataset: An instance of the Dataset class.
@@ -104,55 +105,46 @@ class AgglomerativeHierarchicalClustering(MatchingStrategy):
         return result
 
     def get_name_fact_similarity(self, fact1, fact2):
-        result = self.cosine_similarity(fact1['name'], fact2['name'])
+        result = similarity_funcs.get_name_similarity(fact1['name'], fact2['name'])
         return result
 
     def get_location_fact_similarity(self, fact1, fact2):
-        result = self.cosine_similarity(fact1['location'], fact2['location'])
+        result = similarity_funcs.get_location_similarity(fact1['location'], fact2['location'])
         return result
 
     def get_education_fact_similarity(self, fact1, fact2):
-        degree_sim = self.constant_a * self.cosine_similarity(fact1['degree'], fact2['degree']) + (
-                1 - self.constant_a) * \
+        degree_sim = self.constant_a * similarity_funcs.get_education_degree_similarity(fact1['degree'],
+                                                                                        fact2['degree']) \
+                     + (1 - self.constant_a) * \
                      self.attribute_to_simrank_matcher['degree'].get_simrank_score_of_tokens(fact1['degree'],
                                                                                              fact2['degree'])
-        university_sim = self.constant_a * self.cosine_similarity(fact1['university'], fact2['university']) + (
-                1 - self.constant_a) * \
+        university_sim = self.constant_a * similarity_funcs.get_education_university_similarity(fact1['university'],
+                                                                                                fact2['university']) \
+                         + (1 - self.constant_a) * \
                          self.attribute_to_simrank_matcher['university'].get_simrank_score_of_tokens(
                              fact1['university'],
                              fact2['university'])
-        year_sim: float
-        try:
-            diff = abs(int(fact1['year']) - int(fact2['year']))
-            year_sim = 1 / (diff + 1)
-        except:
-            year_sim = self.cosine_similarity(fact1['year'], fact2['year'])
+
+        year_sim = similarity_funcs.get_education_year_similarity(fact1['year'], fact2['year'])
 
         result = 0.3 * degree_sim + 0.4 * university_sim + 0.2 * year_sim
         return result
 
     def get_working_experience_fact_similarity(self, fact1, fact2):
-        title_sim = self.constant_a * self.cosine_similarity(fact1['title'], fact2['title']) + (1 - self.constant_a) * \
+        title_sim = self.constant_a * similarity_funcs.get_working_experience_title_similarity(fact1['title'],
+                                                                                               fact2['title']) \
+                    + (1 - self.constant_a) * \
                     self.attribute_to_simrank_matcher['title'].get_simrank_score_of_tokens(fact1['title'],
                                                                                            fact2['title'])
-        company_sim = self.cosine_similarity(fact1['company'], fact2['company'])
+        company_sim = similarity_funcs.get_working_experience_company_similarity(fact1['company'], fact2['company'])
 
-        years_sim: float
-        try:
-            y11 = int(fact1['years'].split('-')[0])
-            y12 = int(fact1['years'].split('-')[1])
-            y21 = int(fact2['years'].split('-')[0])
-            y22 = int(fact2['years'].split('-')[1])
-            diff = abs(y11 - y12) + abs(y21 - y22)
-            years_sim = 1 / (diff + 1)
-        except:
-            years_sim = self.cosine_similarity(fact1['years'], fact2['years'])
+        years_sim = similarity_funcs.get_working_experience_years_similarity(fact1['years'], fact2['years'])
 
         result = 0.3 * title_sim + 0.4 * company_sim + 0.2 * years_sim
         return result
 
     def get_skills_fact_similarity(self, fact1, fact2):
-        result = self.cosine_similarity(fact1['skill'], fact2['skill'])
+        result = similarity_funcs.get_skills_similarity(fact1['skill'], fact2['skill'])
         return result
 
     def get_max_cluster_pair_similarity(self):
@@ -193,5 +185,5 @@ class AgglomerativeHierarchicalClustering(MatchingStrategy):
         # add new key with values of old keys
         self.fact_clusters[new_cluster_key] = values_key_1 + values_key_2
 
-    def cosine_similarity(self, x: str, y: str):
-        return cosine.similarity(x.lower(), y.lower())
+    # def cosine_similarity(self, x: str, y: str):
+    #     return cosine.similarity(x.lower(), y.lower())

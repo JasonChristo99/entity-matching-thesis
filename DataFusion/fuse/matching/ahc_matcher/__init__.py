@@ -1,5 +1,5 @@
 from matching.ahc_matcher.matcher import AgglomerativeHierarchicalClustering
-# from matching.ahc_matcher.simrank import SimRank
+from matching.ahc_matcher import similarity_funcs
 
 __author__ = "Iason Christofilakis"
 # __status__  = "Development"
@@ -7,4 +7,4 @@ __author__ = "Iason Christofilakis"
 # __date__    = "2 March 2018"
 
 # __all__ = ["CollectiveMatchingAHC", "SimRank"]
-__all__ = ["AgglomerativeHierarchicalClustering"]
+__all__ = ["AgglomerativeHierarchicalClustering", "similarity_funcs"]

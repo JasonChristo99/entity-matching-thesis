@@ -8,8 +8,9 @@ from DataGeneration.DataGenerator import DataGenerator
 
 from matching.ahc_matcher import AgglomerativeHierarchicalClustering
 from matching.dedupe import DedupeMatcher
+from DataGeneration import RANDOM_SEED
 
-random.seed(10)
+random.seed(RANDOM_SEED)
 
 
 class FusionExperiment:
@@ -32,7 +33,7 @@ class FusionExperiment:
             f.write(json.dumps(dataset_config, indent=2))
 
     def prepare_dataset_configs(self):
-        entities_count = 200
+        entities_count = 20
         self.dataset_configurations = [
             # config 1
             {
@@ -207,9 +208,15 @@ class FusionExperiment:
         generator.generate(verbose=False)
 
     def run_fusion(self, matching_strategy):
+        # folder structure for experiments:
+        # - experiment_X
+        # -     dataset
+        # -     ahc_result
+        # -     dedupe_result
         matcher_folder = "dedupe_result/" if matching_strategy is DedupeMatcher else "ahc_result/"
         current_folder = self.experiment_folder + matcher_folder
         Path(current_folder).mkdir(parents=True, exist_ok=True)
+
         fuse_env = fuse.Fuse(verbose=True, home_dir=current_folder)
         fuse_session = fuse_env.get_session('test')
         dataset = fuse_session.ingest(self.experiment_folder + 'dataset/observed.json', 'fusion_test',
@@ -219,6 +226,7 @@ class FusionExperiment:
         tr_clusters = fuse_session.find_true_clusters()
         true_facts = fuse_session.find_true_facts(persist=True, no_weights=False)
         eval = fuse_session.evaluate(inferred_facts=true_facts, grd_path=self.experiment_folder + 'dataset/eval.json')
+        return eval
 
     def run_experiment(self):
         # for each dataset version
@@ -229,10 +237,13 @@ class FusionExperiment:
             self.generate_dataset(dataset_config)
 
             # run fusion using old matcher
-            self.run_fusion(matching_strategy=DedupeMatcher)
+            eval1 = self.run_fusion(matching_strategy=DedupeMatcher)
 
             # run fusion using new matcher
-            self.run_fusion(matching_strategy=AgglomerativeHierarchicalClustering)
+            eval2 = self.run_fusion(matching_strategy=AgglomerativeHierarchicalClustering)
+
+            print({'ahc': eval2})
+            print({'dedupe': eval1})
 
 
 if __name__ == "__main__":

@@ -1,11 +1,17 @@
 from functools import reduce
-import random
+
 from typing import Sequence, Union, Callable, Mapping
 import operator
 import numpy as np
+from numpy import random as nprandom
 import pandas as pd
+import random
 
 from DataGeneration.typo_generation import misspell
+from DataGeneration import RANDOM_SEED
+
+nprandom.seed(RANDOM_SEED)
+random.seed(RANDOM_SEED)
 
 
 class Value:
@@ -36,7 +42,8 @@ class CanonicalValue(Value):
 
 # picks a value randomly from values, excluding exclude
 def _random_value(values_provider: Union[Sequence, Callable], exclude=None):
-    chooser = values_provider if callable(values_provider) else lambda: random.choice(values_provider)
+    chooser = values_provider if callable(values_provider) else lambda: random.choice(
+        values_provider)
 
     chosen = chooser()
     if exclude is not None and (callable(values_provider) or len(values_provider) > 1):
@@ -94,7 +101,7 @@ class Entity:
 
         for schema in vertical_schemas:
             # determine presence
-            if np.random.random() > schema.get('presence_chance', 1):
+            if nprandom.random() > schema.get('presence_chance', 1):
                 continue
 
             facts = []
@@ -104,7 +111,7 @@ class Entity:
             rep_conf = schema['repetitions'] if 'repetitions' in schema else {'min': 1, 'max': 1}
             min_reps = rep_conf.get('min', 0)
             if 'geometric_parameter' in rep_conf:
-                repetition = np.random.geometric(rep_conf['geometric_parameter']) - 1 + min_reps
+                repetition = nprandom.geometric(rep_conf['geometric_parameter']) - 1 + min_reps
             else:
                 repetition = min_reps
             if 'max' in rep_conf:
@@ -136,7 +143,7 @@ class ObservedValue(Value):
 
     @staticmethod
     def generate(canonical: CanonicalValue, source_vertical: dict):
-        if len(canonical.synonyms) and np.random.random() < source_vertical.get('synonym_chance', 0):
+        if len(canonical.synonyms) and nprandom.random() < source_vertical.get('synonym_chance', 0):
             value = random.choice(canonical.synonyms)
         else:
             value = canonical.value
@@ -169,9 +176,9 @@ class ObservedFact(Fact):
         source_vertical = source[canonical.schema['name']]
 
         def pick_value(canonical_value, attribute_value_gen):
-            if np.random.random() < source_vertical.get('abstain_value_chance', 0):
+            if nprandom.random() < source_vertical.get('abstain_value_chance', 0):
                 return CanonicalValue(None)
-            if np.random.random() < source_vertical.get('wrong_value_chance', 0):
+            if nprandom.random() < source_vertical.get('wrong_value_chance', 0):
                 return _random_value(attribute_value_gen, canonical_value)
             return canonical_value
 
@@ -212,13 +219,13 @@ class ObservedEntity(Entity):
             canonical_facts = canonical.verticals.get(schema['name'], [])
             if 'omitted_fact_chance' in source_vertical:
                 for canonical_fact in canonical_facts:
-                    if np.random.random() > source_vertical['omitted_fact_chance']:
+                    if nprandom.random() > source_vertical['omitted_fact_chance']:
                         facts.append(ObservedFact.generate_from(source, canonical_fact))
             else:
                 facts.extend(ObservedFact.generate_from(source, canonical_fact) for canonical_fact in canonical_facts)
 
             if 'incorrect_fact_geom_param' in source_vertical:
-                incorrect_fact_count = np.random.geometric(source_vertical['incorrect_fact_geom_param']) - 1
+                incorrect_fact_count = nprandom.geometric(source_vertical['incorrect_fact_geom_param']) - 1
                 facts.extend(ObservedFact.generate_incorrect(source, schema) for _ in range(incorrect_fact_count))
 
         return ObservedEntity(source, canonical, verticals)
@@ -314,7 +321,7 @@ def generate_value_matcher_dataset(vertical_schemas,
                     False
                 ))
 
-            print(f"{attr_name}: {len(equiv_pairs)} equivalent pairs, {len(non_equivs)} non-equivalent pairs")
+            # print(f"{attr_name}: {len(equiv_pairs)} equivalent pairs, {len(non_equivs)} non-equivalent pairs")
 
             pairs += equiv_pairs + list(non_equivs)
             # p = equiv_pairs + list(non_equivs)
@@ -322,7 +329,7 @@ def generate_value_matcher_dataset(vertical_schemas,
             # print(dict)
             # pairs_dic.append(p)
 
-            print(attr_name)
+            # print(attr_name)
 
     dict = {'attr': attr, 'pairs': pairs_dic}
     return pairs

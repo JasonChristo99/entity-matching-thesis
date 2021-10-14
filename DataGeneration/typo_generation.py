@@ -1,10 +1,14 @@
-from random import choices, choice
+import random
 from typing import List
 import unicodedata
-import numpy as np
+from numpy import random as nprandom
 import re
 import string
 
+from DataGeneration import RANDOM_SEED
+
+nprandom.seed(RANDOM_SEED)
+random.seed(RANDOM_SEED)
 
 # returns non-space character
 def _get_similar_char(cs, position):
@@ -12,7 +16,7 @@ def _get_similar_char(cs, position):
         # find a non-space character
         non_space = re.search(r"(\S)", ''.join(cs))
         if non_space is None:  # just pick an ascii character
-            char = choice(string.ascii_letters)
+            char = random.choice(string.ascii_letters)
         else:
             char = non_space.group()
     else:
@@ -70,10 +74,10 @@ _ERROR_TYPES = [
 def misspell(s: str, binomial_typo_param: float):
     s = list(s)
 
-    number_of_typos = np.random.binomial(len(s), binomial_typo_param)
+    number_of_typos = nprandom.binomial(len(s), binomial_typo_param)
 
-    errors = choices(_ERROR_TYPES, k=number_of_typos)
-    error_positions = np.random.choice(len(s), size=number_of_typos, replace=False)
+    errors = random.choices(_ERROR_TYPES, k=number_of_typos)
+    error_positions = nprandom.choice(len(s), size=number_of_typos, replace=False)
 
     for error, position in zip(errors, error_positions):
         error(s, min(position, len(s) - 1))
