@@ -134,7 +134,6 @@ class Dataset:
                 for cluster_id in cmap:
                     self.cluster_map[cluster_id] = cmap[cluster_id]
         # write observed fact clusters to file, so we can compare the matching strategies
-        self._store_cluster_map()
 
     # Truth finding methods
     def _gather_cluster_votes(self):
@@ -170,6 +169,7 @@ class Dataset:
         for cluster_id in cluster_truth:
             if cluster_truth[cluster_id]:
                 self.true_clusters.add(self.cluster_map[cluster_id])
+        self._store_fact_clusters(cluster_truth)
         return self.true_clusters
 
     def find_true_clusters_new(self):
@@ -235,7 +235,7 @@ class Dataset:
         td_dir = getattr(self.env, 'home_dir', '')
         return td_dir + '/' + td_name
 
-    def _store_cluster_map(self):
+    def _store_fact_clusters(self, cluster_truth):
         """
        A function to store observed fact clusters.
        :return: None.
@@ -246,9 +246,13 @@ class Dataset:
 
         # serialize
         clusters_serial = {}
-        for attr in self.cluster_map:
-            for fact in list(self.cluster_map[attr].facts):
-                clusters_serial.setdefault(attr, []).append(fact.normalized)
+        for cluster in self.cluster_map:
+            for fact in list(self.cluster_map[cluster].facts):
+                clusters_serial.setdefault(cluster, []).append(fact.normalized)
+
+        # add truth
+        for cluster in self.cluster_map:
+            clusters_serial[cluster] = (cluster_truth[cluster], clusters_serial[cluster])
 
         with open(self.clusters_file_path, 'w') as f:
             json.dump(clusters_serial, f, sort_keys=True)

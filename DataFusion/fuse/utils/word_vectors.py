@@ -2,6 +2,7 @@ from gensim.models import KeyedVectors
 
 WORD2VEC_FILEPATH = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
 WORD_LIMIT = 500000
+# WORD_LIMIT = 500  # test
 
 
 class WordVectors:
@@ -19,8 +20,8 @@ class WordVectors:
         if WordVectors.__instance is not None:
             raise Exception("This class is a Singleton!")
         else:
-            WordVectors.__instance = KeyedVectors.load_word2vec_format(WORD2VEC_FILEPATH, binary=True, limit=WORD_LIMIT)
-            # WordVectors.__instance = KeyedVectors.load_word2vec_format(filename, binary=True)
+            # WordVectors.__instance = KeyedVectors.load_word2vec_format(WORD2VEC_FILEPATH, binary=True, limit=WORD_LIMIT)
+            WordVectors.__instance = KeyedVectors.load_word2vec_format(WORD2VEC_FILEPATH, binary=True) # without limit
             # WordVectors.__instance = WordVectorsStub() # for testing purposes
 
 
