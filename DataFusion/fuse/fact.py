@@ -5,7 +5,7 @@ from fuzzywuzzy import fuzz
 from sklearn import model_selection
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from matching.ahc_matcher import AgglomerativeHierarchicalClustering
+from matching.ahc_matcher import AgglomerativeHierarchicalClusteringWithNaiveSimrank
 from matching.dedupe import DedupeMatcher
 
 # filen1 = 'fuz_word.sav'

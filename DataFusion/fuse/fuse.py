@@ -136,6 +136,9 @@ class Session:
         """
         Ingest data from a JSON file and generate a new Dataset object.
         :param filepath: String literal indicating the path to a JSON file.
+        :param persist:
+        :param name:
+        :param matching_strategy:
         :return: A new Dataset object
         """
         # Check that the file is in JSON format

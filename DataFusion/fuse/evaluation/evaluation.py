@@ -210,6 +210,7 @@ class Evaluation:
         total = 0.0
         unmatched_true = 0.0
         unmatched_inferred = 0.0
+        fact_scores_dict = []
         for eid in self.grd_truth:
             self.all_facts[eid] = {}
 
@@ -235,6 +236,7 @@ class Evaluation:
                     max_index = -1
                     for f2id, fact2 in enumerate(inf_facts):
                         new_score = self.match_score(fact1, fact2)
+                        fact_scores_dict.append((ent_attr, fact1, fact2, new_score))
                         if new_score > max_score:
                             max_score = new_score
                             max_index = f2id
@@ -269,6 +271,8 @@ class Evaluation:
             f.write(json.dumps(self.unmatched_facts_dict_infer, indent=2, sort_keys=True))
         with open(getattr(self.env, 'home_dir', '') + 'inferred.json', 'w') as f:
             f.write(json.dumps(self.get_facts_dict(), indent=2, sort_keys=True))
+        with open(getattr(self.env, 'home_dir', '') + 'facts_match_scores.json', 'w') as f:
+            f.write(json.dumps(fact_scores_dict, indent=2, sort_keys=True))
 
         # print("=========")
         recall = matched / total
@@ -288,7 +292,9 @@ class Evaluation:
         self.env.logger.info("Accuracy = %.4f" % accuracy)
         self.env.logger.info("f1score = %.4f" % f1score)
 
-        return {'recall': recall, 'precision': precision, 'accuracy': accuracy, 'f1score': f1score}
+        return {'recall': recall, 'precision': precision, 'accuracy': accuracy, 'f1score': f1score,
+                'total': total, 'matched': matched, 'unmatched_true': unmatched_true,
+                'unmatched_inferred': unmatched_inferred, }
 
     def persist_dicts(self):
         pickle.dump(self.matched_facts_dict, open(self.out_path + "matched_facts_dict.pkl", "wb"))

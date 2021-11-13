@@ -1,3 +1,5 @@
+import json
+import os
 from typing import Union
 
 from strsimpy.jaro_winkler import JaroWinkler
@@ -5,13 +7,16 @@ from strsimpy.cosine import Cosine
 from strsimpy.normalized_levenshtein import NormalizedLevenshtein
 from strsimpy.damerau import Damerau
 
+from matching.ahc_matcher.similarity_funcs import get_education_degree_similarity, get_education_university_similarity, \
+    get_working_experience_title_similarity
+
 cosine = Cosine(2)
 jarowinkler = JaroWinkler()
 levenshtein = NormalizedLevenshtein()
 damerau = Damerau()
 
 
-class SimRank:
+class SimRankDomainClustering:
     def __init__(self, dataset, attr, property, num_iterations=10):
         """
         This is a matcher for structural similarity of values of the same entity ettribute property
@@ -42,6 +47,35 @@ class SimRank:
         # 3. Compute simrank for graph
         self.init_simrank_scores()
         self.compute_simrank_scores()
+        self._store_simrank_training()
+
+    @property
+    def training_file_path(self):
+        td_name = 'simrank_training_' + self.attr + '_' + self.property + '.json'
+        td_dir = getattr(self.dataset.env, 'home_dir', '')
+        return td_dir + td_name
+
+    def _store_simrank_training(self):
+        """
+        A function to store training data.
+        :return: None.
+        """
+        td_dir = os.path.dirname(self.training_file_path)
+        if not os.path.exists(td_dir):
+            os.makedirs(td_dir)
+
+        output = []
+        for key in self.cluster_simrank_buffer.keys():
+            buckets = list(list(key)[0]) if isinstance(list(key)[0], frozenset) else list(list(key)[1])
+            if len(buckets) is 2:
+                bucket1 = [self.distinct_tokens[token_key] for token_key in list(buckets[0])]
+                bucket2 = [self.distinct_tokens[token_key] for token_key in list(buckets[1])]
+                output.append((bucket1, bucket2, self.cluster_simrank_buffer[key]))
+
+        output.sort(key=lambda x: x[2], reverse=True)
+
+        with open(self.training_file_path, 'w') as f:
+            json.dump(output, f)
 
     def cluster_tokens(self, threshold=0.6):
         iteration = 1
@@ -68,19 +102,18 @@ class SimRank:
                 similarity = self.get_token_pair_similarity(x, y)
                 self.token_pair_similarites[frozenset({x, y})] = similarity
 
+    # Here we calculate similarities with domain aware functions
     def get_token_pair_similarity(self, x: str, y: str):
         if self.attr == 'Education' and self.property == 'degree':
-            # result = jarowinkler.similarity(x.lower(), y.lower())
-            result = levenshtein.similarity(x.lower(), y.lower())
-            # result = damerau.similarity(x.lower(), y.lower())
-            # result = 1 - damerau.distance(x.lower(), y.lower()) / max(len(x), len(y))
-            # result = cosine.similarity(x.lower(), y.lower())
+            result = get_education_degree_similarity(x.lower(), y.lower())
             return result
         if self.attr == 'Education' and self.property == 'university':
-            # result = 1 - damerau.distance(x.lower(), y.lower()) / max(len(x), len(y))
-            result = cosine.similarity(x.lower(), y.lower())
+            result = get_education_university_similarity(x.lower(), y.lower())
             return result
-        # result = 1 - damerau.distance(x.lower(), y.lower()) / max(len(x), len(y))
+        if self.attr == 'Working Experience' and self.property == 'title':
+            result = get_working_experience_title_similarity(x.lower(), y.lower())
+            return result
+        # else
         result = cosine.similarity(x.lower(), y.lower())
         return result
 

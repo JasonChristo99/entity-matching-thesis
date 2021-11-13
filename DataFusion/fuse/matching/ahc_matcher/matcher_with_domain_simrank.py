@@ -1,5 +1,6 @@
 from matching import MatchingStrategy
-from matching.ahc_matcher.simrank import SimRank
+from matching.ahc_matcher.simrank_domain_clustering import SimRankDomainClustering
+from matching.ahc_matcher.simrank_naive_clustering import SimRankNaiveClustering
 from matching.ahc_matcher import similarity_funcs
 
 from strsimpy.jaro_winkler import JaroWinkler
@@ -13,7 +14,7 @@ levenshtein = NormalizedLevenshtein()
 damerau = Damerau()
 
 
-class AgglomerativeHierarchicalClustering(MatchingStrategy):
+class AgglomerativeHierarchicalClusteringWithDomainSimrank(MatchingStrategy):
     def __init__(self, dataset, attr, matcher_home='', threshold=0.6, constant_a=0.7):
         """
         Constructor for a fact matcher.
@@ -39,10 +40,11 @@ class AgglomerativeHierarchicalClustering(MatchingStrategy):
     def train(self, **kwargs):
         # print('TRAIN')
         if self.attr == 'Working Experience':
-            self.attribute_to_simrank_matcher['title'] = SimRank(self.dataset, self.attr, 'title')
+            self.attribute_to_simrank_matcher['title'] = SimRankDomainClustering(self.dataset, self.attr, 'title')
         if self.attr == 'Education':
-            self.attribute_to_simrank_matcher['degree'] = SimRank(self.dataset, self.attr, 'degree')
-            self.attribute_to_simrank_matcher['university'] = SimRank(self.dataset, self.attr, 'university')
+            self.attribute_to_simrank_matcher['degree'] = SimRankDomainClustering(self.dataset, self.attr, 'degree')
+            self.attribute_to_simrank_matcher['university'] = SimRankDomainClustering(self.dataset, self.attr,
+                                                                                      'university')
 
     def get_matches(self, **kwargs):
         facts = kwargs.get("facts")

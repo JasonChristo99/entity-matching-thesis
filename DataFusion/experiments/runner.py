@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import fuse
 from DataGeneration.DataGenerator import DataGenerator
 
-from matching.ahc_matcher import AgglomerativeHierarchicalClustering
+from matching.ahc_matcher import AgglomerativeHierarchicalClusteringWithNaiveSimrank, \
+    AgglomerativeHierarchicalClusteringWithDomainSimrank
 from matching.dedupe import DedupeMatcher
 from DataGeneration import RANDOM_SEED
 
@@ -40,7 +41,7 @@ class FusionExperiment:
             f.write(json.dumps(dataset_config, indent=2))
 
     def prepare_dataset_configs(self, num_entities=20, num_sources=4, num_dataset_configs=1, version='generic'):
-        TYPOS_BINOMIAL_PARAM = {'MIN': 0.01, 'MAX': 0.05}
+        TYPOS_BINOMIAL_PARAM = {'MIN': 0.01, 'MAX': 0.02}
         SYNONYM_CHANCE = {'MIN': 0.1, 'MAX': 0.4}
         INCORRECT_FACT_GEOM_PARAM = {'MIN': 0.85, 'MAX': 0.95}
         WRONG_VALUE_CHANCE = {'MIN': 0.1, 'MAX': 0.2}
@@ -109,9 +110,17 @@ class FusionExperiment:
         # folder structure for experiments:
         # - experiment_X
         # -     dataset
-        # -     ahc_result
+        # -     ahc_naiveresult
+        # -     ahc_domainresult
         # -     dedupe_result
-        matcher_folder = "dedupe_result/" if matching_strategy is DedupeMatcher else "ahc_result/"
+        matcher_folder: str
+        if matching_strategy is DedupeMatcher:
+            matcher_folder = "dedupe_result/"
+        elif matching_strategy is AgglomerativeHierarchicalClusteringWithNaiveSimrank:
+            matcher_folder = "ahc_naive_simrank_result/"
+        else:
+            matcher_folder = "ahc_domain_simrank_result/"
+
         current_folder = self.experiment_folder + matcher_folder
         Path(current_folder).mkdir(parents=True, exist_ok=True)
 
@@ -134,20 +143,25 @@ class FusionExperiment:
             # generate dataset
             self.generate_dataset(dataset_config)
 
+            # run fusion using new matcher
+            eval2 = self.run_fusion(matching_strategy=AgglomerativeHierarchicalClusteringWithNaiveSimrank)
+
             # run fusion using old matcher
             eval1 = self.run_fusion(matching_strategy=DedupeMatcher)
-
-            # run fusion using new matcher
-            eval2 = self.run_fusion(matching_strategy=AgglomerativeHierarchicalClustering)
 
             print({'ahc': eval2})
             print({'dedupe': eval1})
 
     def run_cumulative_experiment(self):
-        dataset_versions = ['generic', 'high_typos', 'high_synonym_chance', 'high_wrong_value_chance', 'many_sources']
-        # dataset_sizes = [50, 100, 200, 300, 400, 500]
-        dataset_sizes = [25, 50, 100, 250, 500]  # test
-        matching_strategies = [DedupeMatcher, AgglomerativeHierarchicalClustering]
+        # dataset_versions = ['generic', 'high_synonym_chance', 'high_wrong_value_chance']  # test
+        dataset_versions = ['generic', 'high_typos', 'high_synonym_chance', 'high_wrong_value_chance']  # test
+        # dataset_versions = ['generic', 'high_typos', 'high_synonym_chance', 'high_wrong_value_chance', 'many_sources']
+        # dataset_sizes = [50, 100]  # test
+        dataset_sizes = [25, 50, 100, 250]  # test
+        # dataset_sizes = [25, 50, 100, 250, 500]
+        matching_strategies = [AgglomerativeHierarchicalClusteringWithNaiveSimrank,
+                               AgglomerativeHierarchicalClusteringWithDomainSimrank, DedupeMatcher]  # test
+        # matching_strategies = [DedupeMatcher, AgglomerativeHierarchicalClustering]
         metrics = ['accuracy', 'recall', 'precision', 'f1score', 'time']
 
         # for each dataset version (typos, synonyms etc)
@@ -180,8 +194,15 @@ class FusionExperiment:
             # ax1 = fig1.add_subplot(111)
             for evaluation_metric_index, evaluation_metric in enumerate(metrics):
                 x = dataset_sizes
-                y_ahc = [
-                    data[dataset_version][size][AgglomerativeHierarchicalClustering.__name__][evaluation_metric] for
+                y_ahc_naive = [
+                    data[dataset_version][size][AgglomerativeHierarchicalClusteringWithNaiveSimrank.__name__][
+                        evaluation_metric] for
+                    size in
+                    data[dataset_version]
+                ]
+                y_ahc_domain = [
+                    data[dataset_version][size][AgglomerativeHierarchicalClusteringWithDomainSimrank.__name__][
+                        evaluation_metric] for
                     size in
                     data[dataset_version]
                 ]
@@ -192,10 +213,12 @@ class FusionExperiment:
                 ]
 
                 # plot a graph with two lines, one per strategy, x axis: dataset size, y axis: eval. metric
-                axes[dataset_version_index, evaluation_metric_index].plot(x, y_ahc)
+                axes[dataset_version_index, evaluation_metric_index].plot(x, y_ahc_naive)
+                axes[dataset_version_index, evaluation_metric_index].plot(x, y_ahc_domain)
                 axes[dataset_version_index, evaluation_metric_index].plot(x, y_ded)
-                axes[dataset_version_index, evaluation_metric_index].legend(['AHC Matcher', 'Dedupe Matcher'],
-                                                                            loc='upper left')
+                axes[dataset_version_index, evaluation_metric_index].legend(
+                    ['AHC Matcher w/ Naive Simrank', 'AHC Matcher w/ Domain Simrank', 'Dedupe Matcher'],
+                    loc='upper left')
 
         for ax, col in zip(axes[0], cols):
             ax.set_title(col)
@@ -215,7 +238,7 @@ class FusionExperiment:
         # dataset_versions = ['generic', 'high_typos']
         # dataset_sizes = [50, 100, 200, 300, 400, 500]
         dataset_sizes = [20, 50, 100, 150]  # test
-        matching_strategies = [DedupeMatcher, AgglomerativeHierarchicalClustering]
+        matching_strategies = [DedupeMatcher, AgglomerativeHierarchicalClusteringWithNaiveSimrank]
         metrics = ['accuracy', 'recall', 'precision', 'f1score', 'time']
 
         # for each dataset version (typos, synonyms etc)
@@ -330,7 +353,8 @@ class FusionExperiment:
             for evaluation_metric_index, evaluation_metric in enumerate(metrics):
                 x = dataset_sizes
                 y_ahc = [
-                    data[dataset_version][size][AgglomerativeHierarchicalClustering.__name__][evaluation_metric] for
+                    data[dataset_version][size][AgglomerativeHierarchicalClusteringWithNaiveSimrank.__name__][
+                        evaluation_metric] for
                     size in
                     data[dataset_version]
                 ]

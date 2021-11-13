@@ -3,6 +3,8 @@ from strsimpy.cosine import Cosine
 from strsimpy.normalized_levenshtein import NormalizedLevenshtein
 from strsimpy.damerau import Damerau
 
+from utils import WordVectors
+
 cosine = Cosine(2)
 jarowinkler = JaroWinkler()
 levenshtein = NormalizedLevenshtein()
@@ -20,12 +22,26 @@ def get_location_similarity(location1, location2):
 
 
 def get_education_degree_similarity(degree1, degree2):
-    result = cosine_similarity(degree1, degree2)
+    # result = cosine_similarity(degree1, degree2)
+    cos_sim = cosine_similarity(degree1, degree2)
+    word_vectors = WordVectors.getInstance()
+    if degree1 in word_vectors and degree2 in word_vectors:
+        word_vec_sim = word_vectors.similarity(degree1, degree2)
+        result = 0.5 * cos_sim + 0.5 * word_vec_sim
+        return result
+    result = cos_sim
     return result
 
 
 def get_education_university_similarity(university1, university2):
-    result = cosine_similarity(university1, university2)
+    # result = cosine_similarity(university1, university2)
+    cos_sim = cosine_similarity(university1, university2)
+    word_vectors = WordVectors.getInstance()
+    if university1 in word_vectors and university2 in word_vectors:
+        word_vec_sim = word_vectors.similarity(university1, university2)
+        result = 0.5 * cos_sim + 0.5 * word_vec_sim
+        return result
+    result = cos_sim
     return result
 
 
@@ -42,7 +58,14 @@ def get_education_year_similarity(year1, year2):
 
 
 def get_working_experience_title_similarity(title1, title2):
-    result = cosine_similarity(title1, title2)
+    # result = cosine_similarity(title1, title2)
+    cos_sim = cosine_similarity(title1, title2)
+    word_vectors = WordVectors.getInstance()
+    if title1 in word_vectors and title2 in word_vectors:
+        word_vec_sim = word_vectors.similarity(title1, title2)
+        result = 0.1 * cos_sim + 0.9 * word_vec_sim
+        return result
+    result = cos_sim
     return result
 
 
@@ -68,7 +91,9 @@ def get_working_experience_years_similarity(years1, years2):
 
 
 def get_skills_similarity(skill1, skill2):
-    result = cosine_similarity(skill1, skill2)
+    # result = cosine_similarity(skill1, skill2)
+    word_vectors = WordVectors.getInstance()
+    result = word_vectors.similarity(skill1, skill2)
     return result
 
 
