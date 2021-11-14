@@ -141,7 +141,7 @@ class DedupeMatcher(MatchingStrategy):
             # to create good clusters for some reason with the following error:
             # ValueError: shapes (13,6) and (2,) not aligned: 6 (dim 1) != 2 (dim 0)
             # See get_matches().
-            self.deduper = self._get_static_deduper() # TODO : test not switching
+            self.deduper = self._get_static_deduper()
 
     def get_matches(self, **kwargs):
         facts = kwargs.get("fact_records")

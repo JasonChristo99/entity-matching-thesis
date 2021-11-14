@@ -106,7 +106,7 @@ class FusionExperiment:
                                   out_folder=self.experiment_folder + "dataset/")
         generator.generate(verbose=False)
 
-    def run_fusion(self, matching_strategy):
+    def run_fusion(self, matching_strategy, infer_entities=False):
         # folder structure for experiments:
         # - experiment_X
         # -     dataset
@@ -127,7 +127,7 @@ class FusionExperiment:
         fuse_env = fuse.Fuse(verbose=True, home_dir=current_folder)
         fuse_session = fuse_env.get_session('test')
         dataset = fuse_session.ingest(self.experiment_folder + 'dataset/observed.json', 'fusion_test',
-                                      matching_strategy)
+                                      matching_strategy, infer_entities=infer_entities)
         fuse_session.train_matchers(self.experiment_folder + 'dataset/matched.json')
         fuse_session.match_observations()
         tr_clusters = fuse_session.find_true_clusters()
@@ -151,6 +151,24 @@ class FusionExperiment:
 
             print({'ahc': eval2})
             print({'dedupe': eval1})
+
+    def run_experiment_with_entity_inference(self):
+        # for each dataset version
+        for dataset_config in self.dataset_configurations:
+            self.init_experiment(dataset_config)
+
+            # generate dataset
+            self.generate_dataset(dataset_config)
+
+            # run fusion using new matcher
+            eval2 = self.run_fusion(matching_strategy=AgglomerativeHierarchicalClusteringWithNaiveSimrank,
+                                    infer_entities=True)
+
+            # run fusion using old matcher
+            # eval1 = self.run_fusion(matching_strategy=DedupeMatcher)
+
+            print({'ahc': eval2})
+            # print({'dedupe': eval1})
 
     def run_cumulative_experiment(self):
         # dataset_versions = ['generic', 'high_synonym_chance', 'high_wrong_value_chance']  # test
@@ -386,6 +404,8 @@ class FusionExperiment:
 
 if __name__ == "__main__":
     exp = FusionExperiment()
-    # exp.run_experiment()
-    exp.run_cumulative_experiment()
     # exp.run_experiment_2_test()
+    # exp.run_cumulative_experiment() # TODO
+    # exp.run_fusion(AgglomerativeHierarchicalClusteringWithNaiveSimrank)
+    # exp.run_experiment()
+    exp.run_experiment_with_entity_inference()

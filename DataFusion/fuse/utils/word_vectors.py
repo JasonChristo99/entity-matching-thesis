@@ -1,8 +1,8 @@
 from gensim.models import KeyedVectors
 
 WORD2VEC_FILEPATH = 'C:/Users/Iasonas/Downloads/GoogleNews-vectors-negative300.bin'
-WORD_LIMIT = 500000
-# WORD_LIMIT = 500  # test
+# WORD_LIMIT = 500000
+WORD_LIMIT = 500  # test
 
 
 class WordVectors:

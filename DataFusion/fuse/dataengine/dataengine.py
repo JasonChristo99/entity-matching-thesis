@@ -71,15 +71,17 @@ class DataEngine:
         df.to_sql(name, self.db_conn, if_exists="replace", dtype=dtype)
         return name
 
-    def ingest_data(self, filepath, dataset_name, matching_strategy: MatchingStrategy, persist=False):
+    def ingest_data(self, filepath, dataset_name, matching_strategy: MatchingStrategy, persist=False,
+                    infer_entities=False):
         """
         Loads the data from an input JSON file and
+        :param infer_entities:
         :param filepath: The path of the file to be loaded.
         :param dataset_name: The name of the dataset to be loaded.
         :return: A DataSet instance.
         """
         # Ingest data
-        ingest = IngestJson(filepath)
+        ingest = IngestJson(filepath, infer_entities)
         entity_attributes = ingest.get_entity_attrs()
         sources = ingest.get_sources()
         observed_facts = ingest.get_observed_facts()

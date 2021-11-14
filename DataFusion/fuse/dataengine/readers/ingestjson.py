@@ -1,17 +1,26 @@
+from dataengine.entity_inference.inference import EntityInference
 from fact import ObservedFact
 from dataengine.readers.ingest import Ingest
 from dataengine.readers.jsonreader import JsonReader
+
 
 class IngestJson(Ingest):
     """
     This class provides the necessary methods to ingest a JSON file.
     """
-    def __init__(self, filepath):
+
+    def __init__(self, filepath, infer_entities=False):
         """
         The constructor for IngestJson.
         :param filepath: The file path for the JSON file to be loaded.
         """
-        Ingest.__init__(self, filepath)
+        # TODO test inference thoroughly
+        if infer_entities is True:
+            self.entity_inf = EntityInference(filepath)
+            Ingest.__init__(self, self.entity_inf.dest_dataset_filepath)
+        else:
+            self.entity_inf = None
+            Ingest.__init__(self, filepath)
         # Ingest input file
         self._init_reader()
         self._extract_entity_attrs()
@@ -51,7 +60,7 @@ class IngestJson(Ingest):
                 # Get facts reported by src for each entity attribute
                 for attr, fact in self._extract_src_reported_facts(eid, src, src_entry):
                     self.observed_facts[eid][attr].append(fact)
-                    self.src_to_observed_fact.setdefault(src,set([])).add(fact.fid)
+                    self.src_to_observed_fact.setdefault(src, set([])).add(fact.fid)
             self.entityID += 1
 
     def _extract_src_reported_facts(self, eid, src, src_entry):
@@ -64,7 +73,7 @@ class IngestJson(Ingest):
                     fid = self.factID
                     fact = ObservedFact(fid, eid, attr, src, entry)
                     # Update schema for entries of entity attribute attr
-                    self.entity_attribute_schema[attr]\
+                    self.entity_attribute_schema[attr] \
                         .union(set(fact.get_fact_attributes()))
                     self.factID += 1
                     yield attr, fact

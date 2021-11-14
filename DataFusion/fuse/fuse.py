@@ -132,9 +132,11 @@ class Session:
         else:
             self.logger = log.setup_logger(self.name, logname, logging.ERROR)
 
-    def ingest(self, filepath, name, matching_strategy: MatchingStrategy = DedupeMatcher, persist=False):
+    def ingest(self, filepath, name, matching_strategy: MatchingStrategy = DedupeMatcher, persist=False,
+               infer_entities=False):
         """
         Ingest data from a JSON file and generate a new Dataset object.
+        :param infer_entities:
         :param filepath: String literal indicating the path to a JSON file.
         :param persist:
         :param name:
@@ -144,7 +146,7 @@ class Session:
         # Check that the file is in JSON format
         ext = os.path.splitext(filepath)[-1].lower()
         if ext == '.json':
-            self.dataset = self.env.dataengine.ingest_data(filepath, name, matching_strategy, persist)
+            self.dataset = self.env.dataengine.ingest_data(filepath, name, matching_strategy, persist, infer_entities)
         else:
             self.logger.error("Wrong file extension. Only JSON files supported.")
         return self.dataset

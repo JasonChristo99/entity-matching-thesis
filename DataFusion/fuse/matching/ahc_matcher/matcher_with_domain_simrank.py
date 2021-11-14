@@ -49,7 +49,6 @@ class AgglomerativeHierarchicalClusteringWithDomainSimrank(MatchingStrategy):
     def get_matches(self, **kwargs):
         facts = kwargs.get("facts")
         fact_records = kwargs.get("fact_records")
-        # TODO: never merge facts from the same source
         self.init_state()
         self.facts = facts
         self.fact_records = fact_records
