@@ -14,7 +14,6 @@ class IngestJson(Ingest):
         The constructor for IngestJson.
         :param filepath: The file path for the JSON file to be loaded.
         """
-        # TODO test inference thoroughly
         if infer_entities is True:
             self.entity_inf = EntityInference(filepath)
             Ingest.__init__(self, self.entity_inf.dest_dataset_filepath)
