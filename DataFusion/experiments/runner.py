@@ -177,13 +177,15 @@ class FusionExperiment:
 
     def run_cumulative_experiment(self):
         # dataset_versions = ['generic', 'high_synonym_chance', 'high_wrong_value_chance']  # test
-        dataset_versions = ['generic', 'high_typos', 'high_synonym_chance', 'high_wrong_value_chance']  # test
+        # dataset_versions = ['generic', 'high_typos', 'high_synonym_chance', 'high_wrong_value_chance']  # final_exp_1
+        dataset_versions = ['generic']  # final_exp_2
         # dataset_versions = ['generic', 'high_typos', 'high_synonym_chance', 'high_wrong_value_chance', 'many_sources']
         # dataset_sizes = [50, 100]  # test
         # dataset_sizes = [25, 50, 100, 250]  # test
-        dataset_sizes = [25, 50, 100, 250, 500]
+        # dataset_sizes = [25, 50, 100, 250, 500] # final_exp_1
+        dataset_sizes = [25, 50, 100, 250] # final_exp_2
         matching_strategies = [AgglomerativeHierarchicalClusteringWithNaiveSimrank,
-                               AgglomerativeHierarchicalClusteringWithDomainSimrank, DedupeMatcher]  # test
+                               AgglomerativeHierarchicalClusteringWithDomainSimrank, DedupeMatcher]
         # matching_strategies = [DedupeMatcher, AgglomerativeHierarchicalClustering]
         metrics = ['accuracy', 'recall', 'precision', 'f1score', 'time']
 
@@ -206,12 +208,14 @@ class FusionExperiment:
                 # for each matching strategy (ahc, dedupe)
                 for matching_strategy in matching_strategies:
                     start = time.time()
-                    eval = self.run_fusion(matching_strategy=matching_strategy)
+                    # eval = self.run_fusion(matching_strategy=matching_strategy)  # final_exp_1
+                    eval = self.run_fusion(matching_strategy=matching_strategy, infer_entities=True)  # final_exp_2
                     end = time.time()
                     data.setdefault(dataset_version, {}).setdefault(dataset_size, {}).setdefault(
                         matching_strategy.__name__, eval)
                     data[dataset_version][dataset_size][matching_strategy.__name__]['time'] = end - start
 
+            print(data)
             # when we have the result metrics per strategy/per size, plot for each evaluation metric
             # fig1 = plt.figure()
             # ax1 = fig1.add_subplot(111)
@@ -257,6 +261,158 @@ class FusionExperiment:
         with open('cumulative_experiment_data_' + self.timestamp + '.json', 'w') as f:
             json.dump(data, f)
 
+    def run_experiment_with_fed_data(self):
+        # dataset_versions = ['generic', 'high_typos', 'high_synonym_chance', 'high_wrong_value_chance', 'many_sources']
+        dataset_versions = ['generic']
+        # dataset_sizes = [50, 100, 200, 300, 400, 500]
+        dataset_sizes = [25, 50, 100, 250]  # test
+        matching_strategies = [DedupeMatcher, AgglomerativeHierarchicalClusteringWithNaiveSimrank]
+        # metrics = ['accuracy', 'recall', 'precision', 'f1score', 'time']
+        metrics = ['accuracy', 'recall', 'precision', 'f1score']
+
+        # for each dataset version (typos, synonyms etc)
+        data = {'generic':
+            {
+                25:
+                    {
+                        'AgglomerativeHierarchicalClusteringWithNaiveSimrank': {
+
+                            'recall': 0.8448,
+                            'precision': 0.8673,
+                            'accuracy': 0.7481,
+                            'f1score': 0.8559
+                        },
+                        'AgglomerativeHierarchicalClusteringWithDomainSimrank': {
+                            'recall': 0.8448,
+                            'precision': 0.8596,
+                            'accuracy': 0.7424,
+                            'f1score': 0.8522
+                        },
+
+                        'DedupeMatcher': {
+                            'recall': 0.8707,
+                            'precision': 0.9352,
+                            'accuracy': 0.8211,
+                            'f1score': 0.9018
+                        }
+                    },
+                50:
+                    {
+                        'AgglomerativeHierarchicalClusteringWithNaiveSimrank': {
+                            'recall': 0.8475,
+                            'precision': 0.9175,
+                            'accuracy': 0.7875,
+                            'f1score': 0.8811,
+                        },
+                        'AgglomerativeHierarchicalClusteringWithDomainSimrank': {
+                            'recall': 0.8520,
+                            'precision': 0.9135,
+                            'accuracy': 0.7884,
+                            'f1score': 0.8817,
+                        },
+                        'DedupeMatcher': {
+                            'recall': 0.8969,
+                            'precision': 1.0000,
+                            'accuracy': 0.8969,
+                            'f1score': 0.9456,
+                        }
+
+                    },
+
+                100:
+                    {
+                        'AgglomerativeHierarchicalClusteringWithNaiveSimrank': {
+                            'recall': 0.8717,
+                            'precision': 0.9072,
+                            'accuracy': 0.8004,
+                            'f1score': 0.8891,
+                        },
+                        'AgglomerativeHierarchicalClusteringWithDomainSimrank': {
+                            'recall': 0.8543,
+                            'precision': 0.9014,
+                            'accuracy': 0.7813,
+                            'f1score': 0.8772
+                        },
+                        'DedupeMatcher': {
+                            'recall': 0.8609,
+                            'precision': 0.9900,
+                            'accuracy': 0.8534,
+                            'f1score': 0.9209,
+                        }
+                    },
+                250:
+                    {
+                        'AgglomerativeHierarchicalClusteringWithNaiveSimrank': {
+                            'recall': 0.8498,
+                            'precision': 0.8792,
+                            'accuracy': 0.7610,
+                            'f1score': 0.8643,
+                        },
+                        'AgglomerativeHierarchicalClusteringWithDomainSimrank': {
+                            'recall': 0.8644,
+                            'precision': 0.8919,
+                            'accuracy': 0.7824,
+                            'f1score': 0.8779,
+                        },
+                        'DedupeMatcher': {
+                            'recall': 0.8541,
+                            'precision': 0.9950,
+                            'accuracy': 0.8504,
+                            'f1score': 0.9192,
+                        }
+                    }
+
+            }
+
+        }
+
+        fig, axes = plt.subplots(nrows=len(dataset_versions), ncols=len(metrics), figsize=(36, 8))
+        cols = [metric.replace('_', ' ').capitalize() for metric in metrics]
+        rows = [version.replace('_', ' ').capitalize() for version in dataset_versions]
+
+        for dataset_version_index, dataset_version in enumerate(dataset_versions):
+
+            for evaluation_metric_index, evaluation_metric in enumerate(metrics):
+                x = dataset_sizes
+                y_ahc_naive = [
+                    data[dataset_version][size][AgglomerativeHierarchicalClusteringWithNaiveSimrank.__name__][
+                        evaluation_metric] for
+                    size in
+                    data[dataset_version]
+                ]
+                y_ahc_domain = [
+                    data[dataset_version][size][AgglomerativeHierarchicalClusteringWithDomainSimrank.__name__][
+                        evaluation_metric] for
+                    size in
+                    data[dataset_version]
+                ]
+
+                y_ded = [
+                    data[dataset_version][size][DedupeMatcher.__name__][evaluation_metric] for size in
+                    data[dataset_version]
+                ]
+
+                # plot a graph with two lines, one per strategy, x axis: dataset size, y axis: eval. metric
+                axes[evaluation_metric_index].plot(x, y_ahc_naive)
+                axes[evaluation_metric_index].plot(x, y_ahc_domain)
+                axes[evaluation_metric_index].plot(x, y_ded)
+                axes[evaluation_metric_index].legend(
+                    ['AHC Matcher w/ Naive Simrank', 'AHC Matcher w/ Domain Simrank', 'Dedupe Matcher'],
+                    loc='upper left')
+
+        for ax, col in zip(axes, cols):
+            ax.set_title(col)
+
+        for ax, row in zip(axes, rows):
+            ax.set_ylabel(row, rotation=0, size='large', labelpad=60)
+
+        fig.tight_layout()
+        plt.show()
+        fig.savefig('foo.png')
+
+        with open('cumulative_experiment_data_' + self.timestamp + '.json', 'w') as f:
+            json.dump(data, f)
+
 
 if __name__ == "__main__":
     exp = FusionExperiment()
@@ -264,3 +420,4 @@ if __name__ == "__main__":
     # exp.run_experiment()
     # exp.run_experiment_with_entity_inference()
     exp.run_cumulative_experiment()
+    # exp.run_experiment_with_fed_data()
